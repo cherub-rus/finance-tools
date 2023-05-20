@@ -1,3 +1,5 @@
+package org.cherub.fintools.pdftool
+
 import org.apache.commons.text.StringEscapeUtils
 import org.apache.pdfbox.io.IOUtils
 import org.apache.pdfbox.pdmodel.PDDocument
@@ -5,6 +7,9 @@ import org.apache.pdfbox.tools.PDFText2HTML
 import java.io.File
 import java.io.IOException
 import java.io.StringWriter
+
+import org.cherub.fintools.pdftool.mtsb.*
+import org.cherub.fintools.pdftool.sber.*
 
 const val WRITE_HTML = true
 
@@ -22,11 +27,13 @@ fun main(args: Array<String>) {
 
         val result =
             if (fileText.contains("Выписка по платёжному счёту")) {
-                ProcessPayAcc().process(fileText.removeNonBreakingSpace(), sourceName)
+                SberProcessPayAcc().process(fileText.removeNonBreakingSpace(), sourceName)
             } else if (fileText.contains("Выписка по счёту дебетовой карты")) {
-                ProcessCard().process(fileText.removeNonBreakingSpace(), sourceName)
+                SberProcessCard().process(fileText.removeNonBreakingSpace(), sourceName)
             } else if (fileText.contains("Выписка из лицевого счёта по вкладу")) {
-                ProcessDeposit().process(fileText.removeNonBreakingSpace(), sourceName)
+                SberProcessDeposit().process(fileText.removeNonBreakingSpace(), sourceName)
+            } else if (fileText.contains("www.mtsbank.ru")) {
+                MtsbProcessCard().process(fileText.removeNonBreakingSpace(), sourceName)
             } else "Невозможно определить тип выписки!"
 
 
