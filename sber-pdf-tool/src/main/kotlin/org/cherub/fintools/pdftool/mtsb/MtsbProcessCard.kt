@@ -1,5 +1,8 @@
 package org.cherub.fintools.pdftool.mtsb
 
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+
 import org.cherub.fintools.pdftool.CommonProcessor
 
 private const val BIN = 220028 // Bank Identification Number for PAYMENT SYSTEM: NSPK MIR; BANK: PJSC MTS BANK
@@ -34,11 +37,8 @@ class MtsbProcessCard : CommonProcessor() {
             fields[8] = ""
         }
 
-        if (fields[6].replace("~","").startsWith("Зачисление")) {
-            fields[2] = fields[9]
-        } else {
-            fields[2] = "-" + fields[9]
-        }
+        val sign = if (fields[6].replace("~", "").startsWith("Зачисление")) "" else "-"
+        fields[2] = sign + fields[9]
 
         return fields.joinToString("\t")
     }
@@ -62,9 +62,18 @@ class MtsbProcessCard : CommonProcessor() {
         .replace("Перевод с карты на счет", "$PFX_СПИСАНИЕ, Перевод с карты на счет")
         .replace("Зачисление переводов СБП", "$PFX_ЗАЧИСЛЕНИЕ, Перевод СБП")
 
-    override fun cleanUpTransactions(content: String) = content
+    override fun cleanUpTransactions(content: String) =
+        orderCsvByDateAndTime(content)
         .replace("  *".toRegex(), " ")
         .replace("\"", "")
         .replace("SUPERMARKET SPAR", "SPAR")
 
+    private fun orderCsvByDateAndTime(text: String) = text
+        .split("\n")
+        .filter { it.isNotEmpty() }
+        .sortedBy {
+            val fields = it.split("\t")
+            LocalDateTime.parse("${fields[0]} ${fields[7]}", DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss"))
+        }
+        .joinToString(separator = "\n", postfix = "\n")
 }
