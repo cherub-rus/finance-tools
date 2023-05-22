@@ -31,14 +31,15 @@ class MtsbProcessCard : CommonProcessor() {
 
     private fun String.fixCsv(): String {
         val fields = this.split("\t").toMutableList()
-        fields[9] = fields[9].replace('.', ',')
-        if (fields[8].isNotEmpty()) {
+
+        fields[9] = fields[9].replace('.', ',') // Changed currency separator
+        val sign = if (fields[6].replace("~", "").startsWith("Зачисление")) "" else "-"
+        fields[2] = sign + fields[9] // Added minus sign to expense amount
+
+        if (fields[8].isNotEmpty()) { // If transaction time exists, replace log time with it
             fields[7] = fields[8]
             fields[8] = ""
         }
-
-        val sign = if (fields[6].replace("~", "").startsWith("Зачисление")) "" else "-"
-        fields[2] = sign + fields[9]
 
         return fields.joinToString("\t")
     }
