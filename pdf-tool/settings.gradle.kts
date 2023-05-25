@@ -1,3 +1,3 @@
 
-rootProject.name = "finance-tools"
+rootProject.name = "pdf-tool"
 
