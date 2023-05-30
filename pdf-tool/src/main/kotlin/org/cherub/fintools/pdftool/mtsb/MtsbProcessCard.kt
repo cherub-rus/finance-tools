@@ -45,8 +45,8 @@ class MtsbProcessCard : CommonProcessor() {
     }
 
     private fun String.cleanUpRow() = this
-        .replace(" по Договору( N)? [0-9\\-/ ]{12,13}( от [0-9\\.]{10}г\\.)? согласно платежной ведомости [ ]?#[A-Z0-9]{12}#".toRegex(), "")
-        .replace(" на счет [0-9]{20}, ПАО \\\"МТС-Банк\\\" на имя .+ за ".toRegex(), " за ")
+        .replace(" по Договору( N)? [0-9\\-/ ]{12,13}( от [0-9.]{10}г\\.)? согласно платежной ведомости  ?#[A-Z0-9]{12}#".toRegex(), "")
+        .replace(" на счет [0-9]{20}, ПАО \"МТС-Банк\" на имя .+ за ".toRegex(), " за ")
         .replace(". НДС не облагается.", "")
         .replace("\\", "@")
         .replace("( )?@(.)+@(.)+@[0-9]{6} RUSRUS@643@,".toRegex(), "")
@@ -66,7 +66,7 @@ class MtsbProcessCard : CommonProcessor() {
 
     override fun cleanUpTransactions(content: String) =
         orderCsvByDateAndTime(content)
-        .replace("  *".toRegex(), " ")
+        .replace(" +".toRegex(), " ")
         .replace("\"", "")
         .replace("SUPERMARKET SPAR", "SPAR")
 
