@@ -4,13 +4,14 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 import org.cherub.fintools.pdftool.CommonProcessor
+import org.cherub.fintools.pdftool.formula_c11
+import org.cherub.fintools.pdftool.formula_c12
 
 private const val BIN = 220028 // Bank Identification Number for PAYMENT SYSTEM: NSPK MIR; BANK: PJSC MTS BANK
 
 private const val PFX_INCOME = "~Зачисление"
 private const val PFX_COMMISSION = "~Комиссия"
 private const val PFX_EXPENSE = "~Списание"
-
 
 class MtsbProcessCard : CommonProcessor() {
 
@@ -25,7 +26,7 @@ class MtsbProcessCard : CommonProcessor() {
     override fun transformToCsv(row: String) = row.cleanUpRow()
         .replace(
             "<p>[0-9]{1,3} ([0-9.]{10}) ([0-9:]{8}) ([0-9]+\\.[0-9]{1,2}) RUR (((.+?)(, ))?(.+?))( дата транзакции ([0-9/]{10}) ([0-9:]{8}))? ###$BIN.+</p>".toRegex(),
-            "$1\t$8\t\t\t\t\t$6\t$2\t$11\t$3\t=ОКРУГЛ(R[-1]C+RC[-8];2)\t=ОКРУГЛ(R[-1]C[-1]+RC[-9];2)\t$8"
+            "$1\t$8\t\t\t\t\t$6\t$2\t$11\t$3\t$formula_c11\t$formula_c12\t$8"
         )
         .fixCsv()
 

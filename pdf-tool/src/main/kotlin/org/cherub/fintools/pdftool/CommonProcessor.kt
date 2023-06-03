@@ -2,6 +2,9 @@ package org.cherub.fintools.pdftool
 
 import java.io.File
 
+const val formula_c11 = "=ОКРУГЛ(R[-1]C+RC[-8];2)"
+const val formula_c12 = "=ОКРУГЛ(R[-1]C[-1]+RC[-9];2)"
+
 abstract class CommonProcessor{
 
     fun process(
