@@ -29,10 +29,11 @@ class SmsProcessor {
 
         val builder = StringBuilder()
         accountList.forEach { account ->
-            builder.appendLine(makeAccountHeader(account.key, sourceName))
+            builder.append(makeAccountHeader(account.key, sourceName))
             account.value.forEach {
                 builder.appendLine(convertToCsv(it))
             }
+            builder.appendLine()
         }
         return builder.toString()
     }
@@ -69,7 +70,6 @@ class SmsProcessor {
             it.appendLine("Account\t$account\tBank\t##TODO##\t\t\t\t\t\t\t\t") // TODO account config, remove tabs
             it.appendLine("")
             it.appendLine("#\t${File(sourceName).name}")
-            it.appendLine("")
         }.toString()
 
 
