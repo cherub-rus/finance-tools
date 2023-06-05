@@ -12,5 +12,5 @@ data class Transaction(
     val date: String? = null, val time: String? = null
 )
 
-fun MatchResult.gv(index: Int): String =
+fun MatchResult.gv(index: Int) =
     this.groups[index]?.value ?: ""
