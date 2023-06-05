@@ -8,16 +8,6 @@ import java.time.LocalTime
 const val formula_c11 = "=ОКРУГЛ(R[-1]C+RC[-8];2)"
 const val formula_c12 = "=ОКРУГЛ(R[-1]C[-1]+RC[-9];2)"
 
-// TODO SmallTools.kt file
-data class Sms(
-    val date: LocalDate, val time: LocalTime, val bank: String, val bank2: String, val content: String, val trans: Transaction
-)
-
-data class Transaction(
-    val account: String, val operation: String, val message: String, val amount: String, val balance: String,
-    val date: String? = null, val time: String? = null
-)
-
 private const val SMS_REGEX_STRING = "([0-9-]{10})\t([0-9:]{8})\tin\t(.+)\t(.+)\t(.+)"
 
 class SmsProcessor {
@@ -72,17 +62,15 @@ class SmsProcessor {
     }
 
     private fun convertToCsv(sms: Sms): String =
-        "${sms.date}\t${sms.trans.message}\t${sms.trans.amount}\t\t\t\t${sms.trans.operation}\t${sms.time}\t\t\t${sms.trans.balance}\t$formula_c12"
+        "${sms.date}\t${sms.trans.message}\t${sms.trans.amount}\t\t\t\t${sms.trans.operation}\t${sms.time}\t\t\t${sms.trans.balance ?: formula_c11}\t$formula_c12"
 
-    private fun makeAccountHeader(account: String, sourceName: String): String {
-        val builder = StringBuilder()
-        builder.appendLine("#\t\t\t\t\t\t\t\t\t\t\t") //TODO remove tabs
-        builder.appendLine("Account\t$account\tBank\t##TODO##\t\t\t\t\t\t\t\t") // TODO account config
-        builder.appendLine("")
-        builder.appendLine("#\t${File(sourceName).name}")
-        return builder.toString()
-    }
+    private fun makeAccountHeader(account: String, sourceName: String) =
+        StringBuilder().also {
+            it.appendLine("Account\t$account\tBank\t##TODO##\t\t\t\t\t\t\t\t") // TODO account config, remove tabs
+            it.appendLine("")
+            it.appendLine("#\t${File(sourceName).name}")
+            it.appendLine("")
+        }.toString()
+
+
 }
-
-fun MatchResult.gv(index: Int): String =
-    this.groups[index]?.value ?: ""
