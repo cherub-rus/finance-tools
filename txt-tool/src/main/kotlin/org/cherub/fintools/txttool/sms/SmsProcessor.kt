@@ -1,6 +1,6 @@
 package org.cherub.fintools.txttool.sms
 
-import org.cherub.fintools.txttool.sms.mtsb.MtsbContentParser
+import org.cherub.fintools.txttool.sms.mtsb.*
 import java.io.File
 import java.time.LocalDate
 import java.time.LocalTime
@@ -15,6 +15,8 @@ class SmsProcessor {
     companion object {
         val checkFormatRegex = SMS_REGEX_STRING.toRegex()
     }
+
+    private val parsers = mapOf(mtsbParsers)
 
     fun process(fileText: String, sourceName: String): String {
         val accountList = mutableMapOf<String, MutableList<Sms>>()
@@ -55,9 +57,8 @@ class SmsProcessor {
     }
 
     private fun parseContent(bank: String, content: String): Transaction? {
-        // TODO parser registrator. CommonParser
-        if (bank == "MTS-Bank") {
-            return MtsbContentParser().parse(content)
+        parsers[bank]?.forEach { p ->
+            p.parse(content)?.also { return it }
         }
         return null
     }

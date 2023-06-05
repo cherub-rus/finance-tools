@@ -1,42 +1,47 @@
 package org.cherub.fintools.txttool.sms.mtsb
 
+import org.cherub.fintools.txttool.sms.ContentParser
 import org.cherub.fintools.txttool.sms.Transaction
 import org.cherub.fintools.txttool.sms.gv
 
-class MtsbContentParser {
+//TODO val incomes = listOf<String>("Perevod na kartu", "Prihod po schetu karty")
+val expenses = listOf<String>("Oplata", "Perevod s karty")
 
-    fun parse(content: String) : Transaction? {
-        // TODO Set "-" by operation
+fun String.getSignForOperation() =
+//TODO    if (this in incomes) "" else "-"
+    if (this in expenses) "-" else ""
 
-        // TODO parsers collection?
-        parse1(content)?.also { return it }
-        parse2(content)?.also { return it }
-        parse3(content)?.also { return it }
+val mtsbParsers = Pair("MTS-Bank", listOf(MtsbParser1(), MtsbParser2(), MtsbParser3()))
 
-        return null
-    }
-
-    private fun parse1(content: String): Transaction? {
+class MtsbParser1 : ContentParser {
+    override fun parse(content: String): Transaction? {
         val regex =
             "([^0-9]+) ([0-9][0-9 ]*,[0-9]{2}) RUB (.+) {2}Ostatok: ([0-9][0-9 ]*,[0-9]{2}) RUB; ([*][0-9]{4}) ".toRegex()
         val m = regex.matchEntire(content) ?: return null
-        return Transaction(m.gv(5), m.gv(1), m.gv(3), "-${m.gv(2).replace(" ", "")}", m.gv(4).replace(" ", ""))
-    }
 
-    private fun parse2(content: String): Transaction? {
+        val amount = m.gv(1).getSignForOperation() + m.gv(2).replace(" ", "")
+        return Transaction(m.gv(5), m.gv(1), m.gv(3), amount, m.gv(4).replace(" ", ""))
+    }
+}
+
+class MtsbParser2 : ContentParser {
+     override fun parse(content: String): Transaction? {
         val regex =
             "([^0-9]+) ([*][0-9]{4}); ([0-9][0-9 ]*,[0-9]{2}) RUB; Ostatok: ([0-9][0-9 ]*,[0-9]{2}) RUB".toRegex()
         val m = regex.matchEntire(content) ?: return null
 
-        return Transaction(m.gv(2), m.gv(1), "", m.gv(3).replace(" ", ""), m.gv(4).replace(" ", ""))
+        val amount = m.gv(1).getSignForOperation() + m.gv(3).replace(" ", "")
+        return Transaction(m.gv(2), m.gv(1), "", amount, m.gv(4).replace(" ", ""))
     }
+}
 
-    private fun parse3(content: String): Transaction? {
+class MtsbParser3 : ContentParser {
+    override fun parse(content: String): Transaction? {
         val regex =
             "([^0-9]+) ([*][0-9]{4}) ([0-9.]{5}) ([0-9:]{5}) (.+?);? ([0-9][0-9 ]*,[0-9]{2}) RUB Ostatok: ([0-9][0-9 ]*,[0-9]{2}) RUB;? ".toRegex()
         val m = regex.matchEntire(content) ?: return null
 
-        return Transaction(m.gv(2), m.gv(1), m.gv(5), m.gv(6).replace(" ", ""), m.gv(7).replace(" ", ""), m.gv(3), m.gv(4))
+        val amount = m.gv(1).getSignForOperation() + m.gv(6).replace(" ", "")
+        return Transaction(m.gv(2), m.gv(1), m.gv(5), amount, m.gv(7).replace(" ", ""), m.gv(3), m.gv(4))
     }
-
 }

@@ -12,5 +12,9 @@ data class Transaction(
     val date: String? = null, val time: String? = null
 )
 
+interface ContentParser {
+    fun parse(content: String): Transaction?
+}
+
 fun MatchResult.gv(index: Int) =
     this.groups[index]?.value ?: ""
