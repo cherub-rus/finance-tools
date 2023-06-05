@@ -18,7 +18,13 @@ data class Transaction(
     val date: String? = null, val time: String? = null
 )
 
+private const val SMS_REGEX_STRING = "([0-9-]{10})\t([0-9:]{8})\tin\t(.+)\t(.+)\t(.+)"
+
 class SmsProcessor {
+
+    companion object {
+        val checkFormatRegex = SMS_REGEX_STRING.toRegex()
+    }
 
     fun process(fileText: String, sourceName: String): String {
         val accountList = mutableMapOf<String, MutableList<Sms>>()
@@ -42,7 +48,7 @@ class SmsProcessor {
     }
 
     private fun parseSms(source: String): Sms? {
-        val regex = "([0-9-]{10})\t([0-9:]{8})\tin\t(.+)\t(.+)\t(.+)".toRegex()
+        val regex = SMS_REGEX_STRING.toRegex()
         val m = regex.matchEntire(source) ?: return null
 
         val trans = parseContent(m.gv(3), m.gv(5)) ?: return null

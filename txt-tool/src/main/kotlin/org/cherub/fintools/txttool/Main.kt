@@ -19,7 +19,7 @@ fun main(args: Array<String>) {
             if (firstLine.matches("\\[([0-9.]{10}) в ([0-9:]){5}\\]".toRegex())) {
                 // TODO
                 "Sber Push"
-            } else if (firstLine.matches("([0-9-]{10})\t([0-9:]{8})\tin\t(.+)\t(.+)\t(.+)".toRegex())) {
+            } else if (firstLine.matches(SmsProcessor.checkFormatRegex)) {
                 SmsProcessor().process(fileText, sourceName)
             } else "Невозможно определить тип выписки!"
 
