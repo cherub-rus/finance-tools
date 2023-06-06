@@ -4,12 +4,16 @@ import org.cherub.fintools.txttool.sms.ContentParser
 import org.cherub.fintools.txttool.sms.Transaction
 import org.cherub.fintools.txttool.sms.gv
 
-//TODO val incomes = listOf<String>("Perevod na kartu", "Prihod po schetu karty")
-val expenses = listOf<String>("Oplata", "Perevod s karty")
+var useIncomes = false
+val incomes = listOf("Perevod na kartu", "Prihod po schetu karty")
+val expenses = listOf("Oplata", "Perevod s karty")
 
 fun String.getSignForOperation() =
-//TODO    if (this in incomes) "" else "-"
-    if (this in expenses) "-" else ""
+    if (useIncomes) {
+        if (incomes.any { this.startsWith(it) }) "" else "-"
+    } else {
+        if (expenses.any { this.startsWith(it) }) "-" else ""
+    }
 
 val mtsbParsers = Pair("MTS-Bank", listOf(MtsbParser1(), MtsbParser2(), MtsbParser3()))
 
