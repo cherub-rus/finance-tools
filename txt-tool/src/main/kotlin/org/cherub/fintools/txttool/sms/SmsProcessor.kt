@@ -18,16 +18,13 @@ class SmsProcessor {
 
     private val parsers = mapOf(mtsbParsers)
 
-    fun process(fileText: String, sourceName: String): String {
+    fun process(fileText: String, sourceName: String): ProcessResult {
         val accountList = mutableMapOf<String, MutableList<Sms>>()
         val notSmsList = mutableListOf<String>()
 
         for (line in fileText.lines()) {
             parseSms(line)?.also { accountList.addSms(it) } ?: notSmsList.add(line)
         }
-
-        // TODO return list to main
-        File("$sourceName.unparsed").writeText(notSmsList.joinToString("\n"))
 
         val builder = StringBuilder()
         accountList.forEach { account ->
@@ -37,7 +34,7 @@ class SmsProcessor {
             }
             builder.appendLine()
         }
-        return builder.toString()
+        return ProcessResult(builder.toString(), notSmsList)
     }
 
     private fun parseSms(source: String): Sms? {
