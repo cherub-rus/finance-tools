@@ -1,6 +1,6 @@
 package org.cherub.fintools.txttool.sms.mtsb
 
-import org.cherub.fintools.txttool.sms.ContentParser
+import org.cherub.fintools.txttool.sms.IContentParser
 import org.cherub.fintools.txttool.sms.Transaction
 import org.cherub.fintools.txttool.sms.gv
 
@@ -17,7 +17,7 @@ fun String.getSignForOperation() =
 
 val mtsbParsers = Pair("MTS-Bank", listOf(MtsbParser1(), MtsbParser2(), MtsbParser3()))
 
-class MtsbParser1 : ContentParser {
+class MtsbParser1 : IContentParser {
     override fun parse(content: String): Transaction? {
         val regex =
             "([^0-9]+) ([0-9][0-9 ]*,[0-9]{2}) RUB (.+) {2}Ostatok: ([0-9][0-9 ]*,[0-9]{2}) RUB; ([*][0-9]{4}) ".toRegex()
@@ -28,7 +28,7 @@ class MtsbParser1 : ContentParser {
     }
 }
 
-class MtsbParser2 : ContentParser {
+class MtsbParser2 : IContentParser {
      override fun parse(content: String): Transaction? {
         val regex =
             "([^0-9]+) ([*][0-9]{4}); ([0-9][0-9 ]*,[0-9]{2}) RUB; Ostatok: ([0-9][0-9 ]*,[0-9]{2}) RUB".toRegex()
@@ -39,7 +39,7 @@ class MtsbParser2 : ContentParser {
     }
 }
 
-class MtsbParser3 : ContentParser {
+class MtsbParser3 : IContentParser {
     override fun parse(content: String): Transaction? {
         val regex =
             "([^0-9]+) ([*][0-9]{4}) ([0-9.]{5}) ([0-9:]{5}) (.+?);? ([0-9][0-9 ]*,[0-9]{2}) RUB Ostatok: ([0-9][0-9 ]*,[0-9]{2}) RUB;? ".toRegex()

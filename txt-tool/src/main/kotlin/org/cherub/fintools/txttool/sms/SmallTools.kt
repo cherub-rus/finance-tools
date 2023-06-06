@@ -12,7 +12,7 @@ data class Transaction(
     val date: String? = null, val time: String? = null
 )
 
-interface ContentParser {
+interface IContentParser {
     fun parse(content: String): Transaction?
 }
 
