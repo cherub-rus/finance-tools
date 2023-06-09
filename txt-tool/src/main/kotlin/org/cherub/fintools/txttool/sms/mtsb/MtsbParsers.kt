@@ -4,6 +4,8 @@ import org.cherub.fintools.txttool.sms.IContentParser
 import org.cherub.fintools.txttool.sms.Transaction
 import org.cherub.fintools.txttool.sms.gv
 
+private const val MTS_BANK_SENDER = "MTS-Bank"
+
 var useIncomes = false
 val incomes = listOf("Perevod na kartu", "Prihod po schetu karty")
 val expenses = listOf("Oplata", "Perevod s karty")
@@ -15,7 +17,7 @@ fun getAmount(value: String, operation: String) =
         if (expenses.any { operation.lowercase().startsWith(it.lowercase()) }) "-" else ""
     } + value.replace(" ", "")
 
-val mtsbParsers = Pair("MTS-Bank", listOf(MtsbParser1(), MtsbParser2(), MtsbParser3()))
+val mtsbParsers = Pair(MTS_BANK_SENDER, listOf(MtsbParser1(), MtsbParser2(), MtsbParser3()))
 
 class MtsbParser1 : IContentParser {
     override fun parse(content: String): Transaction? {
