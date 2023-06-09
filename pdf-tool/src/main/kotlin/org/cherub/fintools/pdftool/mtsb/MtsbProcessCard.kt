@@ -23,7 +23,7 @@ class MtsbProcessCard : CommonProcessor() {
     override fun rowFilter(row: String) =
         row.contains("$BIN**") && !row.contains("Номер карты:")
 
-    override fun transformToCsv(row: String) = row.cleanUpRow()
+    override fun transformToCsv(row: String) = row
         .replace(
             "<p>[0-9]{1,3} ([0-9.]{10}) ([0-9:]{8}) ([0-9]+\\.[0-9]{1,2}) RUR (((.+?)(, ))?(.+?))( дата транзакции ([0-9/]{10}) ([0-9:]{8}))? ###$BIN.+</p>".toRegex(),
             "$1\t$8\t\t\t\t\t$6\t$2\t$11\t$3\t$formula_c11\t$formula_c12\t$8"
@@ -45,12 +45,12 @@ class MtsbProcessCard : CommonProcessor() {
         return fields.joinToString("\t")
     }
 
-    private fun String.cleanUpRow() = this
+    override fun cleanUpRow(row: String) = row
         .replace(" по Договору( N)? [0-9\\-/ ]{12,13}( от [0-9.]{10}г\\.)? согласно платежной ведомости  ?#[A-Z0-9]{12}#".toRegex(), "")
         .replace(" на счет [0-9]{20}, ПАО \"МТС-Банк\" на имя .+ за ".toRegex(), " за ")
         .replace(". НДС не облагается.", "")
         .replace("\\", "@")
-        .replace("( )?@(.)+@(.)+@[0-9]{6} RUSRUS@643@,".toRegex(), "")
+        .replace("( )?@(.)+@(.)+@[0-9]{6} (RUS|77 )RUS@643@,".toRegex(), "")
         .replace(">MOSCOW RU@643@,", "")
         .replace(" Транзакции по картам МПС, включая комиссии (ЗК)", "")
         .replace("Комиссия за услугу \"Уведомления от банка\", подключенную к Карте МПС", "$PFX_COMMISSION, Уведомления от банка")

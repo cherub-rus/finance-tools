@@ -16,7 +16,7 @@ abstract class CommonProcessor{
 
         val builder = StringBuilder()
         splitToTransactionRows(html).forEach {
-            builder.appendLine(transformToCsv(it))
+            builder.appendLine(transformToCsv(cleanUpRow(it)))
         }
         return cleanUpTransactions(builder.toString())
     }
@@ -36,6 +36,8 @@ abstract class CommonProcessor{
     open fun cleanUpHtml(text: String) =
         cleanUpHtmlSpecific(text)
         .replace("\u00a0", "") // removing No-Break Space in sums // TODO check to remove
+
+    open fun cleanUpRow(row: String) = row
 
     private fun splitToTransactionRows(text: String): List<String> = text
         .lines().filter { rowFilter(it) }
