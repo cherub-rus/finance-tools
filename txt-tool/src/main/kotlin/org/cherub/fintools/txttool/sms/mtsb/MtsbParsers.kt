@@ -10,9 +10,9 @@ val expenses = listOf("Oplata", "Perevod s karty")
 
 fun getAmount(value: String, operation: String) =
     if (useIncomes) {
-        if (incomes.any { operation.startsWith(it) }) "" else "-"
+        if (incomes.any { operation.lowercase().startsWith(it.lowercase()) }) "" else "-"
     } else {
-        if (expenses.any { operation.startsWith(it) }) "-" else ""
+        if (expenses.any { operation.lowercase().startsWith(it.lowercase()) }) "-" else ""
     } + value.replace(" ", "")
 
 val mtsbParsers = Pair("MTS-Bank", listOf(MtsbParser1(), MtsbParser2(), MtsbParser3()))
