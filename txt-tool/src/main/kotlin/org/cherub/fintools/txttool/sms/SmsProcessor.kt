@@ -48,7 +48,7 @@ class SmsProcessor {
     private fun MutableMap<String, MutableList<Sms>>.addSms(sms: Sms) {
         val accKey = "${sms.bank}#${sms.trans.account}"
         if (!this.contains(accKey)) {
-            this[accKey] = mutableListOf<Sms>()
+            this[accKey] = mutableListOf()
         }
         this[accKey]!!.add(sms)
     }
