@@ -39,7 +39,7 @@ fun main(args: Array<String>) {
 
         File(targetName).writeText(result)
     } catch (e: Exception) {
-        println(e) //todo log
+        e.printStackTrace() //todo log
     }
 }
 

@@ -27,7 +27,7 @@ fun main(args: Array<String>) {
         result.skipped?.also { File("$sourceName.unparsed").writeText(it.joinToString("\n"))}
         File(targetName).writeText(result.csv)
     } catch (e: Exception) {
-        println(e) //todo log
+        e.printStackTrace() //todo log
     }
 }
 

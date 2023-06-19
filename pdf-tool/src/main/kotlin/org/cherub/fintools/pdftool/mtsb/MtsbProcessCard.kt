@@ -18,6 +18,7 @@ class MtsbProcessCard : CommonProcessor() {
     override fun cleanUpHtmlSpecific(text: String) = text
         .replace("(</p><p>)($BIN\\*\\*)".toRegex(), " ###$2")
         .replace("( )($BIN\\*\\*)".toRegex(), " ###$2")
+        .replace("([0-9]{1,3} [0-9.]{10} [0-9:]{8})</p><p>".toRegex(), "$1 ")
         .replace("(</p>)".toRegex(), "$1\n")
 
     override fun rowFilter(row: String) =
@@ -33,13 +34,18 @@ class MtsbProcessCard : CommonProcessor() {
     private fun String.fixCsv(): String {
         val fields = this.split("\t").toMutableList()
 
-        fields[9] = fields[9].replace('.', ',') // Changed currency separator
-        val sign = if (fields[6].replace("~", "").startsWith("Зачисление")) "" else "-"
-        fields[2] = sign + fields[9] // Added minus sign to expense amount
+        try {
+            fields[9] = fields[9].replace('.', ',') // Changed currency separator
+            val sign = if (fields[6].replace("~", "").startsWith("Зачисление")) "" else "-"
+            fields[2] = sign + fields[9] // Added minus sign to expense amount
 
-        if (fields[8].isNotEmpty()) { // If transaction time exists, replace log time with it
-            fields[7] = fields[8]
-            fields[8] = ""
+            if (fields[8].isNotEmpty()) { // If transaction time exists, replace log time with it
+                fields[7] = fields[8]
+                fields[8] = ""
+            }
+        } catch (e: Exception) {
+            System.err.println(this)
+            e.printStackTrace() //todo log
         }
 
         return fields.joinToString("\t")
@@ -75,8 +81,15 @@ class MtsbProcessCard : CommonProcessor() {
         .split("\n")
         .filter { it.isNotEmpty() }
         .sortedBy {
-            val fields = it.split("\t")
-            LocalDateTime.parse("${fields[0]} ${fields[7]}", DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss"))
+            try {
+                val fields = it.split("\t")
+                LocalDateTime.parse("${fields[0]} ${fields[7]}", DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss"))
+            } catch (e: Exception) {
+                System.err.println(e) //todo log
+                System.err.println(it)
+                //e.printStackTrace()
+                LocalDateTime.MIN
+            }
         }
         .joinToString(separator = "\n", postfix = "\n")
 }
