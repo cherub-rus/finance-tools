@@ -48,11 +48,12 @@ Private Sub FillPayeeAndCategory(fillData As Variant, rowRange As Range)
     Dim trMessage As String, iNum As Integer, fdMask As String
 
     trMessage = rowRange.Cells(1, 2).value
+    trBigMessage = rowRange.Cells(1, 13).value
 
     For iNum = 1 To UBound(fillData, 1)
         fdMask = fillData(iNum, 1)
 
-        If LCase(trMessage) Like LCase(fdMask) Then
+        If (LCase(trMessage) Like LCase(fdMask)) Or (LCase(trBigMessage) Like LCase(fdMask)) Then
             With rowRange
                 .Cells(1, 4).value = fillData(iNum, 2)
                 .Cells(1, 5).value = fillData(iNum, 3)
