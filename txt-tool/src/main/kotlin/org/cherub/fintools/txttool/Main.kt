@@ -1,5 +1,6 @@
 package org.cherub.fintools.txttool
 
+import org.cherub.fintools.txttool.push.sber.SberPushProcessor
 import org.cherub.fintools.txttool.sms.ProcessResult
 import org.cherub.fintools.txttool.sms.SmsProcessor
 import java.io.File
@@ -13,13 +14,12 @@ fun main(args: Array<String>) {
         println("File name is required argument!!!")
     }
     try {
-        val fileText = getContent(sourceName).removeNonBreakingSpace() // TODO  .normalizeNewLines()
+        val fileText = getContent(sourceName).replaceNonBreakingSpace().normalizeNewLines()
 
         val firstLine = fileText.lines()[0]
         val result =
             if (firstLine.matches("\\[([0-9.]{10}) в ([0-9:]){5}\\]".toRegex())) {
-                // TODO Sber Push
-                ProcessResult("Sber Push")
+                SberPushProcessor().process(fileText, sourceName)
             } else if (firstLine.matches(SmsProcessor.checkFormatRegex)) {
                 SmsProcessor().process(fileText, sourceName)
             } else ProcessResult("Невозможно определить тип выписки!")
@@ -35,7 +35,7 @@ private fun getContent(sourceFileName: String): String {
     return File(sourceFileName).readText()
 }
 
-private fun String.removeNonBreakingSpace() = this
+private fun String.replaceNonBreakingSpace() = this
     .replace('\u00A0', '\u0020')
 
 private fun String.normalizeNewLines() = this
