@@ -1,12 +1,11 @@
 package org.cherub.fintools.txttool.sms
 
+import org.cherub.fintools.txttool.formula_c11
+import org.cherub.fintools.txttool.formula_c12
+import org.cherub.fintools.txttool.makeAccountHeader
 import org.cherub.fintools.txttool.sms.mtsb.*
-import java.io.File
 import java.time.LocalDate
 import java.time.LocalTime
-
-const val formula_c11 = "=ОКРУГЛ(R[-1]C+RC[-8];2)"
-const val formula_c12 = "=ОКРУГЛ(R[-1]C[-1]+RC[-9];2)"
 
 private const val SMS_REGEX_STRING = "([0-9-]{10})\t([0-9:]{8})\tin\t(.+)\t(.+)\t(.+)"
 
@@ -46,11 +45,11 @@ class SmsProcessor {
     }
 
     private fun MutableMap<String, MutableList<Sms>>.addSms(sms: Sms) {
-        val accKey = "${sms.bank}#${sms.trans.account}"
-        if (!this.contains(accKey)) {
-            this[accKey] = mutableListOf()
+        val key = "${sms.bank}#${sms.trans.account}"
+        if (!this.contains(key)) {
+            this[key] = mutableListOf()
         }
-        this[accKey]!!.add(sms)
+        this[key]!!.add(sms)
     }
 
     private fun parseContent(bank: String, content: String): Transaction? {
@@ -62,13 +61,5 @@ class SmsProcessor {
 
     private fun convertToCsv(sms: Sms): String =
         "${sms.date}\t${sms.trans.message}\t${sms.trans.amount}\t\t\t\t${sms.trans.operation}\t${sms.time}\t\t\t${sms.trans.balance ?: formula_c11}\t$formula_c12"
-
-    private fun makeAccountHeader(account: String, sourceName: String) =
-        StringBuilder().also {
-            it.appendLine("Account\t$account\tBank\t##TODO##\t\t\t\t\t\t\t\t") // TODO account config, remove tabs
-            it.appendLine("")
-            it.appendLine("#\t${File(sourceName).name}")
-        }.toString()
-
 
 }
