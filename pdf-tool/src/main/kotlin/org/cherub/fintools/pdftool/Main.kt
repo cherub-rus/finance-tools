@@ -22,18 +22,18 @@ fun main(args: Array<String>) {
         println("File name is required argument!!!")
     }
     try {
-        val fileText = StringEscapeUtils.unescapeHtml4(getHtmlContent(sourceName))
+        val fileText = StringEscapeUtils.unescapeHtml4(getHtmlContent(sourceName)).replaceNonBreakingSpace()
         if (WRITE_HTML) File("$sourceName.1.html").writeText(fileText)
 
         val result =
             if (fileText.contains("Выписка по платёжному счёту")) {
-                SberProcessPayAcc().process(fileText.removeNonBreakingSpace(), sourceName)
+                SberProcessPayAcc().process(fileText, sourceName)
             } else if (fileText.contains("Выписка по счёту дебетовой карты")) {
-                SberProcessCard().process(fileText.removeNonBreakingSpace(), sourceName)
+                SberProcessCard().process(fileText, sourceName)
             } else if (fileText.contains("Выписка из лицевого счёта по вкладу")) {
-                SberProcessDeposit().process(fileText.removeNonBreakingSpace(), sourceName)
+                SberProcessDeposit().process(fileText, sourceName)
             } else if (fileText.contains("www.mtsbank.ru")) {
-                MtsbProcessCard().process(fileText.removeNonBreakingSpace(), sourceName)
+                MtsbProcessCard().process(fileText, sourceName)
             } else "Невозможно определить тип выписки!"
 
 
@@ -60,5 +60,5 @@ private fun getHtmlContent(sourceFileName: String): String {
     }
 }
 
-private fun String.removeNonBreakingSpace() = this
+private fun String.replaceNonBreakingSpace() = this
     .replace('\u00A0', '\u0020')

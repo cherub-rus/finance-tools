@@ -35,7 +35,6 @@ abstract class CommonProcessor{
 
     open fun cleanUpHtml(text: String) =
         cleanUpHtmlSpecific(text)
-        .replace("\u00a0", "") // removing No-Break Space in sums // TODO check to remove
 
     open fun cleanUpRow(row: String) = row
 
