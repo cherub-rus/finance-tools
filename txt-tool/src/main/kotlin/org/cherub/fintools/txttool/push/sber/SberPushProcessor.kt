@@ -1,7 +1,8 @@
 package org.cherub.fintools.txttool.push.sber
 
+import org.cherub.fintools.config.ConfigData
+import org.cherub.fintools.config.ReplaceRule
 import org.cherub.fintools.log.log
-import org.cherub.fintools.txttool.formula_c11
 import org.cherub.fintools.txttool.formula_c12
 import org.cherub.fintools.txttool.makeAccountHeader
 import org.cherub.fintools.txttool.sms.*
@@ -13,11 +14,11 @@ private const val PUSH_REGEX_STRING = "\\[([0-9.]{10}) в ([0-9:]{5})\\]\t(.+)\t
 
 class SberPushProcessor {
 
-    fun process(fileText: String, sourceName: String): ProcessResult {
+    fun process(fileText: String, sourceName: String, config: ConfigData): ProcessResult {
         val accountList = mutableMapOf<String, MutableList<Push>>()
         val notSmsList = mutableListOf<String>()
 
-        val pushPerLineText = fileText.replace("\n", "\t").replace("\t\t", "\n")
+        val pushPerLineText = fileText.cleanUp(config.replaceBeforeParse).replace("\n", "\t").replace("\t\t", "\n")
 
         for (line in pushPerLineText.lines().reversed()) {
             parsePush(line)?.also { accountList.addPush(it) } ?: notSmsList.add(line)
@@ -25,12 +26,18 @@ class SberPushProcessor {
 
         val builder = StringBuilder()
         accountList.forEach { account ->
-            builder.append(makeAccountHeader(account.key, "##TODO##", sourceName))
+            builder.append(makeAccountHeader(account.key, config.accounts, sourceName))
             account.value.forEach {
                 builder.appendLine(convertToCsv(it))
             }
         }
         return ProcessResult(builder.toString(), notSmsList)
+    }
+
+    private fun String.cleanUp(rules: List<ReplaceRule>): String {
+        var str = this
+        rules.forEach { str = str.replace(it.s, it.r) }
+        return str
     }
 
     private fun parsePush(source: String): Push? {
@@ -66,7 +73,7 @@ class SberPushProcessor {
     private fun convertToCsv(push: Push): String =
         "${push.date}\t${push.message}\t${push.amount}\t\t\t\t${push.operation}\t${push.time}\t\t\t${push.balance}\t$formula_c12"
 
-    private fun findOperation(message: String) = message.substringBefore(" ")
+    private fun findOperation(message: String) = message.substringBefore(" ") // TODO find operation by list
 
     private fun String.convertSign() = if (this.startsWith("+")) this.substringAfter("+") else "-$this"
 

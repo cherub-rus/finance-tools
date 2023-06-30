@@ -1,7 +1,9 @@
 package org.cherub.fintools.txttool.sms
 
+import org.cherub.fintools.config.ConfigData
 import org.cherub.fintools.txttool.formula_c11
 import org.cherub.fintools.txttool.formula_c12
+import org.cherub.fintools.txttool.KEY_SEPARATOR
 import org.cherub.fintools.txttool.makeAccountHeader
 import org.cherub.fintools.txttool.sms.mtsb.*
 import java.time.LocalDate
@@ -17,7 +19,7 @@ class SmsProcessor {
 
     private val parsers = mapOf(mtsbParsers)
 
-    fun process(fileText: String, sourceName: String): ProcessResult {
+    fun process(fileText: String, sourceName: String, config: ConfigData): ProcessResult {
         val accountList = mutableMapOf<String, MutableList<Sms>>()
         val notSmsList = mutableListOf<String>()
 
@@ -27,7 +29,7 @@ class SmsProcessor {
 
         val builder = StringBuilder()
         accountList.forEach { account ->
-            builder.append(makeAccountHeader(account.key, "##TODO##", sourceName))
+            builder.append(makeAccountHeader(account.key, config.accounts, sourceName))
             account.value.forEach {
                 builder.appendLine(convertToCsv(it))
             }
@@ -44,7 +46,7 @@ class SmsProcessor {
     }
 
     private fun MutableMap<String, MutableList<Sms>>.addSms(sms: Sms) {
-        val key = "${sms.bank}#${sms.trans.account}"
+        val key = "${sms.bank}$KEY_SEPARATOR${sms.trans.account}"
         if (!this.contains(key)) {
             this[key] = mutableListOf()
         }
