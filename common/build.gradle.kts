@@ -18,7 +18,7 @@ tasks.withType<KotlinCompile> {
 }
 
 application {
-    mainClass.set("org.cherub.fintools.config.MainKt")
+    mainClass.set("org.cherub.fintools.MainKt")
 }
 
 dependencies {

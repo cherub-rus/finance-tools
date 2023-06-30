@@ -1,8 +1,7 @@
-package org.cherub.fintools.config
+package org.cherub.fintools
 
+import org.cherub.fintools.config.*
 import org.cherub.fintools.log.log
-
-// TODO move to fintools, rename module to common
 
 fun main(args: Array<String>) {
 
