@@ -21,7 +21,7 @@ class SberPushProcessor {
         val pushPerLineText = fileText.cleanUp(config.replaceBeforeParse).replace("\n", "\t").replace("\t\t", "\n")
 
         for (line in pushPerLineText.lines().reversed()) {
-            parsePush(line)?.also { accountList.addPush(it) } ?: notSmsList.add(line)
+            parsePush(line, config.sberOperationType)?.also { accountList.addPush(it) } ?: notSmsList.add(line)
         }
 
         val builder = StringBuilder()
@@ -40,12 +40,12 @@ class SberPushProcessor {
         return str
     }
 
-    private fun parsePush(source: String): Push? {
+    private fun parsePush(source: String, operationTypes: List<String>): Push? {
         val regex = PUSH_REGEX_STRING.toRegex()
         val m = regex.matchEntire(source) ?: return null
 
         val push = try {
-            val operation = findOperation(m.gv(3))
+            val operation = findOperation(m.gv(3), operationTypes)
             Push(
                 LocalDate.parse(m.gv(1), DateTimeFormatter.ofPattern("dd.MM.yyyy")),
                 LocalTime.parse(m.gv(2)),
@@ -73,7 +73,10 @@ class SberPushProcessor {
     private fun convertToCsv(push: Push): String =
         "${push.date}\t${push.message}\t${push.amount}\t\t\t\t${push.operation}\t${push.time}\t\t\t${push.balance}\t$formula_c12"
 
-    private fun findOperation(message: String) = message.substringBefore(" ") // TODO find operation by list
+    private fun findOperation(message: String, operationTypes: List<String>) =
+        operationTypes.sortedByDescending { it.length }
+            .firstOrNull { message.lowercase().startsWith(it) }
+            .let { message.substring(0, it?.length ?: message.indexOf(' ')) }
 
     private fun String.convertSign() = if (this.startsWith("+")) this.substringAfter("+") else "-$this"
 
