@@ -22,5 +22,5 @@ application {
 }
 
 dependencies {
-    implementation(project(":config"))
+    implementation(project(":common"))
 }

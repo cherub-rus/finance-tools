@@ -1,2 +1,2 @@
 rootProject.name = "finance-tools"
-include("config", "pdf-tool", "txt-tool")
+include("common", "pdf-tool", "txt-tool")
