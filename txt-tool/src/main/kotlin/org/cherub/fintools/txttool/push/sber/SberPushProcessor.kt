@@ -46,7 +46,7 @@ class SberPushProcessor {
                 operation,
                 m.gv(3).substringAfter("$operation "),
                 m.gv(4).replace(" ", "").convertSign().appendDecimals(),
-                m.gv(7).replace(" ", "")
+                m.gv(7).replace(" ", "").appendDecimals()
             )
         } catch (e: Exception) {
             log(e, source)
@@ -64,7 +64,7 @@ class SberPushProcessor {
     }
 
     private fun convertToCsv(push: Push): String =
-        "${push.date}\t${push.message}\t${push.amount}\t\t\t\t${push.operation}\t${push.time}\t\t\t${push.balance ?: formula_c11}\t$formula_c12"
+        "${push.date}\t${push.message}\t${push.amount}\t\t\t\t${push.operation}\t${push.time}\t\t\t${push.balance}\t$formula_c12"
 
     private fun findOperation(message: String) = message.substringBefore(" ")
 
