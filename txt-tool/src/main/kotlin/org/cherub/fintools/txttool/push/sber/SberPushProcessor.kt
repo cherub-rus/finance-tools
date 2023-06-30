@@ -1,5 +1,6 @@
 package org.cherub.fintools.txttool.push.sber
 
+import org.cherub.fintools.log.log
 import org.cherub.fintools.txttool.formula_c11
 import org.cherub.fintools.txttool.formula_c12
 import org.cherub.fintools.txttool.makeAccountHeader
@@ -49,8 +50,7 @@ class SberPushProcessor {
                 m.gv(7).replace(" ", "")
             )
         } catch (e: Exception) {
-            System.err.println(source)
-            e.printStackTrace() //todo log
+            log(e, source)
             null
         }
         return push

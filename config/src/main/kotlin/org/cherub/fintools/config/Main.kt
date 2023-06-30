@@ -1,5 +1,9 @@
 package org.cherub.fintools.config
 
+import org.cherub.fintools.log.log
+
+// TODO move to fintools, rename module to common
+
 fun main(args: Array<String>) {
 
     if (args.isEmpty() || args[0].isEmpty() || args[0] == ".") {
@@ -15,7 +19,7 @@ fun main(args: Array<String>) {
         println(config.toString())
 
     } catch (e: Exception) {
-        e.printStackTrace() //todo log
+        log(e)
     }
 }
 
@@ -38,4 +42,3 @@ private fun generateExample(configName: String) {
     )
     configGenerated.save("$configName.generated")
 }
-

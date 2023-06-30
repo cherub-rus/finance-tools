@@ -1,5 +1,6 @@
 package org.cherub.fintools.pdftool.mtsb
 
+import org.cherub.fintools.log.log
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -44,8 +45,7 @@ class MtsbProcessCard : CommonProcessor() {
                 fields[8] = ""
             }
         } catch (e: Exception) {
-            System.err.println(this)
-            e.printStackTrace() //todo log
+            log(e, this)
         }
 
         return fields.joinToString("\t")
@@ -85,9 +85,7 @@ class MtsbProcessCard : CommonProcessor() {
                 val fields = it.split("\t")
                 LocalDateTime.parse("${fields[0]} ${fields[7]}", DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss"))
             } catch (e: Exception) {
-                System.err.println(e) //todo log
-                System.err.println(it)
-                //e.printStackTrace()
+                log(e, it)
                 LocalDateTime.MIN
             }
         }

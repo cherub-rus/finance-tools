@@ -1,5 +1,6 @@
 package org.cherub.fintools.txttool
 
+import org.cherub.fintools.log.log
 import org.cherub.fintools.txttool.push.sber.SberPushProcessor
 import org.cherub.fintools.txttool.sms.ProcessResult
 import org.cherub.fintools.txttool.sms.SmsProcessor
@@ -27,7 +28,7 @@ fun main(args: Array<String>) {
         result.skipped?.also { File("$sourceName.unparsed").writeText(it.joinToString("\n"))}
         File(targetName).writeText(result.csv)
     } catch (e: Exception) {
-        e.printStackTrace() //todo log
+        log(e)
     }
 }
 

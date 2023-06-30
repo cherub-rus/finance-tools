@@ -4,6 +4,7 @@ import org.apache.commons.text.StringEscapeUtils
 import org.apache.pdfbox.io.IOUtils
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.tools.PDFText2HTML
+import org.cherub.fintools.log.log
 import java.io.File
 import java.io.IOException
 import java.io.StringWriter
@@ -39,7 +40,7 @@ fun main(args: Array<String>) {
 
         File(targetName).writeText(result)
     } catch (e: Exception) {
-        e.printStackTrace() //todo log
+        log(e)
     }
 }
 
