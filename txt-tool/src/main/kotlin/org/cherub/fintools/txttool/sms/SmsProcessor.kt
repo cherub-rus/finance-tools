@@ -27,11 +27,10 @@ class SmsProcessor {
 
         val builder = StringBuilder()
         accountList.forEach { account ->
-            builder.append(makeAccountHeader(account.key, sourceName))
+            builder.append(makeAccountHeader(account.key, "##TODO##", sourceName))
             account.value.forEach {
                 builder.appendLine(convertToCsv(it))
             }
-            builder.appendLine()
         }
         return ProcessResult(builder.toString(), notSmsList)
     }
