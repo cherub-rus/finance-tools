@@ -6,7 +6,7 @@ plugins {
     application
 }
 
-group = "me.cherub"
+group = "org.cherub.fintools"
 version = "1.0-SNAPSHOT"
 
 repositories {
@@ -22,5 +22,5 @@ application {
 }
 
 dependencies {
-
+    implementation(project(":config"))
 }

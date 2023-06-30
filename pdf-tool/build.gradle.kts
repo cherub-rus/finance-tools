@@ -6,14 +6,14 @@ plugins {
     application
 }
 
-group = "me.cherub"
+group = "org.cherub.fintools"
 version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
 }
 
-tasks.withType<KotlinCompile>() {
+tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
 }
 

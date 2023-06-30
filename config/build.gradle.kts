@@ -6,19 +6,19 @@ plugins {
     application
 }
 
-group = "me.cherub"
+group = "org.cherub.fintools"
 version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
 }
 
-tasks.withType<KotlinCompile>() {
+tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
 }
 
 application {
-    mainClass.set("org.cherub.fintools.pdftool.MainKt")
+    mainClass.set("org.cherub.fintools.config.MainKt")
 }
 
 dependencies {
