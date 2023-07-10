@@ -1,11 +1,8 @@
 package org.cherub.fintools.csvtool
 
-
 private const val qif_cleaned = "*"
 
 class CsvProcessor {
-
-    private val ls = "\n"// System.lineSeparator() // TODO windows LS
 
     fun process(fileText: String): String {
         val accountList = mutableListOf<Account>()
@@ -15,6 +12,9 @@ class CsvProcessor {
                 line.startsWith("#") ||
                 line.replace("\t","").trim().isEmpty()
             ) continue
+
+            val trim1 = line.replace("\t", "").trim()
+            val tmp = trim1.isEmpty()
 
             val tokens = line.split('\t')
             if (tokens[0] == "Account") {
@@ -33,14 +33,15 @@ class CsvProcessor {
             accountList.last().transactions.add(parseCsvTransaction(tokens))
         }
 
-        val builder = StringBuilder()
-        accountList.forEach { account ->
-            builder.appendLine(makeAccountHeader(account))
-            account.transactions.forEach {
-                builder.appendLine(convertToQif(it))
+        return mutableListOf<String>().apply {
+            accountList.forEach { account ->
+                add(makeAccountHeader(account))
+                account.transactions.forEach {
+                    add(convertToQif(it))
+                }
             }
-        }
-        return builder.toString()
+            add("")
+        }.joinToString(System.lineSeparator())
     }
 
     private fun parseCsvTransaction(tokens: List<String>) =
@@ -53,10 +54,14 @@ class CsvProcessor {
             cleaned = tokens.size > 5 && tokens[5].trim() == qif_cleaned
         )
 
-    private fun makeAccountHeader(account: Account): String =
-        "!Account${ls}N${account.code}${ls}T${account.type}${ls}^${ls}!Type:${account.type}"
+    private fun makeAccountHeader(account: Account): String = mutableListOf<String>().apply {
+        add("!Account")
+        add("N${account.code}")
+        add("T${account.type}")
+        add("^")
+        add("!Type:${account.type}")
+    }.joinToString(System.lineSeparator())
 
-    //TODO format
     private fun convertToQif(tr: Transaction): String = mutableListOf<String>().apply {
         add("D${tr.date.replace('.', '/')}")
         if (tr.cleaned)
@@ -68,6 +73,6 @@ class CsvProcessor {
             add("P${tr.payee}")
         add("L${tr.category}")
         add("^")
-    }.joinToString(ls)
+    }.joinToString(System.lineSeparator())
 
 }
