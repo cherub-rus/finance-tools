@@ -31,4 +31,4 @@ private fun List<BankAccount>.findAccount(id: String): BankAccount? =
     }
 
 // TODO remove tabs. Tabs added only for temporary CSV validation
-private fun String.addTabs() = this + "\t".repeat(11 - this.count { it == '\t' })
+private fun String.addTabs() = this + "\t".repeat(12 - this.count { it == '\t' })

@@ -62,7 +62,8 @@ class SberPushProcessor {
     }
 
     private fun convertToCsv(push: Push): String =
-        "${push.date}\t${push.message}\t${push.amount}\t\t\t\t${push.operation}\t${push.time}\t\t\t${push.balance}\t$formula_c12"
+        "${push.date}\t${push.message}\t${push.amount}\t\t\t\t${push.operation}\t${push.time}\t\t\t${push.balance}\t$formula_c12\t${push.message}"
+//  TODO push.date.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
 
     private fun findOperation(message: String, operationTypes: List<String>) =
         operationTypes.sortedByDescending { it.length }
