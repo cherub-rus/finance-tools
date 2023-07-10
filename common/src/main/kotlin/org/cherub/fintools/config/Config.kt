@@ -11,8 +11,8 @@ data class ConfigData (
     val accounts: List<BankAccount>,
     @SerialName("sber-operation-type")
     val sberOperationType: List<String>,
-    @SerialName("replace-before-parse")
-    val replaceBeforeParse: List<ReplaceRule>,
+    @SerialName("replace-in-text")
+    val replaceInText: List<ReplaceRule>,
     @SerialName("replace-after-parse")
     val replaceAfterParse: List<ReplaceRule>,
     @SerialName("ignore-messages")

@@ -1,5 +1,6 @@
 package org.cherub.fintools.txttool
 
+import org.cherub.fintools.config.ReplaceRule
 import org.cherub.fintools.log.log
 import org.cherub.fintools.txttool.push.sber.SberPushProcessor
 import org.cherub.fintools.txttool.sms.SmsProcessor
@@ -17,7 +18,7 @@ fun main(args: Array<String>) {
         println("File name is required argument!!!")
     }
     try {
-        val fileText = getContent(sourceName).replaceNonBreakingSpace().normalizeNewLines()
+        val fileText = getContent(sourceName).cleanUpText(config.replaceInText)
 
         val firstLine = fileText.lines()[0]
         val result =
@@ -35,7 +36,7 @@ fun main(args: Array<String>) {
 }
 
 private fun getContent(sourceFileName: String): String =
-    File(sourceFileName).readText()
+    File(sourceFileName).readText().replaceNonBreakingSpace().normalizeNewLines()
 
 private fun String.replaceNonBreakingSpace() = this
     .replace('\u00A0', '\u0020')
@@ -43,4 +44,11 @@ private fun String.replaceNonBreakingSpace() = this
 private fun String.normalizeNewLines() = this
     .replace("\r\n", "\n")
     .replace("\r", "\n")
+
+private fun String.cleanUpText(rules: List<ReplaceRule>): String {
+    var str = this
+    rules.forEach { str = str.replace(it.s, it.r) }
+    return str
+}
+
 
