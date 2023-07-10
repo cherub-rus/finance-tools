@@ -7,11 +7,12 @@ import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
+@Suppress("RegExpRedundantEscape")
 private const val PUSH_REGEX_STRING = "\\[([0-9.]{10}) в ([0-9:]{5})\\]\t(.+)\t([0-9,+ ]+) ₽\t(.+) •• ([0-9]{4})\tБаланс: ([0-9, ]+) ₽"
 
 class SberPushProcessor {
 
-    @kotlin.Suppress("DuplicatedCode")
+    @Suppress("DuplicatedCode")
     fun process(fileText: String, sourceName: String, config: ConfigData): ProcessResult {
         val accountList = mutableMapOf<String, MutableList<Push>>()
         val notSmsList = mutableListOf<String>()
@@ -62,11 +63,25 @@ class SberPushProcessor {
         this[key]!!.add(push)
     }
 
+    @Suppress("ConstantConditionIf")
     private fun convertToCsv(push: Push): String =
         if (true) convertToCsvNewStyle(push) else convertToCsvOldStyle(push)
 
-    private fun convertToCsvNewStyle(push: Push) =
-        "${push.date}\t${push.message}\t${push.amount}\t\t\t\t${push.operation}\t${push.time}\t\t\t${push.balance}\t$formula_c12\t${push.message}"
+    private fun convertToCsvNewStyle(push: Push) = mutableListOf<String>().apply {
+        add(push.date.toString())
+        add(push.message)
+        add(push.amount)
+        add("")
+        add("")
+        add("")
+        add(push.operation)
+        add(push.time.toString())
+        add("")
+        add("")
+        add(push.balance)
+        add(formula_c12)
+        add(push.message)
+    }.joinToString("\t")
 
     private fun convertToCsvOldStyle(push: Push) = mutableListOf<String>().apply {
         add(push.date.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")))

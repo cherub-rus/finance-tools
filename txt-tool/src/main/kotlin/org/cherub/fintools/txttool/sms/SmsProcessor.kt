@@ -16,6 +16,7 @@ class SmsProcessor {
 
     private val parsers = mapOf(mtsbParsers)
 
+    @Suppress("DuplicatedCode")
     fun process(fileText: String, sourceName: String, config: ConfigData): ProcessResult {
         val accountList = mutableMapOf<String, MutableList<Sms>>()
         val notSmsList = mutableListOf<String>()
