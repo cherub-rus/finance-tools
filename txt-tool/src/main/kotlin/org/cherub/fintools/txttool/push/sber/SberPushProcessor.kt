@@ -40,13 +40,13 @@ class SberPushProcessor {
         val push = try {
             val operation = findOperation(m.gv(3), operationTypes)
             Push(
-                LocalDate.parse(m.gv(1), DateTimeFormatter.ofPattern("dd.MM.yyyy")),
-                LocalTime.parse(m.gv(2)),
-                m.gv(5) + m.gv(6),
-                operation,
-                m.gv(3).substringAfter("$operation "),
-                m.gv(4).replace(" ", "").convertSign().appendDecimals(),
-                m.gv(7).replace(" ", "").appendDecimals()
+                date = LocalDate.parse(m.gv(1), DateTimeFormatter.ofPattern("dd.MM.yyyy")),
+                time = LocalTime.parse(m.gv(2)),
+                account = m.gv(5) + m.gv(6),
+                operation = operation,
+                message = m.gv(3).substringAfter("$operation "),
+                amount = m.gv(4).replace(" ", "").convertSign().appendDecimals(),
+                balance = m.gv(7).replace(" ", "").appendDecimals()
             )
         } catch (e: Exception) {
             log(e, source)

@@ -40,7 +40,14 @@ class SmsProcessor {
         val m = regex.matchEntire(source) ?: return null
 
         val trans = parseContent(m.gv(3), m.gv(5)) ?: return null
-        return Sms(LocalDate.parse(m.gv(1)), LocalTime.parse(m.gv(2)), m.gv(3), m.gv(4), m.gv(5), trans)
+        return Sms(
+            date = LocalDate.parse(m.gv(1)),
+            time = LocalTime.parse(m.gv(2)),
+            bank = m.gv(3),
+            bank2 = m.gv(4),
+            content = m.gv(5),
+            trans = trans
+        )
     }
 
     private fun MutableMap<String, MutableList<Sms>>.addSms(sms: Sms) {
