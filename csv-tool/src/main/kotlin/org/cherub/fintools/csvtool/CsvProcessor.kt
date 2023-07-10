@@ -13,9 +13,6 @@ class CsvProcessor {
                 line.replace("\t","").trim().isEmpty()
             ) continue
 
-            val trim1 = line.replace("\t", "").trim()
-            val tmp = trim1.isEmpty()
-
             val tokens = line.split('\t')
             if (tokens[0] == "Account") {
                 accountList.add(
