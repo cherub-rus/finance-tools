@@ -11,6 +11,7 @@ private const val PUSH_REGEX_STRING = "\\[([0-9.]{10}) в ([0-9:]{5})\\]\t(.+)\t
 
 class SberPushProcessor {
 
+    @kotlin.Suppress("DuplicatedCode")
     fun process(fileText: String, sourceName: String, config: ConfigData): ProcessResult {
         val accountList = mutableMapOf<String, MutableList<Push>>()
         val notSmsList = mutableListOf<String>()
@@ -62,8 +63,26 @@ class SberPushProcessor {
     }
 
     private fun convertToCsv(push: Push): String =
+        if (true) convertToCsvNewStyle(push) else convertToCsvOldStyle(push)
+
+    private fun convertToCsvNewStyle(push: Push) =
         "${push.date}\t${push.message}\t${push.amount}\t\t\t\t${push.operation}\t${push.time}\t\t\t${push.balance}\t$formula_c12\t${push.message}"
-//  TODO push.date.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
+
+    private fun convertToCsvOldStyle(push: Push) = mutableListOf<String>().apply {
+        add(push.date.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")))
+        add(push.message)
+        add(push.amount)
+        add("")
+        add("")
+        add("")
+        add(push.operation.lowercase())
+        add(push.time.format(DateTimeFormatter.ofPattern("HH:mm:ss")))
+        add("")
+        add(push.amount.replace("-", "").replace(",00", ""))
+        add(push.balance)
+        add("=R[-1]C[-1]+RC[-9]")
+        add(push.message)
+    }.joinToString("\t")
 
     private fun findOperation(message: String, operationTypes: List<String>) =
         operationTypes.sortedByDescending { it.length }
