@@ -1,8 +1,7 @@
 package org.cherub.fintools.txttool.sms.mtsb
 
+import org.cherub.fintools.txttool.*
 import org.cherub.fintools.txttool.sms.IContentParser
-import org.cherub.fintools.txttool.sms.Transaction
-import org.cherub.fintools.txttool.sms.gv
 
 private const val MTS_BANK_SENDER = "MTS-Bank"
 

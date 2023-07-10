@@ -2,7 +2,6 @@ package org.cherub.fintools.txttool
 
 import org.cherub.fintools.log.log
 import org.cherub.fintools.txttool.push.sber.SberPushProcessor
-import org.cherub.fintools.txttool.sms.ProcessResult
 import org.cherub.fintools.txttool.sms.SmsProcessor
 import org.cherub.fintools.config.loadConfigFromFile
 import java.io.File

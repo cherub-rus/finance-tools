@@ -1,4 +1,4 @@
-package org.cherub.fintools.txttool.sms
+package org.cherub.fintools.txttool
 
 import java.time.LocalDate
 import java.time.LocalTime
