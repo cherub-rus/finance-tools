@@ -1,11 +1,13 @@
 package org.cherub.fintools.csvtool
 
 
+private const val qif_cleaned = "*"
+
 class CsvProcessor {
 
     private val ls = "\n"// System.lineSeparator() // TODO windows LS
 
-    fun process(fileText: String, qifStatus: String): String {
+    fun process(fileText: String): String {
         val accountList = mutableListOf<Account>()
 
         for (line in fileText.lines()) {
@@ -18,7 +20,10 @@ class CsvProcessor {
             if (tokens[0] == "Account") {
                 accountList.add(
                     Account(
-                        cardId = tokens[1], type = tokens[2], code = tokens[3], transactions = mutableListOf()
+                        cardId = tokens[1].trim(),
+                        type = tokens[2].trim(),
+                        code = tokens[3].trim(),
+                        transactions = mutableListOf()
                 ))
                 continue
             }
@@ -32,7 +37,7 @@ class CsvProcessor {
         accountList.forEach { account ->
             builder.appendLine(makeAccountHeader(account))
             account.transactions.forEach {
-                builder.appendLine(convertToQif(it, qifStatus))
+                builder.appendLine(convertToQif(it))
             }
         }
         return builder.toString()
@@ -40,22 +45,22 @@ class CsvProcessor {
 
     private fun parseCsvTransaction(tokens: List<String>) =
         Transaction(
-            date = tokens[0],
-            comment = tokens[1],
-            amount = tokens[2],
-            payee = tokens[3],
-            category = tokens[4],
-            cleaned = tokens.size > 5 && tokens[5] == "*"
+            date = tokens[0].trim(),
+            comment = tokens[1].trim(),
+            amount = tokens[2].trim(),
+            payee = tokens[3].trim(),
+            category = tokens[4].trim(),
+            cleaned = tokens.size > 5 && tokens[5].trim() == qif_cleaned
         )
 
     private fun makeAccountHeader(account: Account): String =
         "!Account${ls}N${account.code}${ls}T${account.type}${ls}^${ls}!Type:${account.type}"
 
     //TODO format
-    private fun convertToQif(tr: Transaction, qifStatus: String): String = mutableListOf<String>().apply {
+    private fun convertToQif(tr: Transaction): String = mutableListOf<String>().apply {
         add("D${tr.date.replace('.', '/')}")
-        if (qifStatus.isNotEmpty() || tr.cleaned)
-            add("C${qifStatus}${if (tr.cleaned) "*" else ""}")
+        if (tr.cleaned)
+            add("C${qif_cleaned}")
         if (tr.comment.isNotEmpty())
             add("M${tr.comment}")
         add("T${tr.amount}")
