@@ -12,6 +12,7 @@ fun main(args: Array<String>) {
     val configName = args[0]
 
     try {
+        @Suppress("ConstantConditionIf")
         if (false) generateExample(configName)
 
         val config = configName.loadConfigFromFile()
@@ -22,6 +23,7 @@ fun main(args: Array<String>) {
     }
 }
 
+@Suppress("SpellCheckingInspection")
 private fun generateExample(configName: String) {
     val configGenerated = ConfigData(
         listOf(

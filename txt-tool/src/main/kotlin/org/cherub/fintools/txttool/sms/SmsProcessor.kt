@@ -58,6 +58,7 @@ class SmsProcessor {
         this[key]!!.add(sms)
     }
 
+    @Suppress("SameReturnValue")
     private fun parseContent(bank: String, content: String): Transaction? {
         parsers[bank]?.forEach { p ->
             p.parse(content)?.also { return it }

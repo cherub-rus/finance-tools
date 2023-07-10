@@ -21,6 +21,7 @@ fun main(args: Array<String>) {
         val fileText = getContent(sourceName).cleanUpText(config.replaceInText)
 
         val firstLine = fileText.lines()[0]
+        @Suppress("RegExpRedundantEscape")
         val result =
             if (firstLine.matches("\\[([0-9.]{10}) в ([0-9:]){5}\\]".toRegex())) {
                 SberPushProcessor().process(fileText, sourceName, config)
