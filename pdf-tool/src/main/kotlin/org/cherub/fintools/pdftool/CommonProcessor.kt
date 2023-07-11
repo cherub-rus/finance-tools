@@ -7,10 +7,7 @@ const val formula_c12 = "=ОКРУГЛ(R[-1]C[-1]+RC[-9];2)"
 
 abstract class CommonProcessor{
 
-    fun process(
-        fileText: String,
-        sourceName: String
-    ): String {
+    fun process(fileText: String, sourceName: String): String {
         val html = cleanUpHtml(removeNewLines(fileText))
         if (WRITE_HTML) File("$sourceName.2.html").writeText(html)
 

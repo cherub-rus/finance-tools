@@ -4,6 +4,7 @@ import org.apache.commons.text.StringEscapeUtils
 import org.apache.pdfbox.io.IOUtils
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.tools.PDFText2HTML
+import org.cherub.fintools.config.loadConfigFromFile
 import org.cherub.fintools.log.log
 import java.io.File
 import java.io.IOException
@@ -16,12 +17,15 @@ const val WRITE_HTML = true
 
 fun main(args: Array<String>) {
 
+    if (args.size < 2) {
+        println("File and config name are required arguments!!!")
+    }
+
     val sourceName = args[0]
     val targetName = "$sourceName.csv"
+    val configName = args[1]
+    val config = configName.loadConfigFromFile()
 
-    if (sourceName.isEmpty() || sourceName == ".") {
-        println("File name is required argument!!!")
-    }
     try {
         val fileText = StringEscapeUtils.unescapeHtml4(getHtmlContent(sourceName)).replaceNonBreakingSpace()
         if (WRITE_HTML) File("$sourceName.1.html").writeText(fileText)

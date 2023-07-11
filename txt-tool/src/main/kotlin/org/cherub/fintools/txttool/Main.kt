@@ -9,14 +9,14 @@ import java.io.File
 
 fun main(args: Array<String>) {
 
+    if (args.size < 2) {
+        println("File and config name are required arguments!!!")
+    }
     val sourceName = args[0]
     val targetName = "$sourceName.csv"
     val configName = args[1]
     val config = configName.loadConfigFromFile()
 
-    if (sourceName.isEmpty() || sourceName == ".") {
-        println("File name is required argument!!!")
-    }
     try {
         val fileText = getContent(sourceName).cleanUpText(config.replaceInSource)
 
