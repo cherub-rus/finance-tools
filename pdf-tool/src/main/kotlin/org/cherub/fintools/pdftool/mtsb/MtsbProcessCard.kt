@@ -52,13 +52,8 @@ class MtsbProcessCard(config: ConfigData) : CommonProcessor(config) {
     override fun cleanUpRow(row: String) = row
         .cleanUpByRules(config.replaceInRow)
 
-    override fun cleanUpResult(content: String) =
-        orderCsvByDateAndTime(content)
-        .replace(" +".toRegex(), " ")
-        .replace("\"", "")
-        .cleanUpByRules(config.replaceInResult)
-
-    private fun orderCsvByDateAndTime(text: String) = text
+    // reorder by date and time
+    override fun reorderCsvRows(text: String) = text
         .split("\n")
         .filter { it.isNotEmpty() }
         .sortedBy {

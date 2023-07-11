@@ -1,5 +1,6 @@
 package org.cherub.fintools.pdftool
 
+import org.cherub.fintools.cleanUpByRules
 import org.cherub.fintools.config.ConfigData
 import java.io.File
 
@@ -40,5 +41,11 @@ abstract class CommonProcessor(val config: ConfigData) {
         .lines().filter { rowFilter(it) }
         .reversed()
 
-    protected abstract fun cleanUpResult(content: String): String
+    private fun cleanUpResult(content: String) =
+        reorderCsvRows(content)
+        .replace(" +".toRegex(), " ")
+        .replace("\"", "")
+        .cleanUpByRules(config.replaceInResult)
+
+    open fun reorderCsvRows(text: String) = text
 }
