@@ -50,12 +50,6 @@ class MtsbProcessCard(config: ConfigData) : CommonProcessor(config) {
     }
 
     override fun cleanUpRow(row: String) = row
-        .replace(" по Договору( N)? [0-9\\-/ ]{12,13}( от [0-9.]{10}г\\.)? согласно платежной ведомости  ?#[A-Z0-9]{12}#".toRegex(), "")
-        .replace(" на счет [0-9]{20}, ПАО \"МТС-Банк\" на имя .+ за ".toRegex(), " за ")
-        .replace(". НДС не облагается.", "")
-        .replace("\\", "@")
-        .replace("( )?@(.)+@(.)+@[0-9]{6} (RUS|[0-9]{2} |[0-9]{2}F)RUS@643@,".toRegex(), "")
-        .replace(">(MOSCOW)? RU@643@,".toRegex(), "")
         .cleanUpByRules(config.replaceInRow)
 
     override fun cleanUpResult(content: String) =

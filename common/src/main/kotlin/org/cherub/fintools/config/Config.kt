@@ -16,17 +16,14 @@ data class ConfigData (
     @SerialName("replace-in-row")
     val replaceInRow: List<ReplaceRule>,
     @SerialName("replace-in-result")
-    val replaceInResult: List<ReplaceRule>,
-    @SerialName("ignore-messages")
-    val ignoreMessages: List<String>
+    val replaceInResult: List<ReplaceRule>
 )
 
 @Serializable
 data class ReplaceRule (
     val s: String,
     val r: String,
-    val sRx: Boolean = false,
-    val rRx: Boolean = false
+    val sRx: Boolean = false
 )
 
 @Serializable
