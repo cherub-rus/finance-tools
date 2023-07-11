@@ -8,7 +8,7 @@ import java.time.LocalTime
 
 private const val SMS_REGEX_STRING = "([0-9-]{10})\t([0-9:]{8})\tin\t(.+)\t(.+)\t(.+)"
 
-class SmsProcessor {
+class SmsProcessor(private val config: ConfigData) {
 
     companion object {
         val checkFormatRegex = SMS_REGEX_STRING.toRegex()
@@ -17,7 +17,7 @@ class SmsProcessor {
     private val parsers = mapOf(mtsbParsers)
 
     @Suppress("DuplicatedCode")
-    fun process(fileText: String, sourceName: String, config: ConfigData): ProcessResult {
+    fun process(fileText: String, sourceName: String): ProcessResult {
         val accountList = mutableMapOf<String, MutableList<Sms>>()
         val notSmsList = mutableListOf<String>()
 

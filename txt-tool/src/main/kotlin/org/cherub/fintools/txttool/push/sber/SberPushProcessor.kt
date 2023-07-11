@@ -10,10 +10,10 @@ import java.time.format.DateTimeFormatter
 @Suppress("RegExpRedundantEscape")
 private const val PUSH_REGEX_STRING = "\\[([0-9.]{10}) в ([0-9:]{5})\\]\t(.+)\t([0-9,+ ]+) ₽\t(.+) •• ([0-9]{4})\tБаланс: ([0-9, ]+) ₽"
 
-class SberPushProcessor {
+class SberPushProcessor (private val config: ConfigData) {
 
     @Suppress("DuplicatedCode")
-    fun process(fileText: String, sourceName: String, config: ConfigData): ProcessResult {
+    fun process(fileText: String, sourceName: String): ProcessResult {
         val accountList = mutableMapOf<String, MutableList<Push>>()
         val notSmsList = mutableListOf<String>()
 

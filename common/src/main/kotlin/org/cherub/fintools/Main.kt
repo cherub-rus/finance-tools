@@ -39,6 +39,10 @@ private fun generateExample(configName: String) {
             ReplaceRule("xstr1", "xstr11"),
             ReplaceRule("xstr2", "xstr21"),
         ),
+        listOf(
+            ReplaceRule("zstr1", "zstr11"),
+            ReplaceRule("zstr2", "zstr21"),
+        ),
         listOf("istr1", "istr2")
     )
     configGenerated.save("$configName.generated")

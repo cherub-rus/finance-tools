@@ -32,13 +32,13 @@ fun main(args: Array<String>) {
 
         val result =
             if (fileText.contains("Выписка по платёжному счёту")) {
-                SberProcessPayAcc().process(fileText, sourceName)
+                SberProcessPayAcc(config).process(fileText, sourceName)
             } else if (fileText.contains("Выписка по счёту дебетовой карты")) {
-                SberProcessCard().process(fileText, sourceName)
+                SberProcessCard(config).process(fileText, sourceName)
             } else if (fileText.contains("Выписка из лицевого счёта по вкладу")) {
-                SberProcessDeposit().process(fileText, sourceName)
+                SberProcessDeposit(config).process(fileText, sourceName)
             } else if (fileText.contains("www.mtsbank.ru")) {
-                MtsbProcessCard().process(fileText, sourceName)
+                MtsbProcessCard(config).process(fileText, sourceName)
             } else "Невозможно определить тип выписки!"
 
 

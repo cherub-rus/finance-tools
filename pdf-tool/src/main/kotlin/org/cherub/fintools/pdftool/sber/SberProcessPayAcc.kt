@@ -1,9 +1,10 @@
 package org.cherub.fintools.pdftool.sber
 
+import org.cherub.fintools.config.ConfigData
 import org.cherub.fintools.pdftool.formula_c11
 import org.cherub.fintools.pdftool.formula_c12
 
-class SberProcessPayAcc : SberProcessor() {
+class SberProcessPayAcc(config: ConfigData) : SberProcessor(config) {
 
     override fun cleanUpHtmlSpecific(text: String) = text
         .replace("(</b></p>)".toRegex(), "$1\n")

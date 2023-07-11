@@ -1,5 +1,7 @@
 package org.cherub.fintools.pdftool.mtsb
 
+import org.cherub.fintools.cleanUpByRules
+import org.cherub.fintools.config.ConfigData
 import org.cherub.fintools.log.log
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -10,11 +12,7 @@ import org.cherub.fintools.pdftool.formula_c12
 
 private const val BIN = 220028 // Bank Identification Number for PAYMENT SYSTEM: NSPK MIR; BANK: PJSC MTS BANK
 
-private const val PFX_INCOME = "~Зачисление"
-private const val PFX_COMMISSION = "~Комиссия"
-private const val PFX_EXPENSE = "~Списание"
-
-class MtsbProcessCard : CommonProcessor() {
+class MtsbProcessCard(config: ConfigData) : CommonProcessor(config) {
 
     override fun cleanUpHtmlSpecific(text: String) = text
         .replace("(</p><p>)($BIN\\*\\*)".toRegex(), " ###$2")
@@ -58,24 +56,13 @@ class MtsbProcessCard : CommonProcessor() {
         .replace("\\", "@")
         .replace("( )?@(.)+@(.)+@[0-9]{6} (RUS|[0-9]{2} |[0-9]{2}F)RUS@643@,".toRegex(), "")
         .replace(">(MOSCOW)? RU@643@,".toRegex(), "")
-        .replace(" Транзакции по картам МПС, включая комиссии (ЗК)", "")
-        .replace("Комиссия за услугу \"Уведомления от банка\", подключенную к Карте МПС", "$PFX_COMMISSION, Уведомления от банка")
-        .replace("Комиссия за выпуск карты", "$PFX_COMMISSION, Выпуск карты")
-        .replace("Для зачисления зарплаты за первую половину месяца", "$PFX_INCOME ЗП, Аванс")
-        .replace("Перечисление заработной платы за первую половину месяца работникам на пластиковые карты", "$PFX_INCOME ЗП, Аванс")
-        .replace("Для зачисления заработной платы", "$PFX_INCOME ЗП, Зарплата")
-        .replace("Перечисление работникам заработной платы на пластиковые карты", "$PFX_INCOME ЗП, Зарплата")
-        .replace("Для зачисления отпуска", "$PFX_INCOME ЗП, Отпускные")
-        .replace("Перечисление работникам отпуска на пластиковые карты", "$PFX_INCOME ЗП, Отпускные")
-        .replace("Перевод между счетами", "$PFX_INCOME, Перевод между счетами")
-        .replace("Перевод с карты на счет", "$PFX_EXPENSE, Перевод с карты на счет")
-        .replace("Зачисление переводов СБП", "$PFX_INCOME, Перевод СБП")
+        .cleanUpByRules(config.replaceInRow)
 
     override fun cleanUpResult(content: String) =
         orderCsvByDateAndTime(content)
         .replace(" +".toRegex(), " ")
         .replace("\"", "")
-        .replace("SUPERMARKET SPAR", "SPAR")
+        .cleanUpByRules(config.replaceInResult)
 
     private fun orderCsvByDateAndTime(text: String) = text
         .split("\n")

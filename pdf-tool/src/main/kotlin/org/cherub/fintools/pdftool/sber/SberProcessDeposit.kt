@@ -1,8 +1,9 @@
 package org.cherub.fintools.pdftool.sber
 
+import org.cherub.fintools.config.ConfigData
 import org.cherub.fintools.pdftool.formula_c12
 
-class SberProcessDeposit : SberProcessor() {
+class SberProcessDeposit(config: ConfigData) : SberProcessor(config) {
 
     override fun cleanUpHtmlSpecific(text: String) = text
         .replace("(</b></p>)(<p><b>)".toRegex(), "$1\n$2")

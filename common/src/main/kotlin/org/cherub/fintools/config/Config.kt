@@ -13,6 +13,8 @@ data class ConfigData (
     val sberOperationType: List<String>,
     @SerialName("replace-in-source")
     val replaceInSource: List<ReplaceRule>,
+    @SerialName("replace-in-row")
+    val replaceInRow: List<ReplaceRule>,
     @SerialName("replace-in-result")
     val replaceInResult: List<ReplaceRule>,
     @SerialName("ignore-messages")

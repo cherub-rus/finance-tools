@@ -1,8 +1,10 @@
 package org.cherub.fintools.pdftool.sber
 
+import org.cherub.fintools.cleanUpByRules
+import org.cherub.fintools.config.ConfigData
 import org.cherub.fintools.pdftool.CommonProcessor
 
-abstract class SberProcessor : CommonProcessor(){
+abstract class SberProcessor(config: ConfigData) : CommonProcessor(config) {
 
     override fun cleanUpHtml(text: String) = super.cleanUpHtml(text)
         .replace("(В валюте счёта</p>)".toRegex(), "$1\n")
@@ -10,13 +12,8 @@ abstract class SberProcessor : CommonProcessor(){
 
     @Suppress("SpellCheckingInspection")
     override fun cleanUpResult(content: String) = content
-        .replace("  *".toRegex(), " ")
+        .replace(" +".toRegex(), " ")
         .replace("\"", "")
-        .replace(" Tomsk RUS", "")
-        .replace(" TOMSK RUS", "")
-        .replace(" TOMCK RUS", "")
-        .replace(" Gorod Moskva RUS", "")
-        .replace("SUPERMARKET SPAR", "SPAR")
-        .replace("SBERBANK ONL@IN ", "Сбербанк Онлайн ")
+        .cleanUpByRules(config.replaceInResult)
 
 }
