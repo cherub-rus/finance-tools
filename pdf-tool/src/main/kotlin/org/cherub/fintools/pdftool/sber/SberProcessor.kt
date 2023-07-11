@@ -9,7 +9,7 @@ abstract class SberProcessor : CommonProcessor(){
         .replace("(<p>Сумма в валюте операции²</p>)".toRegex(), "$1\n")
 
     @Suppress("SpellCheckingInspection")
-    override fun cleanUpTransactions(content: String) = content
+    override fun cleanUpResult(content: String) = content
         .replace("  *".toRegex(), " ")
         .replace("\"", "")
         .replace(" Tomsk RUS", "")

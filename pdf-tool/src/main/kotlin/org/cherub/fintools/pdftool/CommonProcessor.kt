@@ -18,7 +18,7 @@ abstract class CommonProcessor{
         splitToTransactionRows(html).forEach {
             builder.appendLine(transformToCsv(cleanUpRow(it)))
         }
-        return cleanUpTransactions(builder.toString())
+        return cleanUpResult(builder.toString())
     }
 
     protected abstract fun rowFilter(row: String) : Boolean
@@ -42,5 +42,5 @@ abstract class CommonProcessor{
         .lines().filter { rowFilter(it) }
         .reversed()
 
-    protected abstract fun cleanUpTransactions(content: String): String
+    protected abstract fun cleanUpResult(content: String): String
 }

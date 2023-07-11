@@ -71,7 +71,7 @@ class MtsbProcessCard : CommonProcessor() {
         .replace("Перевод с карты на счет", "$PFX_EXPENSE, Перевод с карты на счет")
         .replace("Зачисление переводов СБП", "$PFX_INCOME, Перевод СБП")
 
-    override fun cleanUpTransactions(content: String) =
+    override fun cleanUpResult(content: String) =
         orderCsvByDateAndTime(content)
         .replace(" +".toRegex(), " ")
         .replace("\"", "")

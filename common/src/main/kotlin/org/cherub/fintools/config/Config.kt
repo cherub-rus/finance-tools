@@ -11,10 +11,10 @@ data class ConfigData (
     val accounts: List<BankAccount>,
     @SerialName("sber-operation-type")
     val sberOperationType: List<String>,
-    @SerialName("replace-in-text")
-    val replaceInText: List<ReplaceRule>,
-    @SerialName("replace-after-parse")
-    val replaceAfterParse: List<ReplaceRule>,
+    @SerialName("replace-in-source")
+    val replaceInSource: List<ReplaceRule>,
+    @SerialName("replace-in-result")
+    val replaceInResult: List<ReplaceRule>,
     @SerialName("ignore-messages")
     val ignoreMessages: List<String>
 )

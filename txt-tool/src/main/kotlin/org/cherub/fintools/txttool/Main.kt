@@ -18,7 +18,7 @@ fun main(args: Array<String>) {
         println("File name is required argument!!!")
     }
     try {
-        val fileText = getContent(sourceName).cleanUpText(config.replaceInText)
+        val fileText = getContent(sourceName).cleanUpText(config.replaceInSource)
 
         val firstLine = fileText.lines()[0]
         @Suppress("RegExpRedundantEscape")
