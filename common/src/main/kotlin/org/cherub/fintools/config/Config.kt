@@ -9,14 +9,20 @@ val configFormatter = Json { isLenient = true; prettyPrint = true }
 @Serializable
 data class ConfigData (
     val accounts: List<BankAccount>,
-    @SerialName("sber-operation-type")
-    val sberOperationType: List<String>,
     @SerialName("replace-in-source")
     val replaceInSource: List<ReplaceRule>,
     @SerialName("replace-in-row")
     val replaceInRow: List<ReplaceRule>,
     @SerialName("replace-in-result")
-    val replaceInResult: List<ReplaceRule>
+    val replaceInResult: List<ReplaceRule>,
+    @SerialName("sber-operation-type")
+    val sberOperationType: List<String>,
+    @SerialName("mtsb-use-incomes")
+    val mtsbUseIncomes:  Boolean,
+    @SerialName("mtsb-sms-incomes")
+    val mtsbSmsIncomes:  List<String>,
+    @SerialName("mtsb-sms-expenses")
+    val mtsbSmsExpenses:  List<String>
 )
 
 @Serializable

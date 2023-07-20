@@ -61,7 +61,7 @@ class SmsProcessor(private val config: ConfigData) {
     @Suppress("SameReturnValue")
     private fun parseContent(bank: String, content: String): Transaction? {
         parsers[bank]?.forEach { p ->
-            p.parse(content)?.also { return it }
+            p.parse(content, config)?.also { return it }
         }
         return null
     }
