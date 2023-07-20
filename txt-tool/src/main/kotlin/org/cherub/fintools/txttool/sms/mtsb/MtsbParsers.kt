@@ -15,11 +15,11 @@ class MtsbParser1 : IContentParser {
         val m = regex.matchEntire(content) ?: return null
 
         return Transaction(
-            account = m.gv("account"),
-            operation = m.gv("operation"),
-            message = m.gv("message"),
-            amount = getAmount(m.gv("amount"), m.gv("operation"), config),
-            balance = m.gv("balance").replace(" ", "")
+            m.gv("account"),
+            m.gv("operation"),
+            m.gv("message"),
+            getAmount(m.gv("amount"), m.gv("operation"), config),
+            m.gv("balance").replace(" ", "")
         )
     }
 }
@@ -32,11 +32,11 @@ class MtsbParser2 : IContentParser {
         val m = regex.matchEntire(content) ?: return null
 
          return Transaction(
-             account = m.gv("account"),
-             operation = m.gv("operation"),
-             message = "",
-             amount = getAmount(m.gv("amount"), m.gv("operation"), config),
-             balance = m.gv("balance").replace(" ", "")
+             m.gv("account"),
+             m.gv("operation"),
+             "",
+             getAmount(m.gv("amount"), m.gv("operation"), config),
+             m.gv("balance").replace(" ", "")
          )
     }
 }
@@ -49,13 +49,13 @@ class MtsbParser3 : IContentParser {
         val m = regex.matchEntire(content) ?: return null
 
         return Transaction(
-            account = m.gv("account"),
-            operation = m.gv("operation"),
-            message = m.gv("message"),
-            amount = getAmount(m.gv("amount"), m.gv("operation"), config),
-            balance = m.gv("balance").replace(" ", ""),
-            date = m.gv("date"),
-            time = m.gv("time")
+            m.gv("account"),
+            m.gv("operation"),
+            m.gv("message"),
+            getAmount(m.gv("amount"), m.gv("operation"), config),
+            m.gv("balance").replace(" ", ""),
+            m.gv("date"),
+            m.gv("time")
         )
     }
 }
