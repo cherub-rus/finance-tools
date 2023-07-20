@@ -5,17 +5,6 @@ import org.cherub.fintools.txttool.*
 import org.cherub.fintools.txttool.sms.IContentParser
 
 private const val MTS_BANK_SENDER = "MTS-Bank"
-
-fun getAmount(value: String, operation: String, config: ConfigData) =
-    if (config.mtsbUseIncomes) {
-        if (operation.startsWithAny(config.mtsbSmsIncomes)) "" else "-"
-    } else {
-        if (operation.startsWithAny(config.mtsbSmsExpenses)) "-" else ""
-    } + value.replace(" ", "")
-
-internal fun String.startsWithAny(list: List<String>) =
-    list.any { this.startsWith(it, ignoreCase = true) }
-
 val mtsbParsers = Pair(MTS_BANK_SENDER, listOf(MtsbParser1(), MtsbParser2(), MtsbParser3()))
 
 class MtsbParser1 : IContentParser {
@@ -70,3 +59,13 @@ class MtsbParser3 : IContentParser {
         )
     }
 }
+
+fun getAmount(value: String, operation: String, config: ConfigData) =
+    if (config.mtsbUseIncomes) {
+        if (operation.startsWithAny(config.mtsbSmsIncomes)) "" else "-"
+    } else {
+        if (operation.startsWithAny(config.mtsbSmsExpenses)) "-" else ""
+    } + value.replace(" ", "")
+
+internal fun String.startsWithAny(list: List<String>) =
+    list.any { this.startsWith(it, ignoreCase = true) }
