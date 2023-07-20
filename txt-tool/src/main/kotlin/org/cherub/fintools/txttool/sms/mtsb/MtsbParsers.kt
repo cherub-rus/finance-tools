@@ -11,15 +11,15 @@ class MtsbParser1 : IContentParser {
     override fun parse(content: String, config: ConfigData): Transaction? {
         @Suppress("SpellCheckingInspection")
         val regex =
-            "([^0-9]+) ([0-9][0-9 ]*,[0-9]{2}) RUB (.+) {2}Ostatok: ([0-9][0-9 ]*,[0-9]{2}) RUB; ([*][0-9]{4}) ".toRegex()
+            "(?<operation>[^0-9]+) (?<amount>[0-9][0-9 ]*,[0-9]{2}) RUB (?<message>.+) {2}Ostatok: (?<balance>[0-9][0-9 ]*,[0-9]{2}) RUB; (?<account>[*][0-9]{4}) ".toRegex()
         val m = regex.matchEntire(content) ?: return null
 
         return Transaction(
-            account = m.gv(5),
-            operation = m.gv(1),
-            message = m.gv(3),
-            amount = getAmount(m.gv(2), m.gv(1), config),
-            balance = m.gv(4).replace(" ", "")
+            account = m.gv("account"),
+            operation = m.gv("operation"),
+            message = m.gv("message"),
+            amount = getAmount(m.gv("amount"), m.gv("operation"), config),
+            balance = m.gv("balance").replace(" ", "")
         )
     }
 }
@@ -28,15 +28,15 @@ class MtsbParser2 : IContentParser {
      override fun parse(content: String, config: ConfigData): Transaction? {
         @Suppress("SpellCheckingInspection")
         val regex =
-            "([^0-9]+) ([*][0-9]{4}); ([0-9][0-9 ]*,[0-9]{2}) RUB; Ostatok: ([0-9][0-9 ]*,[0-9]{2}) RUB".toRegex()
+            "(?<operation>[^0-9]+) (?<account>[*][0-9]{4}); (?<amount>[0-9][0-9 ]*,[0-9]{2}) RUB; Ostatok: (?<balance>[0-9][0-9 ]*,[0-9]{2}) RUB".toRegex()
         val m = regex.matchEntire(content) ?: return null
 
          return Transaction(
-             account = m.gv(2),
-             operation = m.gv(1),
+             account = m.gv("account"),
+             operation = m.gv("operation"),
              message = "",
-             amount = getAmount(m.gv(3), m.gv(1), config),
-             balance = m.gv(4).replace(" ", "")
+             amount = getAmount(m.gv("amount"), m.gv("operation"), config),
+             balance = m.gv("balance").replace(" ", "")
          )
     }
 }
@@ -45,17 +45,17 @@ class MtsbParser3 : IContentParser {
     override fun parse(content: String, config: ConfigData): Transaction? {
         @Suppress("SpellCheckingInspection")
         val regex =
-            "([^0-9]+) ([*][0-9]{4}) ([0-9.]{5}) ([0-9:]{5}) (.+?);? ([0-9][0-9 ]*,[0-9]{2}) RUB Ostatok: ([0-9][0-9 ]*,[0-9]{2}) RUB;? ".toRegex()
+            "(?<operation>[^0-9]+) (?<account>[*][0-9]{4}) (?<date>[0-9.]{5}) (?<time>[0-9:]{5}) (?<message>.+?);? (?<amount>[0-9][0-9 ]*,[0-9]{2}) RUB Ostatok: (?<balance>[0-9][0-9 ]*,[0-9]{2}) RUB;? ".toRegex()
         val m = regex.matchEntire(content) ?: return null
 
         return Transaction(
-            account = m.gv(2),
-            operation = m.gv(1),
-            message = m.gv(5),
-            amount = getAmount(m.gv(6), m.gv(1), config),
-            balance = m.gv(7).replace(" ", ""),
-            date = m.gv(3),
-            time = m.gv(4)
+            account = m.gv("account"),
+            operation = m.gv("operation"),
+            message = m.gv("message"),
+            amount = getAmount(m.gv("amount"), m.gv("operation"), config),
+            balance = m.gv("balance").replace(" ", ""),
+            date = m.gv("date"),
+            time = m.gv("time")
         )
     }
 }
