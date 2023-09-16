@@ -63,6 +63,18 @@
     "оплата услуг",
     "оплата годового обслуживания карты"
   ],
+  "sber-use-incomes": false,
+  "sber-sms-incomes": [
+    "зачисление",
+    "возврат покупки",
+    "отмена покупки"
+  ],
+  "sber-sms-expenses": [
+    "списание",
+    "покупка",
+    "перевод",
+    "оплата"
+  ],
   "mtsb-use-incomes": false,
   "mtsb-sms-incomes": [
     "Perevod na kartu",
