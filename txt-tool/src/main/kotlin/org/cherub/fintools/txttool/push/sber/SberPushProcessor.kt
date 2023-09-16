@@ -106,6 +106,4 @@ class SberPushProcessor (private val config: ConfigData) {
 
     private fun String.convertSign() = if (this.startsWith("+")) this.substringAfter("+") else "-$this"
 
-    private fun String.appendDecimals() = if (this.contains(",")) this else "$this,00"
-
 }

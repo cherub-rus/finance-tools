@@ -60,12 +60,9 @@ class MtsbParser3 : IContentParser {
     }
 }
 
-fun getAmount(value: String, operation: String, config: ConfigData) =
+private fun getAmount(value: String, operation: String, config: ConfigData) =
     if (config.mtsbUseIncomes) {
         if (operation.startsWithAny(config.mtsbSmsIncomes)) "" else "-"
     } else {
         if (operation.startsWithAny(config.mtsbSmsExpenses)) "-" else ""
     } + value.replace(" ", "")
-
-internal fun String.startsWithAny(list: List<String>) =
-    list.any { this.startsWith(it, ignoreCase = true) }

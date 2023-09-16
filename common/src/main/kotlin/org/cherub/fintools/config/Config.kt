@@ -17,6 +17,12 @@ data class ConfigData (
     val replaceInResult: List<ReplaceRule>,
     @SerialName("sber-operation-type")
     val sberOperationType: List<String>,
+    @SerialName("sber-use-incomes")
+    val sberUseIncomes:  Boolean,
+    @SerialName("sber-sms-incomes")
+    val sberSmsIncomes:  List<String>,
+    @SerialName("sber-sms-expenses")
+    val sberSmsExpenses:  List<String>,
     @SerialName("mtsb-use-incomes")
     val mtsbUseIncomes:  Boolean,
     @SerialName("mtsb-sms-incomes")
