@@ -9,7 +9,7 @@ val mtsbParsers = Pair(
     listOf(
         MtsbParserMain(),
         MtsbParserAccountTransfer(),
-        MtsbParserCardTfansfer()
+        MtsbParserCardTransfer()
     )
 )
 
@@ -47,7 +47,7 @@ class MtsbParserAccountTransfer : IContentParser {
     }
 }
 
-class MtsbParserCardTfansfer : IContentParser {
+class MtsbParserCardTransfer : IContentParser {
     override fun parse(content: String, config: ConfigData): Transaction? {
         @Suppress("SpellCheckingInspection")
         val regex =
