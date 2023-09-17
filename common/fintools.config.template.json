@@ -92,11 +92,13 @@
   "mtsb-use-incomes": false,
   "mtsb-sms-incomes": [
     "Perevod na kartu",
-    "Prihod po schetu karty"
+    "Prihod po schetu karty",
+    "Cashback"
   ],
   "mtsb-sms-expenses": [
     "Oplata",
     "Perevod s karty",
-    "Nalichnye"
+    "Nalichnye",
+    "Perevod SBP"
   ]
 }

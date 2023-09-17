@@ -9,7 +9,9 @@ val mtsbParsers = Pair(
     listOf(
         MtsbParserMain(),
         MtsbParserAccountTransfer(),
-        MtsbParserCardTransfer()
+        MtsbParserCardTransfer(),
+        MtsbParserCashback(),
+        MtsbParserSBP()
     )
 )
 
@@ -66,9 +68,47 @@ class MtsbParserCardTransfer : IContentParser {
     }
 }
 
+class MtsbParserCashback : IContentParser {
+    override fun parse(content: String, config: ConfigData): Transaction? {
+
+        val regex = ("^" +
+                "На карту [*]{1}(?<account>[*][0-9]{4}) (?<message>.+): (?<amount>[0-9][0-9 ]*.[0-9]{2}) RUR." +
+                "$").toRegex()
+        val m = regex.matchEntire(content) ?: return null
+
+        val operation = "Cashback"
+        return Transaction(
+            m.gv("account"),
+            operation,
+            m.gv("message"),
+            getAmount(m.gv("amount"), operation, config),
+            ""
+        )
+    }
+}
+
+class MtsbParserSBP : IContentParser {
+    override fun parse(content: String, config: ConfigData): Transaction? {
+
+        val regex = ("^" +
+                "Выполнен перевод (?<amount>[0-9][0-9 ]*(.[0-9]{2})?)р со счёта (?<account>[*][0-9]{4}). (?<message>.+) через СБП." +
+                "$").toRegex()
+        val m = regex.matchEntire(content) ?: return null
+
+        val operation = "Perevod SBP"
+        return Transaction(
+            m.gv("account"),
+            operation,
+            m.gv("message"),
+            getAmount(m.gv("amount"), operation, config),
+            ""
+        )
+    }
+}
+
 private fun getAmount(value: String, operation: String, config: ConfigData) =
     if (config.mtsbUseIncomes) {
         if (operation.equalsAny(config.mtsbSmsIncomes)) "" else "-"
     } else {
         if (operation.equalsAny(config.mtsbSmsExpenses)) "-" else ""
-    } + value.replace(" ", "")
+    } + value.fixAmountString()
