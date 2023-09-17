@@ -32,8 +32,3 @@ private fun List<BankAccount>.findAccount(id: String): BankAccount? =
 
 // TODO remove tabs. Tabs added only for temporary CSV validation
 private fun String.addTabs() = this + "\t".repeat(12 - this.count { it == '\t' })
-
-fun String.appendDecimals() = if (this.contains(",")) this else "$this,00"
-
-internal fun String.startsWithAny(list: List<String>) =
-    list.any { this.startsWith(it, ignoreCase = true) }
