@@ -68,7 +68,7 @@ class MtsbParserCardTfansfer : IContentParser {
 
 private fun getAmount(value: String, operation: String, config: ConfigData) =
     if (config.mtsbUseIncomes) {
-        if (operation.startsWithAny(config.mtsbSmsIncomes)) "" else "-"
+        if (operation.equalsAny(config.mtsbSmsIncomes)) "" else "-"
     } else {
-        if (operation.startsWithAny(config.mtsbSmsExpenses)) "-" else ""
+        if (operation.equalsAny(config.mtsbSmsExpenses)) "-" else ""
     } + value.replace(" ", "")
