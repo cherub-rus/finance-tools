@@ -9,11 +9,13 @@ val sberParsers = Pair(
     SBER_BANK_ID,
     listOf(
         SberParserTransferFromPerson(),
+        // have to be before Main
         SberParserMain(),
         SberParserTransferToCard(),
         SberParserTransferToAccount(),
         SberParserDeposit(),
-        SberParserSMS()
+        SberParserSMS(),
+        SberParserTransferInfo()
     )
 )
 
@@ -23,8 +25,8 @@ class SberParserMain : IContentParser {
         if (content.contains("Недостаточно средств")) return null
 
         val regex = ("^" +
-                "(?<cardId>[a-zA-Zа-яА-ЯёЁ-]{4}[0-9]{4})( (?<date>[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}))?( (?<time>[0-9]{2}:[0-9]{2}))? (?<operation>[^0-9]+) (?<amount>[0-9]{1,10}(.[0-9]{2})?)р" +
-                "( (с комиссией (?<fee>[0-9]{1,4}(.[0-9]{2})?)р ))?( (?<message>.+))? Баланс: (?<balance>.+)р( Сообщение\\: \"(?<userMessage>.+)\")?" +
+                "(?<cardId>[a-zA-Zа-яА-ЯёЁ-]{4}[0-9]{4})( (?<date>[0-9.]{8}))?( (?<time>[0-9:]{5}))? (?<operation>[^0-9]+) (?<amount>[0-9]{1,10}(.[0-9]{2})?)р" +
+                "( (?<message>.+))? Баланс: (?<balance>.+)р( Сообщение\\: \"(?<userMessage>.+)\")?" +
                 "$").toRegex()
         val m = regex.matchEntire(content) ?: return null
 
@@ -136,6 +138,29 @@ class SberParserSMS : IContentParser {
             getAmount(m.gv("amount"), m.gv("operation"), config),
             m.gv("balance").fixAmountString(),
             null,
+            m.gv("time")
+        )
+    }
+}
+
+class SberParserTransferInfo : IContentParser {
+    override fun parse(content: String, config: ConfigData): Transaction? {
+
+        if (content.contains("Недостаточно средств")) return null
+
+        val regex = ("^" +
+                "(?<cardId>[a-zA-Zа-яА-ЯёЁ-]{4}[0-9]{4})( (?<date>[0-9.]{8}))?( (?<time>[0-9:]{5}))? (?<operation>[^0-9]+) (?<amount>[0-9]{1,10}(.[0-9]{2})?)р" +
+                " (?<message>.+?)( Сообщение[:] (?<userMessage>.+))?" +
+                "$").toRegex()
+        val m = regex.matchEntire(content) ?: return null
+
+        return Transaction(
+            m.gv("cardId"),
+            "#####",
+            m.gv("message") + m.gv("userMessage").quote(),
+            m.gv("amount"),
+            "",
+            m.gv("date"),
             m.gv("time")
         )
     }
