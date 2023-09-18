@@ -96,11 +96,12 @@ class MtsbParserSBP : IContentParser {
                 "$").toRegex()
         val m = regex.matchEntire(content) ?: return null
 
+        @Suppress("SpellCheckingInspection")
         val operation = "Perevod SBP"
         return Transaction(
             m.gv("account"),
             operation,
-            m.gv("message"),
+            "СБП ${m.gv("message")}",
             getAmount(m.gv("amount"), operation, config),
             ""
         )
