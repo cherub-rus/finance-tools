@@ -20,7 +20,7 @@ class SberPushProcessor (private val config: ConfigData) {
         val pushPerLineText = fileText.replace("\n", "\t").replace("\t\t", "\n")
 
         for (line in pushPerLineText.lines().reversed()) {
-            parsePush(line, config.sberOperationType)?.also { accountList.addPush(it) } ?: notSmsList.add(line)
+            parsePush(line, config.getSberOperationTypeNames())?.also { accountList.addPush(it) } ?: notSmsList.add(line)
         }
 
         val builder = StringBuilder()
@@ -104,6 +104,6 @@ class SberPushProcessor (private val config: ConfigData) {
             .firstOrNull { message.lowercase().startsWith(it) }
             .let { message.substring(0, it?.length ?: message.indexOf(' ')) }
 
-    private fun String.convertSign() = if (this.startsWith("+")) this.substringAfter("+") else "-$this"
+    private fun String.convertSign() = if (this.startsWith("+")) this else "-$this"
 
 }

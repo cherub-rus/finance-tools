@@ -51,54 +51,33 @@
     { "s": " >TOMSK RU,", "r": "" },
     { "s": " Gorod Moskva RUS", "r": "" }
   ],
-  "sber-operation-type": [
-    "зачисление",
-    "списание",
-    "покупка",
-    "возврат покупки",
-    "отмена покупки",
-    "выдача",
-    "выдача наличных",
-    "отмена выдачи наличных",
-    "оплата",
-    "оплата услуг",
-    "оплата годового обслуживания карты"
-  ],
-  "sber-use-incomes": false,
-  "sber-sms-incomes": [
-    "перевод от",
-    "перевод на карту",
+  "operation-types": [
+    { "bank-id": "900", "sign": "+", "name": "перевод от" },
+    { "bank-id": "900", "sign": "+", "name": "перевод на карту" },
+    { "bank-id": "900", "sign": "-", "name": "перевод на счет" },
 
-    "зачисление",
-    "зачисление социальной выплаты",
-    "зачисление пенсии",
-    "возврат покупки",
-    "отмена покупки",
-    "отмена выдачи наличных"
-  ],
-  "sber-sms-expenses": [
-    "перевод на счет",
-
-    "списание",
-    "перевод",
-    "покупка",
-    "оплата",
-    "покупка по сбп",
-    "оплата годового обслуживания карты",
-    "оплата услуг",
-    "выдача наличных",
-    "выдача"
-  ],
-  "mtsb-use-incomes": false,
-  "mtsb-sms-incomes": [
-    "Perevod na kartu",
-    "Prihod po schetu karty",
-    "Cashback"
-  ],
-  "mtsb-sms-expenses": [
-    "Oplata",
-    "Perevod s karty",
-    "Nalichnye",
-    "Perevod SBP"
+    { "bank-id": "900", "sign": "+", "name": "зачисление" },
+    { "bank-id": "900", "sign": "+", "name": "зачисление социальной выплаты" },
+    { "bank-id": "900", "sign": "+", "name": "зачисление пенсии" },
+    { "bank-id": "900", "sign": "+", "name": "возврат покупки" },
+    { "bank-id": "900", "sign": "+", "name": "отмена покупки" },
+    { "bank-id": "900", "sign": "+", "name": "отмена выдачи наличных" },
+    { "bank-id": "900", "sign": "-", "name": "списание" },
+    { "bank-id": "900", "sign": "-", "name": "перевод" },
+    { "bank-id": "900", "sign": "-", "name": "покупка" },
+    { "bank-id": "900", "sign": "-", "name": "покупка по сбп" },
+    { "bank-id": "900", "sign": "-", "name": "оплата" },
+    { "bank-id": "900", "sign": "-", "name": "оплата автоплатёж" },
+    { "bank-id": "900", "sign": "-", "name": "оплата годового обслуживания карты" },
+    { "bank-id": "900", "sign": "-", "name": "оплата услуг" },
+    { "bank-id": "900", "sign": "-", "name": "выдача наличных" },
+    { "bank-id": "900", "sign": "-", "name": "выдача" },
+    { "bank-id": "MTS-Bank", "sign": "+", "name": "Perevod na kartu" },
+    { "bank-id": "MTS-Bank", "sign": "+", "name": "Prihod po schetu karty" },
+    { "bank-id": "MTS-Bank", "sign": "+", "name": "Cashback" },
+    { "bank-id": "MTS-Bank", "sign": "-", "name": "Oplata" },
+    { "bank-id": "MTS-Bank", "sign": "-", "name": "Perevod s karty" },
+    { "bank-id": "MTS-Bank", "sign": "-", "name": "Nalichnye" },
+    { "bank-id": "MTS-Bank", "sign": "-", "name": "Perevod SBP" }
   ]
 }

@@ -1,11 +1,12 @@
 package org.cherub.fintools.txttool.sms.sber
 
 import org.cherub.fintools.config.ConfigData
+import org.cherub.fintools.config.ConfigData.Companion.SBER_BANK_ID
 import org.cherub.fintools.txttool.*
 import org.cherub.fintools.txttool.sms.IContentParser
 
 val sberParsers = Pair(
-    "900",
+    SBER_BANK_ID,
     listOf(
         SberParserTransferFromPerson(),
         SberParserMain(),
@@ -131,8 +132,4 @@ class SberParserSMS : IContentParser {
 }
 
 private fun getAmount(value: String, operation: String, config: ConfigData) =
-    if (config.sberUseIncomes) {
-        if (operation.equalsAny(config.sberSmsIncomes)) "" else "-"
-    } else {
-        if (operation.equalsAny(config.sberSmsExpenses)) "-" else ""
-    } + value.fixAmountString()
+    (config.findSberOperationType(operation)?.sign ?: "") + value.fixAmountString()

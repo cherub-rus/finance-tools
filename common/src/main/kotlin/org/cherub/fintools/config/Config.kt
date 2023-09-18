@@ -15,21 +15,24 @@ data class ConfigData (
     val replaceInRow: List<ReplaceRule>,
     @SerialName("replace-in-result")
     val replaceInResult: List<ReplaceRule>,
-    @SerialName("sber-operation-type")
-    val sberOperationType: List<String>,
-    @SerialName("sber-use-incomes")
-    val sberUseIncomes:  Boolean,
-    @SerialName("sber-sms-incomes")
-    val sberSmsIncomes:  List<String>,
-    @SerialName("sber-sms-expenses")
-    val sberSmsExpenses:  List<String>,
-    @SerialName("mtsb-use-incomes")
-    val mtsbUseIncomes:  Boolean,
-    @SerialName("mtsb-sms-incomes")
-    val mtsbSmsIncomes:  List<String>,
-    @SerialName("mtsb-sms-expenses")
-    val mtsbSmsExpenses:  List<String>
-)
+    @SerialName("operation-types")
+    val operationTypes: List<OperationType>
+) {
+    companion object {
+        const val MTS_BANK_ID = "MTS-Bank"
+        const val SBER_BANK_ID = "900"
+    }
+
+    fun getSberOperationTypeNames() =
+        this.operationTypes.filter { it.bankId == SBER_BANK_ID }.map { it.name }
+
+    fun findSberOperationType(operation: String) =
+        this.operationTypes.find { it.bankId == SBER_BANK_ID && it.name.equals(operation, ignoreCase = true) }
+
+    fun findMtsOperationType(operation: String) =
+        this.operationTypes.find { it.bankId == MTS_BANK_ID && it.name.equals(operation, ignoreCase = true) }
+
+}
 
 @Serializable
 data class ReplaceRule (
@@ -47,6 +50,15 @@ data class BankAccount (
     val type: String,
     val code: String
 )
+
+@Serializable
+data class OperationType (
+    @SerialName("bank-id")
+    val bankId: String,
+    val sign: String,
+    val name: String
+)
+
 
 fun String.loadConfigFromFile(): ConfigData {
     val configSource = File(this).readText()

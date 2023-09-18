@@ -1,11 +1,12 @@
 package org.cherub.fintools.txttool.sms.mtsb
 
 import org.cherub.fintools.config.ConfigData
+import org.cherub.fintools.config.ConfigData.Companion.MTS_BANK_ID
 import org.cherub.fintools.txttool.*
 import org.cherub.fintools.txttool.sms.IContentParser
 
 val mtsbParsers = Pair(
-    "MTS-Bank",
+    MTS_BANK_ID,
     listOf(
         MtsbParserMain(),
         MtsbParserAccountTransfer(),
@@ -107,8 +108,4 @@ class MtsbParserSBP : IContentParser {
 }
 
 private fun getAmount(value: String, operation: String, config: ConfigData) =
-    if (config.mtsbUseIncomes) {
-        if (operation.equalsAny(config.mtsbSmsIncomes)) "" else "-"
-    } else {
-        if (operation.equalsAny(config.mtsbSmsExpenses)) "-" else ""
-    } + value.fixAmountString()
+    (config.findMtsOperationType(operation)?.sign ?: "") + value.fixAmountString()
