@@ -45,6 +45,7 @@ data class ReplaceRule (
 data class BankAccount (
     @SerialName("card-id")
     val cardId: String,
+    val account: String,
     @SerialName("bank-id")
     val bankId: String,
     val type: String,
