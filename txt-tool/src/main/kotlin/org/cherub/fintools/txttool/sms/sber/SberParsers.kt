@@ -33,7 +33,9 @@ class SberParserMain : IContentParser {
             m.gv("operation"),
             m.gv("message") + m.gv("userMessage").quote(),
             getAmount(m.gv("amount"), m.gv("operation"), config),
-            m.gv("balance").fixAmountString()
+            m.gv("balance").fixAmountString(),
+            null,
+            m.gv("time")
         )
     }
 }
@@ -51,7 +53,9 @@ class SberParserTransferFromPerson : IContentParser {
             "Перевод от",
             "от ${m.gv("payer")}" + m.gv("payerMessage").quote(),
             getAmount(m.gv("amount"), "Перевод от", config),
-            m.gv("balance").fixAmountString()
+            m.gv("balance").fixAmountString(),
+            null,
+            m.gv("time")
         )
     }
 }
@@ -70,7 +74,9 @@ class SberParserTransferToCard : IContentParser {
             operation,
             "${m.gv("depositName")} ${m.gv("depositId")}",
             getAmount(m.gv("amount"), operation, config),
-            m.gv("balance").fixAmountString()
+            m.gv("balance").fixAmountString(),
+            null,
+            m.gv("time")
         )
     }
 }
@@ -107,7 +113,9 @@ class SberParserDeposit : IContentParser {
             m.gv("operation"),
             m.gv("info"),
             getAmount(m.gv("amount"), m.gv("operation"), config),
-            m.gv("balance").fixAmountString()
+            m.gv("balance").fixAmountString(),
+            null,
+            m.gv("time")
         )
     }
 }
@@ -126,7 +134,9 @@ class SberParserSMS : IContentParser {
             m.gv("operation"),
             "SMS уведомления",
             getAmount(m.gv("amount"), m.gv("operation"), config),
-            m.gv("balance").fixAmountString()
+            m.gv("balance").fixAmountString(),
+            null,
+            m.gv("time")
         )
     }
 }
