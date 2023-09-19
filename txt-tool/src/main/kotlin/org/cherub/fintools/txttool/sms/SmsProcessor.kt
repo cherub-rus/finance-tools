@@ -63,6 +63,8 @@ class SmsProcessor(private val config: ConfigData) {
 
     @Suppress("SameReturnValue")
     private fun parseContent(bank: String, content: String): Transaction? {
+        if (content.contains("Недостаточно средств") || content.contains(" Отказ. ")) return null
+
         parsers[bank]?.forEach { p ->
             p.parse(content, config)?.also { return it }
         }

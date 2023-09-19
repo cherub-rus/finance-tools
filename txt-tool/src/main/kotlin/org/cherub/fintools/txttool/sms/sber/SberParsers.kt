@@ -14,7 +14,6 @@ val sberParsers = Pair(
         SberParserTransferToCard(),
         SberParserTransferToAccount(),
         SberParserDeposit(),
-        SberParserSMS(),
         SberParserTransferInfo()
     )
 )
@@ -22,11 +21,9 @@ val sberParsers = Pair(
 class SberParserMain : IContentParser {
     override fun parse(content: String, config: ConfigData): Transaction? {
 
-        if (content.contains("Недостаточно средств")) return null
-
         val regex = ("^" +
                 "(?<cardId>[a-zA-Zа-яА-ЯёЁ-]{4}[0-9]{4})( (?<date>[0-9.]{8}))?( (?<time>[0-9:]{5}))? (?<operation>[^0-9]+) (?<amount>[0-9]{1,10}(.[0-9]{2})?)р" +
-                "( (?<message>.+))? Баланс: (?<balance>.+)р( Сообщение\\: \"(?<userMessage>.+)\")?" +
+                "( (?<message>.+))? Баланс(:)? (?<balance>.+)р( Сообщение\\: \"(?<userMessage>.+)\")?" +
                 "$").toRegex()
         val m = regex.matchEntire(content) ?: return null
 
@@ -65,7 +62,7 @@ class SberParserTransferFromPerson : IContentParser {
 class SberParserTransferToCard : IContentParser {
     override fun parse(content: String, config: ConfigData): Transaction? {
         val regex = ("^" +
-                "(?<depositName>.+) (?<depositId>\\*[0-9]{4}) (?<time>[0-9:]{5}) Перевод (?<amount>[0-9]{1,10}(.[0-9]{2})?)р на карту (?<cardId>[a-zA-Z-]{4}[0-9]{4})." +
+                "(?<depositName>.+) (?<depositId>\\*[0-9]{4}) (?<time>[0-9:]{5}) Перевод (?<amount>[0-9]{1,10}(.[0-9]{2})?)р на карту (?<cardId>[a-zA-Zа-яА-ЯёЁ-]{4}[0-9]{4})." +
                 " (Баланс (вклада|счёта): (?<depositBalance>.+)р, )?[Бб]аланс карты: (?<balance>.+)р" +
                 "$").toRegex()
         val m = regex.matchEntire(content) ?: return null
@@ -86,7 +83,7 @@ class SberParserTransferToCard : IContentParser {
 class SberParserTransferToAccount : IContentParser {
     override fun parse(content: String, config: ConfigData): Transaction? {
         val regex = ("^" +
-                "(?<cardId>[a-zA-Z-]{4}[0-9]{4}) Зачисление средств (?<amount>[0-9]{1,10}(.[0-9]{2})?)р на счёт (?<depositName>.+) (?<depositId>\\*[0-9]{4})." +
+                "(?<cardId>[a-zA-Zа-яА-ЯёЁ-]{4}[0-9]{4}) Зачисление средств (?<amount>[0-9]{1,10}(.[0-9]{2})?)р на счёт (?<depositName>.+) (?<depositId>\\*[0-9]{4})." +
                 " (Баланс карты: (?<balance>.+)р, )?[Бб]аланс (вклада|счёта): (?<depositBalance>.+)р" +
                 "$").toRegex()
         val m = regex.matchEntire(content) ?: return null
@@ -122,31 +119,8 @@ class SberParserDeposit : IContentParser {
     }
 }
 
-class SberParserSMS : IContentParser {
-    override fun parse(content: String, config: ConfigData): Transaction? {
-
-        val regex = ("^" +
-                "(?<cardId>[a-zA-Z-]{4}[0-9]{4}) (?<time>[0-9]{2}:[0-9]{2}) (?<operation>[^0-9]+) (?<amount>[0-9]{1,10}(.[0-9]{2})?)р" +
-                " за уведомления. .+ Баланс (?<balance>.+)р" +
-                "$").toRegex()
-        val m = regex.matchEntire(content) ?: return null
-
-        return Transaction(
-            m.gv("cardId"),
-            m.gv("operation"),
-            "SMS уведомления",
-            getAmount(m.gv("amount"), m.gv("operation"), config),
-            m.gv("balance").fixAmountString(),
-            null,
-            m.gv("time")
-        )
-    }
-}
-
 class SberParserTransferInfo : IContentParser {
     override fun parse(content: String, config: ConfigData): Transaction? {
-
-        if (content.contains("Недостаточно средств")) return null
 
         val regex = ("^" +
                 "(?<cardId>[a-zA-Zа-яА-ЯёЁ-]{4}[0-9]{4})( (?<date>[0-9.]{8}))?( (?<time>[0-9:]{5}))? (?<operation>[^0-9]+) (?<amount>[0-9]{1,10}(.[0-9]{2})?)р" +
