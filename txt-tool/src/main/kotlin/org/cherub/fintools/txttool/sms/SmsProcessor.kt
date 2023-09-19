@@ -1,5 +1,6 @@
 package org.cherub.fintools.txttool.sms
 
+import org.cherub.fintools.config.BankAccount
 import org.cherub.fintools.config.ConfigData
 import org.cherub.fintools.txttool.*
 import org.cherub.fintools.txttool.sms.mtsb.*
@@ -23,7 +24,7 @@ class SmsProcessor(private val config: ConfigData) {
         val notSmsList = mutableListOf<String>()
 
         for (line in fileText.lines()) {
-            parseSms(line)?.also { accountList.addSms(it) } ?: notSmsList.add(line)
+            parseSms(line)?.also { accountList.addSms(it, config.accounts) } ?: notSmsList.add(line)
         }
 
         val builder = StringBuilder()
@@ -51,8 +52,9 @@ class SmsProcessor(private val config: ConfigData) {
         )
     }
 
-    private fun MutableMap<String, MutableList<Sms>>.addSms(sms: Sms) {
-        val key = "${sms.bank}$KEY_SEPARATOR${sms.trans.account}"
+    private fun MutableMap<String, MutableList<Sms>>.addSms(sms: Sms, accounts: List<BankAccount>) {
+        val card = accounts.findByAccountNumber(sms.trans.account)?.cardId ?: sms.trans.account
+        val key = "${sms.bank}$KEY_SEPARATOR$card"
         if (!this.contains(key)) {
             this[key] = mutableListOf()
         }

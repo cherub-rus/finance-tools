@@ -8,10 +8,10 @@ const val formula_c12 = "=ОКРУГЛ(R[-1]C[-1]+RC[-9];2)"
 
 const val KEY_SEPARATOR = "#"
 
-fun makeAccountHeader(account: String, accounts: List<BankAccount>, sourceName: String) =
+fun makeAccountHeader(accountId: String, accounts: List<BankAccount>, sourceName: String) =
     StringBuilder().also {
         it.appendLine("".addTabs())
-        it.appendLine("Account\t$account\t${accounts.findType(account)}\t${accounts.findCode(account)}".addTabs())
+        it.appendLine("Account\t$accountId\t${accounts.findType(accountId)}\t${accounts.findCode(accountId)}".addTabs())
         it.appendLine("".addTabs())
         it.appendLine("#\t${File(sourceName).name}".addTabs())
     }.toString()
@@ -29,6 +29,9 @@ private fun List<BankAccount>.findAccount(id: String): BankAccount? =
         this.firstOrNull { it.bankId == id.substringBefore(KEY_SEPARATOR) &&
                            it.cardId == id.substringAfter(KEY_SEPARATOR) }
     }
+
+fun List<BankAccount>.findByAccountNumber(number: String): BankAccount? =
+    this.firstOrNull { it.account == number }
 
 // TODO remove tabs. Tabs added only for temporary CSV validation
 private fun String.addTabs() = this + "\t".repeat(12 - this.count { it == '\t' })

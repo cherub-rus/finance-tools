@@ -1,5 +1,6 @@
 package org.cherub.fintools.txttool.push.sber
 
+import org.cherub.fintools.config.BankAccount
 import org.cherub.fintools.config.ConfigData
 import org.cherub.fintools.log.log
 import org.cherub.fintools.txttool.*
@@ -20,7 +21,7 @@ class SberPushProcessor (private val config: ConfigData) {
         val pushPerLineText = fileText.replace("\n", "\t").replace("\t\t", "\n")
 
         for (line in pushPerLineText.lines().reversed()) {
-            parsePush(line, config.getSberOperationTypeNames())?.also { accountList.addPush(it) } ?: notSmsList.add(line)
+            parsePush(line, config.getSberOperationTypeNames())?.also { accountList.addPush(it, config.accounts) } ?: notSmsList.add(line)
         }
 
         val builder = StringBuilder()
@@ -55,8 +56,8 @@ class SberPushProcessor (private val config: ConfigData) {
         return push
     }
 
-    private fun MutableMap<String, MutableList<Push>>.addPush(push: Push) {
-        val key = push.account
+    private fun MutableMap<String, MutableList<Push>>.addPush(push: Push, accounts: List<BankAccount>) {
+        val key = accounts.findByAccountNumber(push.account)?.cardId ?: push.account
         if (!this.contains(key)) {
             this[key] = mutableListOf()
         }
