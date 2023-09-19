@@ -1,10 +1,11 @@
 {
   "accounts": [
-    { "card-id": "VISA0001", "account":         "", "bank-id": "900", "type": "Bank",  "code": "Sber x" },
-    { "card-id": "VISA0002", "account": "СЧЁТ0020","bank-id": "900", "type": "Bank",  "code": "Sber y" },
-    { "card-id": "ECMC0003", "account":         "","bank-id": "900", "type": "CCard", "code": "Sber z" },
-    { "card-id": "*0004", "account": "", "bank-id": "MTS-Bank", "type": "Bank", "code": "MTS a" },
-    { "card-id": "*0005", "account": "","bank-id": "MTS-Bank", "type": "Bank", "code": "MTS b" }
+    { "bank-id": "900", "type":  "Bank", "card-id": "VISA0001", "account":         "", "code": "Sber x" },
+    { "bank-id": "900", "type":  "Bank", "card-id": "VISA0002", "account": "СЧЁТ0020", "code": "Sber y" },
+    { "bank-id": "900", "type": "CCard", "card-id": "ECMC0003", "account":         "", "code": "Sber z" },
+
+    { "bank-id": "MTS-Bank", "type": "Bank", "card-id": "*0004", "account": "", "code": "MTS a" },
+    { "bank-id": "MTS-Bank", "type": "Bank", "card-id": "*0005", "account": "", "code": "MTS b" }
   ],
   "replace-in-source": [
     { "s": "«", "r": "" },
