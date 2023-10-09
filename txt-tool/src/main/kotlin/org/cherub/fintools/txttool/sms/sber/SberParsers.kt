@@ -22,7 +22,7 @@ class SberParserMain : IContentParser {
     override fun parse(content: String, config: ConfigData): Transaction? {
 
         val regex = ("^" +
-                "(?<cardId>[a-zA-Zа-яА-ЯёЁ-]{4}[0-9]{4})( (?<date>[0-9.]{8}))?( (?<time>[0-9:]{5}))? (?<operation>[^0-9]+) (?<amount>[0-9]{1,10}(.[0-9]{2})?)р" +
+                "(?<cardId>[a-zA-Zа-яА-ЯёЁ-]{4}[0-9]{4})( (?<date>[0-9.]{8}))?( (?<time>[0-9:]{5}))? (?<operation>[^0-9]+) (?<amount>[0-9 ]{1,10}(.[0-9]{2})?)р" +
                 "( (?<message>.+))? Баланс(:)? (?<balance>.+)р( Сообщение\\: \"(?<userMessage>.+)\")?" +
                 "$").toRegex()
         val m = regex.matchEntire(content) ?: return null
@@ -42,7 +42,7 @@ class SberParserMain : IContentParser {
 class SberParserTransferFromPerson : IContentParser {
     override fun parse(content: String, config: ConfigData): Transaction? {
         val regex = ("^" +
-                "(?<cardId>[a-zA-Zа-яА-ЯёЁ-]{4}[0-9]{4})( (?<time>[0-9:]{5}))? Перевод (?<amount>[0-9]{1,10}(.[0-9]{2})?)р" +
+                "(?<cardId>[a-zA-Zа-яА-ЯёЁ-]{4}[0-9]{4})( (?<time>[0-9:]{5}))? Перевод (?<amount>[0-9 ]{1,10}(.[0-9]{2})?)р" +
                 " от ((?<payer>.+) )?Баланс: (?<balance>.+)р( \"(?<payerMessage>.+)\")?" +
                 "$").toRegex()
         val m = regex.matchEntire(content) ?: return null
@@ -62,7 +62,7 @@ class SberParserTransferFromPerson : IContentParser {
 class SberParserTransferToCard : IContentParser {
     override fun parse(content: String, config: ConfigData): Transaction? {
         val regex = ("^" +
-                "(?<depositName>.+) (?<depositId>\\*[0-9]{4}) (?<time>[0-9:]{5}) Перевод (?<amount>[0-9]{1,10}(.[0-9]{2})?)р на карту (?<cardId>[a-zA-Zа-яА-ЯёЁ-]{4}[0-9]{4})." +
+                "(?<depositName>.+) (?<depositId>\\*[0-9]{4}) (?<time>[0-9:]{5}) Перевод (?<amount>[0-9 ]{1,10}(.[0-9]{2})?)р на карту (?<cardId>[a-zA-Zа-яА-ЯёЁ-]{4}[0-9]{4})." +
                 " (Баланс (вклада|счёта): (?<depositBalance>.+)р, )?[Бб]аланс карты: (?<balance>.+)р" +
                 "$").toRegex()
         val m = regex.matchEntire(content) ?: return null
@@ -83,7 +83,7 @@ class SberParserTransferToCard : IContentParser {
 class SberParserTransferToAccount : IContentParser {
     override fun parse(content: String, config: ConfigData): Transaction? {
         val regex = ("^" +
-                "(?<cardId>[a-zA-Zа-яА-ЯёЁ-]{4}[0-9]{4}) Зачисление средств (?<amount>[0-9]{1,10}(.[0-9]{2})?)р на счёт (?<depositName>.+) (?<depositId>\\*[0-9]{4})." +
+                "(?<cardId>[a-zA-Zа-яА-ЯёЁ-]{4}[0-9]{4}) Зачисление средств (?<amount>[0-9 ]{1,10}(.[0-9]{2})?)р на счёт (?<depositName>.+) (?<depositId>\\*[0-9]{4})." +
                 " (Баланс карты: (?<balance>.+)р, )?[Бб]аланс (вклада|счёта): (?<depositBalance>.+)р" +
                 "$").toRegex()
         val m = regex.matchEntire(content) ?: return null
@@ -102,7 +102,7 @@ class SberParserTransferToAccount : IContentParser {
 class SberParserDeposit : IContentParser {
     override fun parse(content: String, config: ConfigData): Transaction? {
         val regex = ("^" +
-                "(?<depositName>.+) (?<depositId>\\*[0-9]{4})( (?<time>[0-9:]{5}))? (?<operation>[^0-9]+) (?<amount>[0-9]{1,10}(.[0-9]{2})?)р(.)?" +
+                "(?<depositName>.+) (?<depositId>\\*[0-9]{4})( (?<time>[0-9:]{5}))? (?<operation>[^0-9]+) (?<amount>[0-9 ]{1,10}(.[0-9]{2})?)р(.)?" +
                 " Баланс: (?<balance>.+)р(. (?<info>).+)?" +
                 "$").toRegex()
         val m = regex.matchEntire(content) ?: return null
@@ -123,7 +123,7 @@ class SberParserTransferInfo : IContentParser {
     override fun parse(content: String, config: ConfigData): Transaction? {
 
         val regex = ("^" +
-                "(?<cardId>[a-zA-Zа-яА-ЯёЁ-]{4}[0-9]{4})( (?<date>[0-9.]{8}))?( (?<time>[0-9:]{5}))? (?<operation>[^0-9]+) (?<amount>[0-9]{1,10}(.[0-9]{2})?)р" +
+                "(?<cardId>[a-zA-Zа-яА-ЯёЁ-]{4}[0-9]{4})( (?<date>[0-9.]{8}))?( (?<time>[0-9:]{5}))? (?<operation>[^0-9]+) (?<amount>[0-9 ]{1,10}(.[0-9]{2})?)р" +
                 " (?<message>.+?)( Сообщение[:] (?<userMessage>.+))?" +
                 "$").toRegex()
         val m = regex.matchEntire(content) ?: return null
