@@ -3,6 +3,10 @@ Function wsPayee() As String
     wsPayee = "получатели"
 End Function
 
+Function wsHistory() As String
+    wsHistory = "TransHistory"
+End Function
+
 Function wbDraft() As String
     wbDraft = "my_draft.xlsx"
 End Function
