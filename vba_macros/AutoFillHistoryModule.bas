@@ -1,4 +1,4 @@
-Attribute VB_Name = "MoveToHistoryModule"
+Attribute VB_Name = "AutoFillHistoryModule"
 
 Sub FillHistory()
 
