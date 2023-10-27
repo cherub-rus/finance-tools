@@ -124,10 +124,11 @@ Private Sub FillBankTransfer(rowRange As Range, account As String)
 End Sub
 
 Function LoadAutoFillData() As Variant
-    Dim lastCell As Range, sheetRange As Range
 
-    Set lastCell = Worksheets("AutoFill").Cells.SpecialCells(xlCellTypeLastCell)
-    Set sheetRange = Worksheets("AutoFill").Range("$A$2:" + lastCell.Address)
+    Set ws = Workbooks(Globals.wbHistory()).Worksheets("AutoFill")
+
+    Set lastCell = ws.Cells.SpecialCells(xlCellTypeLastCell)
+    Set sheetRange = ws.Range("$A$2:" + lastCell.Address)
 
     LoadAutoFillData = sheetRange
 End Function
