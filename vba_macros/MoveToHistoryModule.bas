@@ -1,11 +1,12 @@
 Attribute VB_Name = "MoveToHistoryModule"
 
-Sub MoveToHistory()
+Sub FillHistory()
 
     If ActiveSheet.Name = Globals.wsHistory() Then Exit Sub
 
     Dim lastCell As Range, sheetRange As Range, filterRange As Range, rowRange As Range, historyData As Variant
 
+    historyData = LoadHistoryData()
 
     ActiveSheet.AutoFilterMode = False
 
@@ -31,10 +32,12 @@ Sub MoveToHistory()
                 accountName = rowRange.Cells(1, 4).value
                 'Debug.Print accountName
             Case Else
-                If Not IsEmpty(rowRange.Cells(1, 13)) Then
+                If Not IsEmpty(rowRange.Cells(1, 13)) And Not rowRange.Cells(1, 13) Like "*cashback*" And Not rowRange.Cells(1, 6) = "*" Then
                    'Debug.Print rowRange.Cells(1, 13)
-                   historyData = LoadHistoryData()
-                   Call FindAndMoveRow(historyData, rowRange, accountName)
+                   added = FindOrAddHistoryRow(historyData, rowRange, accountName)
+                   If added Then
+                       historyData = LoadHistoryData()
+                   End If
                 End If
             End Select
         Next
@@ -43,7 +46,8 @@ Sub MoveToHistory()
     ActiveSheet.AutoFilterMode = False
 End Sub
 
-Private Sub FindAndMoveRow(historyData As Variant, rowRange As Range, account As String)
+Function FindOrAddHistoryRow(historyData As Variant, rowRange As Range, account As String) As Boolean
+
     Dim iNum As Integer, newRowRange As Range
 
     trComment = rowRange.Cells(1, 2).value
@@ -52,6 +56,10 @@ Private Sub FindAndMoveRow(historyData As Variant, rowRange As Range, account As
     trOperation = rowRange.Cells(1, 7).value
     trMessageSource = rowRange.Cells(1, 13).value
 
+    If trComment Like "G*:*" Or trComment Like "*;*" Then
+        trComment = ""
+    End If
+
     For iNum = 1 To UBound(historyData, 1)
         hdComment = historyData(iNum, 2)
         hdPayee = historyData(iNum, 4)
@@ -59,13 +67,14 @@ Private Sub FindAndMoveRow(historyData As Variant, rowRange As Range, account As
         hdOperation = historyData(iNum, 7)
         hdMessageSource = historyData(iNum, 13)
 
-        If ((LCase(trPayee) = LCase(hdPayee)) And (LCase(trCategory) = LCase(hdCategory)) And (LCase(trMessageSource) = LCase(hdMessageSource))) Then
+        If ((LCase(trComment) = LCase(hdComment)) And (LCase(trPayee) = LCase(hdPayee)) And (LCase(trCategory) = LCase(hdCategory)) And (LCase(trMessageSource) = LCase(hdMessageSource))) Then
             'Debug.Print "FOUND:" + trMessageSource
+            FindOrAddHistoryRow = False
             GoTo OutFor
         End If
     Next iNum
 
-    Debug.Print "NEW ROW FOR:" + trMessageSource
+    'Debug.Print "NEW ROW FOR:" + trMessageSource
     Set newRowRange = AddHistoryRow()
     With newRowRange
         .Cells(1, 1).value = account
@@ -76,34 +85,32 @@ Private Sub FindAndMoveRow(historyData As Variant, rowRange As Range, account As
         .Cells(1, 13).value = trMessageSource
         'Debug.Print .Cells(1, 1).value & " " & .Cells(1, 2).value & " " & historyData(iNum, 2) & " " & historyData(iNum, 3)
     End With
+    FindOrAddHistoryRow = True
 
 OutFor:
 
-End Sub
+End Function
 
 Function LoadHistoryData() As Variant
-    Dim lastCell As Range, sheetRange As Range
 
-    Windows(Globals.wbHistory()).Activate
+    Set ws = Workbooks(Globals.wbHistory()).Worksheets(Globals.wsHistory())
 
-    Set lastCell = Worksheets("TransHistory").Cells.SpecialCells(xlCellTypeLastCell)
-    Set sheetRange = Worksheets("TransHistory").Range("$A$2:" + lastCell.Address)
+    Set lastCell = ws.Cells.SpecialCells(xlCellTypeLastCell)
+    Set sheetRange = ws.Range("$A$4:" + lastCell.Address)
 
     LoadHistoryData = sheetRange
 
-    Windows(Globals.wbDraft()).Activate
 End Function
 
 Function AddHistoryRow() As Range
-    Dim lastRow As Long, newRowRange As Range
 
-    Windows(Globals.wbHistory()).Activate
+    Set ws = Workbooks(Globals.wbHistory()).Worksheets(Globals.wsHistory())
 
-    lastRow = Worksheets("TransHistory").Cells.SpecialCells(xlCellTypeLastCell).Row
-    Set newRowRange = Worksheets("TransHistory").Rows(lastRow + 1).Cells
+    lastRow = ws.Cells.SpecialCells(xlCellTypeLastCell).Row
+    Set newRowRange = ws.Rows(lastRow + 1).Cells
 
     Set AddHistoryRow = newRowRange
 
-    Windows(Globals.wbDraft()).Activate
 End Function
+
 
