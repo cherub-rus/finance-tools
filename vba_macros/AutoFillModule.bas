@@ -57,8 +57,8 @@ Private Sub FillPayeeAndCategory(fillData As Variant, rowRange As Range)
             With rowRange
                 .Cells(1, 4).value = fillData(iNum, 2)
                 .Cells(1, 5).value = fillData(iNum, 3)
-                .Cells(1, 2).value = ""
-                .Cells(1, 6).value = "#"
+                .Cells(1, 2).value = fillData(iNum, 5)
+                .Cells(1, 6).value = IIf(fillData(iNum, 4) <> "", fillData(iNum, 4), "#")
                 'Debug.Print .Cells(1, 1).value & " " & .Cells(1, 2).value & " " & fillData(iNum, 2) & " " & fillData(iNum, 3)
             End With
             GoTo ContinueFor
