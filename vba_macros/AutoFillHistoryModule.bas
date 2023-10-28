@@ -4,8 +4,9 @@ Sub FillHistory()
 
     If ActiveSheet.Name = Globals.wsHistory() Then Exit Sub
 
-    Dim lastCell As Range, sheetRange As Range, filterRange As Range, rowRange As Range, historyData As Variant
+    Dim lastCell As Range, sheetRange As Range, filterRange As Range, rowRange As Range, fillData As Variant, historyData As Variant
 
+    fillData = LoadAutoFillData()
     historyData = LoadHistoryData()
 
     ActiveSheet.AutoFilterMode = False
@@ -30,7 +31,7 @@ Sub FillHistory()
                 'Skip
             Case Else
                 If Not IsEmpty(rowRange.Cells(1, 13)) And Not rowRange.Cells(1, 13) Like "*cashback*" And Not rowRange.Cells(1, 6) = "*" Then
-                   added = FindOrAddHistoryRow(historyData, rowRange)
+                   added = FindOrAddHistoryRow(historyData, fillData, rowRange)
                    If added Then
                        historyData = LoadHistoryData()
                    End If
@@ -42,7 +43,7 @@ Sub FillHistory()
     ActiveSheet.AutoFilterMode = False
 End Sub
 
-Function FindOrAddHistoryRow(historyData As Variant, rowRange As Range) As Boolean
+Function FindOrAddHistoryRow(historyData As Variant, fillData As Variant, rowRange As Range) As Boolean
 
     Dim iNum As Integer, newRowRange As Range
 
@@ -63,13 +64,25 @@ Function FindOrAddHistoryRow(historyData As Variant, rowRange As Range) As Boole
 
         If ((LCase(trComment) = LCase(hdComment)) And (LCase(trPayee) = LCase(hdPayee)) And (LCase(trCategory) = LCase(hdCategory)) And (LCase(trMessageSource) = LCase(hdMessageSource))) Then
             FindOrAddHistoryRow = False
-            GoTo OutFor
+            GoTo ReturnFun
+        End If
+    Next iNum
+
+    For iNum = 1 To UBound(fillData, 1)
+        fdMask = fillData(iNum, 1)
+        fdPayee = fillData(iNum, 2)
+        fdCategory = fillData(iNum, 3)
+
+        If (LCase(trMessageSource) Like LCase(fdMask)) And (LCase(trPayee) = LCase(fdPayee)) And (LCase(trCategory) = LCase(fdCategory)) Then
+            FindOrAddHistoryRow = False
+            GoTo ReturnFun
         End If
     Next iNum
 
     'Debug.Print "NEW ROW FOR:" + trMessageSource
     Set newRowRange = AddHistoryRow()
     With newRowRange
+        .Cells(1, 1).value = "+"
         .Cells(1, 2).value = trComment
         .Cells(1, 4).value = trPayee
         .Cells(1, 5).value = trCategory
@@ -77,7 +90,7 @@ Function FindOrAddHistoryRow(historyData As Variant, rowRange As Range) As Boole
     End With
     FindOrAddHistoryRow = True
 
-OutFor:
+ReturnFun:
 
 End Function
 
@@ -90,6 +103,16 @@ Function LoadHistoryData() As Variant
 
     LoadHistoryData = sheetRange
 
+End Function
+
+Function LoadAutoFillData() As Variant
+
+    Set ws = Workbooks(Globals.wbHistory()).Worksheets("AutoFill")
+
+    Set lastCell = ws.Cells.SpecialCells(xlCellTypeLastCell)
+    Set sheetRange = ws.Range("$A$2:" + lastCell.Address)
+
+    LoadAutoFillData = sheetRange
 End Function
 
 Function AddHistoryRow() As Range
