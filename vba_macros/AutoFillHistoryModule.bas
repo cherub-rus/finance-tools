@@ -52,9 +52,12 @@ Function FindOrAddHistoryRow(historyData As Variant, fillData As Variant, rowRan
     trCategory = rowRange.Cells(1, 5).value
     trMessageSource = rowRange.Cells(1, 13).value
 
-    If trComment Like "*:*" Or trComment Like "*;*" Or trComment Like "#*" Then
+    If rowRange.Cells(1, 6).value = "*" Or trComment Like "*:*" Or trComment Like "*;*" Then 'Or trComment Like "#*" Then
         trComment = ""
     End If
+'    If Not IsEmpty(trComment) And Not trComment Like "[#]*" Then
+'        trComment = ""
+'    End If
 
     For iNum = 1 To UBound(historyData, 1)
         hdComment = historyData(iNum, 2)
