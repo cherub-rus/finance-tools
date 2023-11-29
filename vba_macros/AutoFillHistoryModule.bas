@@ -30,7 +30,7 @@ Sub FillHistory()
             Case "Account"
                 'Skip
             Case Else
-                If Not IsEmpty(rowRange.Cells(1, 13)) And Not rowRange.Cells(1, 13) Like "*cashback*" And Not rowRange.Cells(1, 6) = "*" Then
+                If Not IsEmpty(rowRange.Cells(1, 13)) And Not rowRange.Cells(1, 6) = "*" Then
                    added = FindOrAddHistoryRow(historyData, fillData, rowRange)
                    If added Then
                        historyData = LoadHistoryData()
@@ -51,6 +51,11 @@ Function FindOrAddHistoryRow(historyData As Variant, fillData As Variant, rowRan
     trPayee = rowRange.Cells(1, 4).value
     trCategory = rowRange.Cells(1, 5).value
     trMessageSource = rowRange.Cells(1, 13).value
+
+    If LCase(hdMessageSource) Like "*cashback*" Then
+        FindOrAddHistoryRow = False
+        GoTo ReturnFun
+    End If
 
     If rowRange.Cells(1, 6).value = "*" Or trComment Like "*:*" Or trComment Like "*;*" Then 'Or trComment Like "#*" Then
         trComment = ""
@@ -128,5 +133,4 @@ Function AddHistoryRow() As Range
     Set AddHistoryRow = newRowRange
 
 End Function
-
 
