@@ -27,7 +27,7 @@ Sub BackupModules()
     count = 0
     'On security error set trust: https://support.microsoft.com/en-us/office/enable-or-disable-macros-in-microsoft-365-files-12b036fd-d140-4e74-b45e-16fed1a7e5c6
     For Each VBComponent In Workbooks("PERSONAL.XLSB").VBProject.VBComponents
-        If VBComponent.Type = 1 Then
+        If VBComponent.Type = 1 And Not VBComponent.Name = "MailTools" Then
             Debug.Print VBComponent.Name
             path = directory & "\" & VBComponent.Name & ".bas"
             Call VBComponent.Export(path)
