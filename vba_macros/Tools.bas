@@ -7,7 +7,6 @@ Sub BackupModules()
     Dim directory As String
     Dim fso As Object
 
-
     directory = ActiveWorkbook.path & "\arc\macro_" & Format(Now(), "yyyy-mm-dd-hhmmss")
     Response = MsgBox("Экспортируем макросы PERSONAL.XLSB в Git:" + vbCrLf + "Да - " + Globals.backupToGitPath() + vbCrLf + "Нет - " + directory, vbYesNoCancel + vbQuestion, "Уверен?")
 

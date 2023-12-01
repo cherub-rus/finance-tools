@@ -70,7 +70,10 @@ Function FindOrAddHistoryRow(historyData As Variant, fillData As Variant, rowRan
         hdCategory = historyData(iNum, 5)
         hdMessageSource = historyData(iNum, 13)
 
-        If ((LCase(trComment) = LCase(hdComment)) And (LCase(trPayee) = LCase(hdPayee)) And (LCase(trCategory) = LCase(hdCategory)) And (LCase(trMessageSource) = LCase(hdMessageSource))) Then
+        If ((LCase(trComment) = LCase(hdComment)) And _
+            (LCase(trPayee) = LCase(hdPayee)) And _
+            (LCase(trCategory) = LCase(hdCategory)) And _
+            (LCase(trMessageSource) = LCase(hdMessageSource))) Then
             FindOrAddHistoryRow = False
             GoTo ReturnFun
         End If
