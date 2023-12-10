@@ -9,6 +9,8 @@ const val formula_c12 = "=ОКРУГЛ(R[-1]C[-1]+RC[-9];2)"
 
 abstract class CommonProcessor(val config: ConfigData) {
 
+    open fun reversRows() = true
+
     fun process(fileText: String, sourceName: String): String {
         val html = cleanUpHtml(removeNewLines(fileText))
         if (WRITE_HTML) File("$sourceName.2.html").writeText(html)
@@ -39,7 +41,7 @@ abstract class CommonProcessor(val config: ConfigData) {
 
     private fun splitToTransactionRows(text: String): List<String> = text
         .lines().filter { rowFilter(it) }
-        .reversed()
+        .let { if (reversRows()) it.reversed() else it }
 
     private fun cleanUpResult(content: String) =
         reorderCsvRows(content)

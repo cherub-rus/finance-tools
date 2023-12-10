@@ -12,6 +12,7 @@ import java.io.StringWriter
 
 import org.cherub.fintools.pdftool.mtsb.*
 import org.cherub.fintools.pdftool.sber.*
+import org.cherub.fintools.pdftool.gpb.*
 
 const val WRITE_HTML = true
 
@@ -39,6 +40,10 @@ fun main(args: Array<String>) {
                 SberProcessDeposit(config).process(fileText, sourceName)
             } else if (fileText.contains("www.mtsbank.ru")) {
                 MtsbProcessCard(config).process(fileText, sourceName)
+            } else if (fileText.contains("www.gazprombank.ru") && fileText.contains("ВЫПИСКА ПО КАРТЕ")) {
+                GpbCardProcessor(config).process(fileText, sourceName)
+            } else if (fileText.contains("www.gazprombank.ru") && fileText.contains("ВЫПИСКА ПО СЧЕТУ")) {
+                GpbDepositProcessor(config).process(fileText, sourceName)
             } else "Невозможно определить тип выписки!"
 
 
