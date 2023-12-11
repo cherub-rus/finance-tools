@@ -1,7 +1,6 @@
 package org.cherub.fintools.pdftool.gpb
 
 import org.cherub.fintools.config.ConfigData
-import org.cherub.fintools.log.log
 import org.cherub.fintools.pdftool.*
 
 class GpbCardProcessor(config: ConfigData) : CommonProcessor(config) {
@@ -38,7 +37,7 @@ class GpbCardProcessor(config: ConfigData) : CommonProcessor(config) {
             "$1\t$3\t$4\t\t\t\t$2\t\t\t\t$formula_c11\t$formula_c12\t$3"
         )
         .replace(
-            "<p>([0-9.]{10}) [0-9.]{10} (Перевод с банковской карты) [0-9]{6}[x]{8}[0-9]{4} (на счет [0-9]{20})[.]( .+[.])?</p><p>(.+)</p>".toRegex(),
+            "<p>([0-9.]{10}) [0-9.]{10} (Перевод с банковской карты) [0-9]{6}x{8}[0-9]{4} (на счет [0-9]{20})[.]( .+[.])?</p><p>(.+)</p>".toRegex(),
             "$1\t$3\t$5\t\t\t\t$2\t\t\t\t$formula_c11\t$formula_c12\t$3"
         )
         .replace(
