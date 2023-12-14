@@ -5,6 +5,7 @@ import org.cherub.fintools.config.ConfigData
 import org.cherub.fintools.txttool.*
 import org.cherub.fintools.txttool.sms.mtsb.*
 import org.cherub.fintools.txttool.sms.sber.*
+import org.cherub.fintools.txttool.sms.usb.*
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -16,7 +17,7 @@ class SmsProcessor(private val config: ConfigData) {
         val checkFormatRegex = SMS_REGEX_STRING.toRegex()
     }
 
-    private val parsers = mapOf(mtsbParsers, sberParsers)
+    private val parsers = mapOf(mtsbParsers, sberParsers, usbParsers)
 
     @Suppress("DuplicatedCode")
     fun process(fileText: String, sourceName: String): ProcessResult {
