@@ -13,6 +13,7 @@ import java.io.StringWriter
 import org.cherub.fintools.pdftool.mtsb.*
 import org.cherub.fintools.pdftool.sber.*
 import org.cherub.fintools.pdftool.gpb.*
+import org.cherub.fintools.pdftool.usb.*
 
 const val WRITE_HTML = true
 
@@ -44,6 +45,8 @@ fun main(args: Array<String>) {
                 GpbCardProcessor(config).process(fileText, sourceName)
             } else if (fileText.contains("www.gazprombank.ru") && fileText.contains("ВЫПИСКА ПО СЧЕТУ")) {
                 GpbDepositProcessor(config).process(fileText, sourceName)
+            } else if (fileText.contains("Сведения об операции Категории Дата и время MSK Сумма Валюта")) {
+                UsbCardProcessor(config).process(fileText, sourceName)
             } else "Невозможно определить тип выписки!"
 
 
