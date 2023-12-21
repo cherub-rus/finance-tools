@@ -90,9 +90,10 @@ Private Sub MTSBPreProcess(rowRange As Range, accountName As String)
             newMessage = ""
         End If
 
-        rowRange.Cells(1, 5).value = "Зарплата"
-        rowRange.Cells(1, 4).value = newPayee
         rowRange.Cells(1, 2).value = newMessage
+        rowRange.Cells(1, 4).value = newPayee
+        rowRange.Cells(1, 5).value = "Зарплата"
+        rowRange.Cells(1, 6).value = "#"
 
     ElseIf trOperation Like "~Комиссия*" Then
         rowRange.Cells(1, 5).value = "Банк. Расходы"
@@ -105,11 +106,17 @@ Private Sub MTSBPreProcess(rowRange As Range, accountName As String)
     ElseIf trOperation = "~Зачисление" And trMessage = "Перевод между счетами" Then
         Call FillBankTransfer(rowRange, "[8 BankM D]")
 
-    ElseIf trOperation = "Списание с картсчета" And trMessage = "PEREVOD NA KARTU MTSB" And accountName = "4 BankM Z" Then
+    ElseIf accountName = "4 BankM Z" And trOperation = "Списание с картсчета" And trMessage = "PEREVOD NA KARTU MTSB" Then
         Call FillBankTransfer(rowRange, "[4 BankM]")
 
-    ElseIf trOperation = "Зачисление на картсчет" And trMessage = "PEREVOD NA KARTU MTSB" And accountName = "4 BankM" Then
-        Call FillBankTransfer(rowRange, "[4 BankM Z]")
+    ElseIf accountName = "4 BankM" And trOperation = "Списание с картсчета" And trMessage = "PEREVOD NA KARTU MTSB" Then
+        Call FillBankTransfer(rowRange, "[4 BankM V]")
+
+    ElseIf accountName = "4 BankM" And trOperation = "Зачисление на картсчет" And trMessage = "PEREVOD NA KARTU MTSB" Then
+        Call FillBankTransfer(rowRange, "[4 BankM V]")
+
+    ElseIf accountName = "4 BankM V" And trMessage = "PEREVOD NA KARTU MTSB" Then
+        Call FillBankTransfer(rowRange, "[4 BankM]")
 
     End If
 
