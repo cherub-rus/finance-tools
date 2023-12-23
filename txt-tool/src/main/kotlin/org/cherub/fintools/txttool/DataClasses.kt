@@ -13,7 +13,7 @@ data class Push(
 
 data class Transaction(
     val account: String, val operation: String, val message: String, val amount: String, val balance: String?,
-    val date: String? = null, val time: String? = null
+    val date: String? = null, val time: String? = null, val discount: String = ""
 )
 
 data class ProcessResult(

@@ -20,7 +20,8 @@ class MtsbParserMain : IContentParser {
     override fun parse(content: String, config: ConfigData): Transaction? {
         @Suppress("SpellCheckingInspection")
         val regex =
-            "(?<operation>[^0-9]+) (?<amount>[0-9][0-9 ]*,[0-9]{2}) RUB (?<message>.+) {2}Ostatok: (?<balance>[0-9][0-9 ]*,[0-9]{2}) RUB; (?<account>[*][0-9]{4}) ".toRegex()
+            ("(?<operation>[^0-9]+) (?<amount>[0-9][0-9 ]*,[0-9]{2}) RUB( s uchetom skidki (?<discount>[0-9][0-9 ]*,[0-9]{2}) RUB)?" +
+             " (?<message>.+) {2}Ostatok: (?<balance>[0-9][0-9 ]*,[0-9]{2}) RUB; (?<account>[*][0-9]{4}) ").toRegex()
         val m = regex.matchEntire(content) ?: return null
 
         return Transaction(
@@ -28,7 +29,10 @@ class MtsbParserMain : IContentParser {
             m.gv("operation"),
             m.gv("message"),
             getAmount(m.gv("amount"), m.gv("operation"), config),
-            m.gv("balance").replace(" ", "")
+            m.gv("balance").replace(" ", ""),
+            null,
+            null,
+            m.gv("discount")
         )
     }
 }
