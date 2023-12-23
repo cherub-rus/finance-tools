@@ -8,9 +8,8 @@ import org.cherub.fintools.txttool.sms.IContentParser
 val sberParsers = Pair(
     SBER_BANK_ID,
     listOf(
-        SberParserTransferFromPerson(),
-        // have to be before Main
         SberParserMain(),
+        SberParserTransferFromPerson(),
         SberParserTransferToCard(),
         SberParserTransferToAccount(),
         SberParserDeposit(),
@@ -20,7 +19,9 @@ val sberParsers = Pair(
 
 class SberParserMain : IContentParser {
     override fun parse(content: String, config: ConfigData): Transaction? {
-
+        if ( (".+ Перевод (?<amount>[0-9 ]{1,10}(.[0-9]{2})?)р от .+").toRegex().matches(content)) {
+            return null
+        }
         val regex = ("^" +
                 "(?<cardId>[a-zA-Zа-яА-ЯёЁ-]{4}[0-9]{4})( (?<date>[0-9.]{8}))?( (?<time>[0-9:]{5}))? (?<operation>[^0-9]+) (?<amount>[0-9 ]{1,10}(.[0-9]{2})?)р" +
                 "( (?<message>.+))? Баланс(:)? (?<balance>.+)р( Сообщение\\: \"(?<userMessage>.+)\")?" +
@@ -43,7 +44,7 @@ class SberParserTransferFromPerson : IContentParser {
     override fun parse(content: String, config: ConfigData): Transaction? {
         val regex = ("^" +
                 "(?<cardId>[a-zA-Zа-яА-ЯёЁ-]{4}[0-9]{4})( (?<time>[0-9:]{5}))? Перевод (?<amount>[0-9 ]{1,10}(.[0-9]{2})?)р" +
-                " от ((?<payer>.+) )?Баланс: (?<balance>.+)р( \"(?<payerMessage>.+)\")?" +
+                " от ((?<payer>.+) )?Баланс: (?<balance>[0-9 ]{1,10}(.[0-9]{2})?)р(( Сообщение\\:)? \\\"(?<payerMessage>.+)\\\")?" +
                 "$").toRegex()
         val m = regex.matchEntire(content) ?: return null
 
