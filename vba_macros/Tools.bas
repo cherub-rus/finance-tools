@@ -42,3 +42,17 @@ Sub BackupModules()
     Call MsgBox("Successfully exported " & CStr(count) & " VBA files to " & directory)
 End Sub
 
+Sub FixMonth()
+    Selection.Replace What:="января", Replacement:="январь", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False, FormulaVersion:=xlReplaceFormula2
+    Selection.Replace What:="февраля", Replacement:="февраль", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False, FormulaVersion:=xlReplaceFormula2
+    Selection.Replace What:="марта", Replacement:="март", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False, FormulaVersion:=xlReplaceFormula2
+    Selection.Replace What:="апреля", Replacement:="апрель", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False, FormulaVersion:=xlReplaceFormula2
+    Selection.Replace What:="мая", Replacement:="май", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False, FormulaVersion:=xlReplaceFormula2
+    Selection.Replace What:="июня", Replacement:="июнь", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False, FormulaVersion:=xlReplaceFormula2
+    Selection.Replace What:="июля", Replacement:="июль", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False, FormulaVersion:=xlReplaceFormula2
+    Selection.Replace What:="августа", Replacement:="август", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False, FormulaVersion:=xlReplaceFormula2
+    
+    Selection.Replace What:="бря", Replacement:="брь", LookAt:=xlPart, SearchOrder:=xlByRows, MatchCase:=False, SearchFormat:=False, ReplaceFormat:=False, FormulaVersion:=xlReplaceFormula2
+End Sub
+
+

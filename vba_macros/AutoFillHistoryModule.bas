@@ -52,6 +52,8 @@ Function FindOrAddHistoryRow(historyData As Variant, fillData As Variant, rowRan
     trCategory = rowRange.Cells(1, 5).value
     trMessageSource = rowRange.Cells(1, 13).value
 
+    'Debug.Print "PROCESSING:" + trMessageSource
+
     If LCase(hdMessageSource) Like "*cashback*" Then
         FindOrAddHistoryRow = False
         GoTo ReturnFun

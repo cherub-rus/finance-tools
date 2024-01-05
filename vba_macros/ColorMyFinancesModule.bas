@@ -67,12 +67,18 @@ Attribute ColorMyFinances.VB_ProcData.VB_Invoke_Func = "Ñ\n14"
     .StopIfTrue = False
     End With
 
-    Set fc_C17 = ActiveSheet.Range("=$Q:$Q").FormatConditions
-
-    With fc_C17.Add(Type:=xlCellValue, Operator:=xlEqual, Formula1:="=RC[-14]")
-    .Font.Color = RGB(200, 200, 200)
+    With fc_C12.Add(Type:=xlCellValue, Operator:=xlLess, Formula1:="0")
+    .Interior.Color = RGB(245, 157, 232)
     .StopIfTrue = False
     End With
+
+
+'    Set fc_C17 = ActiveSheet.Range("=$Q:$Q").FormatConditions
+
+'    With fc_C17.Add(Type:=xlCellValue, Operator:=xlEqual, Formula1:="=RC[-14]")
+'    .Font.Color = RGB(200, 200, 200)
+'    .StopIfTrue = False
+'    End With
 
 End Sub
 

@@ -3,7 +3,7 @@ Sub CleanUpDraft()
 Attribute CleanUpDraft.VB_ProcData.VB_Invoke_Func = " \n14"
     
     If ActiveWorkbook.Name = Globals.wbDraft() And _
-       (ActiveSheet.Name = "2 (4 BankM)" Or ActiveSheet.Name = "3 (4 BankS)") Then
+       (ActiveSheet.Name = "2 (4 BankM)" Or ActiveSheet.Name = "2 (4 BankM V)" Or ActiveSheet.Name = "3 (4 BankS)") Then
         Call CleanUpSheet
     Else
         MsgBox ("Invalid workbook or sheet: " + ActiveWorkbook.Name + " [" + ActiveSheet.Name + "]")
@@ -21,8 +21,8 @@ Sub CleanUpSheet()
     Selection.Copy
     Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks:=False, Transpose:=False
     
-'    Range("K" + CStr(lastRow)).Select
-'    Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks:=False, Transpose:=False
+    Range("K" + CStr(lastRow)).Select
+    Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks:=False, Transpose:=False
     
     Range("K4").Select
     Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks:=False, Transpose:=False
