@@ -11,10 +11,10 @@ Sub SortHistory()
     Set lastCell = ActiveSheet.Cells.SpecialCells(xlCellTypeLastCell)
 
     With ActiveSheet.Sort
-         .SortFields.Add Key:=Columns(5), Order:=xlAscending
-         .SortFields.Add Key:=Columns(4), Order:=xlAscending
-         .SortFields.Add Key:=Columns(13), Order:=xlAscending
-         .SortFields.Add Key:=Columns(2), Order:=xlAscending
+         .SortFields.Add Key:=Columns(hc_category), Order:=xlAscending
+         .SortFields.Add Key:=Columns(hc_payee), Order:=xlAscending
+         .SortFields.Add Key:=Columns(hc_message), Order:=xlAscending
+         .SortFields.Add Key:=Columns(hc_comment), Order:=xlAscending
          .SetRange Range("$A$4:" + lastCell.Address)
          .Header = xlNo
          .Apply
