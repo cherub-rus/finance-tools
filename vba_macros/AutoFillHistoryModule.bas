@@ -22,7 +22,7 @@ Sub FillHistory()
         For Each rowRange In filterRange
             Dim trDate As String
 
-            trDate = rowRange.Cells(1, 1).value
+            trDate = rowRange.Cells(1, c_date).value
 
             Select Case trDate
             Case "#", ""
@@ -30,7 +30,7 @@ Sub FillHistory()
             Case "Account"
                 'Skip
             Case Else
-                If Not IsEmpty(rowRange.Cells(1, 13)) And Not rowRange.Cells(1, 6) = "*" Then
+                If Not IsEmpty(rowRange.Cells(1, c_message)) And Not rowRange.Cells(1, c_mark) = "*" Then
                    added = FindOrAddHistoryRow(historyData, fillData, rowRange)
                    If added Then
                        historyData = LoadHistoryData()
@@ -47,10 +47,10 @@ Function FindOrAddHistoryRow(historyData As Variant, fillData As Variant, rowRan
 
     Dim iNum As Integer, newRowRange As Range
 
-    trComment = rowRange.Cells(1, 2).value
-    trPayee = rowRange.Cells(1, 4).value
-    trCategory = rowRange.Cells(1, 5).value
-    trMessageSource = rowRange.Cells(1, 13).value
+    trComment = rowRange.Cells(1, c_comment).value
+    trPayee = rowRange.Cells(1, c_payee).value
+    trCategory = rowRange.Cells(1, c_category).value
+    trMessageSource = rowRange.Cells(1, c_message).value
 
     'Debug.Print "PROCESSING:" + trMessageSource
 
@@ -59,7 +59,7 @@ Function FindOrAddHistoryRow(historyData As Variant, fillData As Variant, rowRan
         GoTo ReturnFun
     End If
 
-    If rowRange.Cells(1, 6).value = "*" Or trComment Like "*:*" Or trComment Like "*;*" Then 'Or trComment Like "#*" Then
+    If rowRange.Cells(1, c_mark).value = "*" Or trComment Like "*:*" Or trComment Like "*;*" Then 'Or trComment Like "#*" Then
         trComment = ""
     End If
 '    If Not IsEmpty(trComment) And Not trComment Like "[#]*" Then
@@ -67,10 +67,10 @@ Function FindOrAddHistoryRow(historyData As Variant, fillData As Variant, rowRan
 '    End If
 
     For iNum = 1 To UBound(historyData, 1)
-        hdComment = historyData(iNum, 2)
-        hdPayee = historyData(iNum, 4)
-        hdCategory = historyData(iNum, 5)
-        hdMessageSource = historyData(iNum, 13)
+        hdComment = historyData(iNum, hc_comment)
+        hdPayee = historyData(iNum, hc_payee)
+        hdCategory = historyData(iNum, hc_category)
+        hdMessageSource = historyData(iNum, hc_message)
 
         If ((LCase(trComment) = LCase(hdComment)) And _
             (LCase(trPayee) = LCase(hdPayee)) And _
@@ -96,10 +96,10 @@ Function FindOrAddHistoryRow(historyData As Variant, fillData As Variant, rowRan
     Set newRowRange = AddHistoryRow()
     With newRowRange
         .Cells(1, 1).value = "+"
-        .Cells(1, 2).value = trComment
-        .Cells(1, 4).value = trPayee
-        .Cells(1, 5).value = trCategory
-        .Cells(1, 13).value = trMessageSource
+        .Cells(1, hc_comment).value = trComment
+        .Cells(1, hc_payee).value = trPayee
+        .Cells(1, hc_category).value = trCategory
+        .Cells(1, hc_message).value = trMessageSource
     End With
     FindOrAddHistoryRow = True
 

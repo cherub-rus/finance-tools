@@ -1,4 +1,22 @@
 Attribute VB_Name = "Globals"
+
+Public Const c_date = 1
+Public Const c_comment = 2
+Public Const c_amount = 3
+Public Const c_payee = 4
+Public Const c_category = 5
+Public Const c_mark = 6
+Public Const c_operation = 7
+Public Const c_time = 8
+Public Const c_balance = 11
+Public Const c_balance_formula = 12
+Public Const c_message = 13
+
+Public Const hc_comment = 2
+Public Const hc_payee = 4
+Public Const hc_category = 5
+Public Const hc_message = 13
+
 Function wsPayee() As String
     wsPayee = "получатели"
 End Function
