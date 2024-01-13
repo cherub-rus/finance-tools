@@ -9,10 +9,10 @@ data class Account(
 
 data class Transaction(
     val date: String,
-    val comment: String,
     val amount: String,
     val payee: String,
     val category: String,
     val cleaned: Boolean,
+    val comment: String,
 )
 
