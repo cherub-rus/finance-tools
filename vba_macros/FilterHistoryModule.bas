@@ -14,7 +14,7 @@ Sub ClearFilterForHistoryComment()
 Attribute ClearFilterForHistoryComment.VB_ProcData.VB_Invoke_Func = "Û\n14"
     'Ctrl Shift + S [Û]
     Windows(Globals.wbDraft()).Activate
-    ActiveSheet.Range("$A$3:$N$5000").AutoFilter Field:=c_message
+    ActiveSheet.Range(TRANS_RANGE).AutoFilter Field:=c_message
     ActiveSheet.Cells(4, c_comment).Select
 End Sub
 
@@ -29,15 +29,15 @@ Attribute FilterHistoryByComment.VB_ProcData.VB_Invoke_Func = "Â\n14"
     pattern = "*" + searchString + "*"
 
     Windows(Globals.wbDraft()).Activate
-    ActiveSheet.Range("$A$3:$N$500").AutoFilter Field:=c_message, Criteria1:=pattern
+    ActiveSheet.Range(TRANS_RANGE).AutoFilter Field:=c_message, Criteria1:=pattern
     ActiveWindow.ScrollRow = 1
     ActiveSheet.Cells(3, c_payee).Select
 
     Windows(Globals.wbHistory()).Activate
     If ActiveSheet.Name = Globals.wsPayee() Then Exit Sub
 
-    ActiveSheet.Range("$A$3:$N$5000").AutoFilter Field:=hc_payee
-    ActiveSheet.Range("$A$3:$N$5000").AutoFilter Field:=hc_message, Criteria1:=pattern
+    ActiveSheet.Range(TRANS_RANGE).AutoFilter Field:=hc_payee
+    ActiveSheet.Range(TRANS_RANGE).AutoFilter Field:=hc_message, Criteria1:=pattern
     ActiveWindow.ScrollRow = 1
     ActiveSheet.Cells(3, hc_payee).Select
 End Sub
@@ -55,8 +55,8 @@ Attribute FilterHistoryByPayee.VB_ProcData.VB_Invoke_Func = "Ó\n14"
     Windows(Globals.wbHistory()).Activate
     If ActiveSheet.Name = Globals.wsPayee() Then Exit Sub
 
-    ActiveSheet.Range("$A$3:$N$5000").AutoFilter Field:=hc_message
-    ActiveSheet.Range("$A$3:$N$5000").AutoFilter Field:=hc_payee, Criteria1:=pattern
+    ActiveSheet.Range(TRANS_RANGE).AutoFilter Field:=hc_message
+    ActiveSheet.Range(TRANS_RANGE).AutoFilter Field:=hc_payee, Criteria1:=pattern
     ActiveWindow.ScrollRow = 1
     ActiveSheet.Cells(3, hc_payee).Select
 End Sub
@@ -75,7 +75,7 @@ Attribute FilterByAmount.VB_ProcData.VB_Invoke_Func = "Å\n14"
     pattern2 = Format(value * 1.01, "0.00")
 
     Windows(Globals.wbDraft()).Activate
-    ActiveSheet.Range("$A$3:$N$5000").AutoFilter Field:=c_amount, Criteria1:=Array(pattern1, pattern2), Operator:=xlFilterValues
+    ActiveSheet.Range(TRANS_RANGE).AutoFilter Field:=c_amount, Criteria1:=Array(pattern1, pattern2), Operator:=xlFilterValues
     ActiveWindow.ScrollRow = 1
     ActiveSheet.Cells(3, c_payee).Select
 End Sub

@@ -17,7 +17,7 @@ Attribute ColorMyFinances.VB_ProcData.VB_Invoke_Func = "я\n14"
 
     Set fc_C1 = ActiveSheet.Columns(c_date).FormatConditions
 
-    With fc_C1.Add(Type:=xlExpression, Formula1:="=х(ме(еосярн(RC));ме(RC=""#"");ме(RC=""Account"");ме(кебяхлб(RC14;1)=""v""))")
+    With fc_C1.Add(Type:=xlExpression, Formula1:="=х(ме(еосярн(RC));ме(RC=""#"");ме(RC=""Account"");ме(кебяхлб(RC6;1)=""x""))")
     .Interior.Color = RGB(255, 255, 0)
     .StopIfTrue = False
     End With

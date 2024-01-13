@@ -17,6 +17,8 @@ Public Const hc_payee = 4
 Public Const hc_category = 5
 Public Const hc_message = 13
 
+Public Const TRANS_RANGE = "$A$3:$M$5000"
+
 Function wsPayee() As String
     wsPayee = "получатели"
 End Function
