@@ -8,13 +8,13 @@ Private Sub BackupModules()
     Dim fso As Object
 
     directory = ActiveWorkbook.path & "\arc\macro_" & Format(Now(), "yyyy-mm-dd-hhmmss")
-    Response = MsgBox("Экспортируем макросы PERSONAL.XLSB в Git:" + vbCrLf + "Да - " + Globals.backupToGitPath() + vbCrLf + "Нет - " + directory, vbYesNoCancel + vbQuestion, "Уверен?")
+    Response = MsgBox("Экспортируем макросы PERSONAL.XLSB в Git:" + vbCrLf + "Да - " + BACKUP_TO_GIT_PATH + vbCrLf + "Нет - " + directory, vbYesNoCancel + vbQuestion, "Уверен?")
 
     Select Case Response
         Case vbCancel
             Exit Sub
         Case vbYes
-            directory = Globals.backupToGitPath()
+            directory = BACKUP_TO_GIT_PATH
         Case vbNo
             Set fso = CreateObject("Scripting.FileSystemObject")
             If Not fso.FolderExists(directory) Then
