@@ -1,8 +1,34 @@
-Attribute VB_Name = "AutoFillHistoryModule"
+Attribute VB_Name = "FillHistoryModule"
 
-Sub FillHistory()
+Private Sub SortHistory()
 
-    If ActiveSheet.Name = Globals.wsHistory() Then Exit Sub
+    Set ws = Workbooks(BOOK_HISTORY).Worksheets(WS_HISTORY)
+
+    Range("A4").Select
+    Range(Selection, ActiveCell.SpecialCells(xlLastCell)).Select
+    ws.AutoFilter.Sort.SortFields.Clear
+
+    Set lastCell = ActiveSheet.Cells.SpecialCells(xlCellTypeLastCell)
+
+    With ActiveSheet.Sort
+         .SortFields.Add Key:=Columns(hc_category), Order:=xlAscending
+         .SortFields.Add Key:=Columns(hc_payee), Order:=xlAscending
+         .SortFields.Add Key:=Columns(hc_message), Order:=xlAscending
+         .SortFields.Add Key:=Columns(hc_comment), Order:=xlAscending
+         .SetRange Range("$A$4:" + lastCell.Address)
+         .Header = xlNo
+         .Apply
+    End With
+
+    ActiveSheet.Range("$A$3:" + lastCell.Address).RemoveDuplicates Columns:=Array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13), Header:=xlNo
+
+    Range("A4").Select
+
+End Sub
+
+Private Sub FillHistory()
+
+    If ActiveSheet.Name = WS_HISTORY Then Exit Sub
 
     Dim lastCell As Range, sheetRange As Range, filterRange As Range, rowRange As Range, fillData As Variant, historyData As Variant
 
@@ -109,7 +135,7 @@ End Function
 
 Function LoadHistoryData() As Variant
 
-    Set ws = Workbooks(Globals.wbHistory()).Worksheets(Globals.wsHistory())
+    Set ws = Workbooks(BOOK_HISTORY).Worksheets(WS_HISTORY)
 
     Set lastCell = ws.Cells.SpecialCells(xlCellTypeLastCell)
     Set sheetRange = ws.Range("$A$4:" + lastCell.Address)
@@ -120,7 +146,7 @@ End Function
 
 Function LoadAutoFillData() As Variant
 
-    Set ws = Workbooks(Globals.wbHistory()).Worksheets("AutoFill")
+    Set ws = Workbooks(BOOK_HISTORY).Worksheets("AutoFill")
 
     Set lastCell = ws.Cells.SpecialCells(xlCellTypeLastCell)
     Set sheetRange = ws.Range("$A$2:" + lastCell.Address)
@@ -130,7 +156,7 @@ End Function
 
 Function AddHistoryRow() As Range
 
-    Set ws = Workbooks(Globals.wbHistory()).Worksheets(Globals.wsHistory())
+    Set ws = Workbooks(BOOK_HISTORY).Worksheets(WS_HISTORY)
 
     lastRow = ws.Cells.SpecialCells(xlCellTypeLastCell).Row
     Set newRowRange = ws.Rows(lastRow + 1).Cells

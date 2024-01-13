@@ -1,6 +1,6 @@
 Attribute VB_Name = "AutoFillModule"
 
-Sub FillActiveSheet()
+Private Sub FillActiveSheet()
 
     Dim lastCell As Range, sheetRange As Range, filterRange As Range, rowRange As Range, fillData As Variant
 
@@ -132,7 +132,7 @@ End Sub
 
 Function LoadAutoFillData() As Variant
 
-    Set ws = Workbooks(Globals.wbHistory()).Worksheets("AutoFill")
+    Set ws = Workbooks(BOOK_HISTORY).Worksheets("AutoFill")
 
     Set lastCell = ws.Cells.SpecialCells(xlCellTypeLastCell)
     Set sheetRange = ws.Range("$A$2:" + lastCell.Address)

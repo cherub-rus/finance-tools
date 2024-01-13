@@ -2,7 +2,7 @@ Attribute VB_Name = "CleanUpModule"
 Sub CleanUpDraft()
 Attribute CleanUpDraft.VB_ProcData.VB_Invoke_Func = " \n14"
     
-    If ActiveWorkbook.Name = Globals.wbDraft() And _
+    If ActiveWorkbook.Name = BOOK_DRAFT And _
        (ActiveSheet.Name Like "4 Bank*" Or ActiveSheet.Name Like "5 Марина *" Or ActiveSheet.Name Like "7 Марина *") Then
         Call CleanUpSheet
     Else

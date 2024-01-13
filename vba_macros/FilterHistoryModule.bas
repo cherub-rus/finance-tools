@@ -13,7 +13,7 @@ End Sub
 Sub ClearFilterForHistoryComment()
 Attribute ClearFilterForHistoryComment.VB_ProcData.VB_Invoke_Func = "Û\n14"
     'Ctrl Shift + S [Û]
-    Windows(Globals.wbDraft()).Activate
+    Windows(BOOK_DRAFT).Activate
     ActiveSheet.Range(TRANS_RANGE).AutoFilter Field:=c_message
     ActiveSheet.Cells(4, c_comment).Select
 End Sub
@@ -28,13 +28,13 @@ Attribute FilterHistoryByComment.VB_ProcData.VB_Invoke_Func = "Â\n14"
 
     pattern = "*" + searchString + "*"
 
-    Windows(Globals.wbDraft()).Activate
+    Windows(BOOK_DRAFT).Activate
     ActiveSheet.Range(TRANS_RANGE).AutoFilter Field:=c_message, Criteria1:=pattern
     ActiveWindow.ScrollRow = 1
     ActiveSheet.Cells(3, c_payee).Select
 
-    Windows(Globals.wbHistory()).Activate
-    If ActiveSheet.Name = Globals.wsPayee() Then Exit Sub
+    Windows(BOOK_HISTORY).Activate
+    If ActiveSheet.Name = WS_PAYEE Then Exit Sub
 
     ActiveSheet.Range(TRANS_RANGE).AutoFilter Field:=hc_payee
     ActiveSheet.Range(TRANS_RANGE).AutoFilter Field:=hc_message, Criteria1:=pattern
@@ -52,8 +52,8 @@ Attribute FilterHistoryByPayee.VB_ProcData.VB_Invoke_Func = "Ó\n14"
 
     pattern = "*" + searchString + "*"
 
-    Windows(Globals.wbHistory()).Activate
-    If ActiveSheet.Name = Globals.wsPayee() Then Exit Sub
+    Windows(BOOK_HISTORY).Activate
+    If ActiveSheet.Name = WS_PAYEE Then Exit Sub
 
     ActiveSheet.Range(TRANS_RANGE).AutoFilter Field:=hc_message
     ActiveSheet.Range(TRANS_RANGE).AutoFilter Field:=hc_payee, Criteria1:=pattern
@@ -74,7 +74,7 @@ Attribute FilterByAmount.VB_ProcData.VB_Invoke_Func = "Å\n14"
     pattern1 = Format(value, "0.00")
     pattern2 = Format(value * 1.01, "0.00")
 
-    Windows(Globals.wbDraft()).Activate
+    Windows(BOOK_DRAFT).Activate
     ActiveSheet.Range(TRANS_RANGE).AutoFilter Field:=c_amount, Criteria1:=Array(pattern1, pattern2), Operator:=xlFilterValues
     ActiveWindow.ScrollRow = 1
     ActiveSheet.Cells(3, c_payee).Select

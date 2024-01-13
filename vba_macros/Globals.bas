@@ -19,21 +19,13 @@ Public Const hc_message = 13
 
 Public Const TRANS_RANGE = "$A$3:$M$5000"
 
-Function wsPayee() As String
-    wsPayee = "получатели"
-End Function
+Public Const WS_PAYEE = "получатели"
+Public Const WS_HISTORY = "TransHistory"
 
-Function wsHistory() As String
-    wsHistory = "TransHistory"
-End Function
+Public Const OWNER = "my"
 
-Function wbDraft() As String
-    wbDraft = "my_draft.xlsx"
-End Function
-
-Function wbHistory() As String
-    wbHistory = "my_history.xlsx"
-End Function
+Public Const BOOK_DRAFT = OWNER + "_draft.xlsx"
+Public Const BOOK_HISTORY = OWNER + "_history.xlsx"
 
 Function backupToGitPath() As String
     backupToGitPath = "..\finance-tools\vba_macros"

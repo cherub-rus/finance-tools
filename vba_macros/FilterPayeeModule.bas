@@ -16,8 +16,8 @@ Attribute FilterPayee.VB_ProcData.VB_Invoke_Func = "Ê\n14"
 
     pattern = "*" + searchString + "*"
 
-    Workbooks(Globals.wbHistory()).Activate
-    Worksheets(Globals.wsPayee()).Activate
+    Workbooks(BOOK_HISTORY).Activate
+    Worksheets(WS_PAYEE).Activate
 
     ActiveSheet.Range("$B$3:$C$500").AutoFilter Field:=2
     ActiveSheet.Range("$B$3:$C$500").AutoFilter Field:=1, Criteria1:=pattern
@@ -35,8 +35,8 @@ Attribute FilterPayeeByCategory.VB_ProcData.VB_Invoke_Func = "Ö\n14"
 
     pattern = "*" + searchString + "*"
 
-    Workbooks(Globals.wbHistory()).Activate
-    Worksheets(Globals.wsPayee()).Activate
+    Workbooks(BOOK_HISTORY).Activate
+    Worksheets(WS_PAYEE).Activate
 
     ActiveSheet.Range("$B$3:$C$500").AutoFilter Field:=1
     ActiveSheet.Range("$B$3:$C$500").AutoFilter Field:=2, Criteria1:=pattern
@@ -47,11 +47,11 @@ End Sub
 Sub CopyPayee()
 Attribute CopyPayee.VB_ProcData.VB_Invoke_Func = "Ü\n14"
     'Ctrl Shift + M [Ü]
-    If ActiveSheet.Name <> Globals.wsPayee() Then Exit Sub
+    If ActiveSheet.Name <> WS_PAYEE Then Exit Sub
 
     ActiveSheet.Range(ActiveCell, ActiveCell.End(xlToRight)).Copy
 
-    Windows(Globals.wbDraft()).Activate
+    Windows(BOOK_DRAFT).Activate
     ActiveSheet.Paste
 End Sub
 

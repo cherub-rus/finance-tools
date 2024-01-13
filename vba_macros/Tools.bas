@@ -1,6 +1,6 @@
 Attribute VB_Name = "Tools"
 
-Sub BackupModules()
+Private Sub BackupModules()
 
     Dim VBComponent As Object
     Dim path As String
@@ -42,7 +42,7 @@ Sub BackupModules()
     Call MsgBox("Successfully exported " & CStr(count) & " VBA files to " & directory)
 End Sub
 
-Sub FixMonth()
+Private Sub FixMonth()
 
     Dim findValues, replaceValues As Variant
     findValues = Array("января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "бря")
