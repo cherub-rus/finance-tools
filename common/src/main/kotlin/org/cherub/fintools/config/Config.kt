@@ -76,5 +76,3 @@ fun ConfigData.save(configName: String) {
     File(configName).writeText(configFormatter.encodeToString(this))
     AccountsConfig(this.accounts).save(this.accountsFile)
 }
-
-
