@@ -93,6 +93,7 @@ Function LoadAccountsData() As Variant
 
     With ws.AutoFilter.Sort
          .SortFields.Clear
+         .SortFields.Add Key:=Columns(2), Order:=xlAscending
          .SortFields.Add Key:=Columns(1), Order:=xlAscending
          .Apply
     End With
