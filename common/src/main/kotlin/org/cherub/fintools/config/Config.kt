@@ -8,7 +8,9 @@ val configFormatter = Json { isLenient = true; prettyPrint = true }
 
 @Serializable
 data class ConfigData (
-    val accounts: List<BankAccount>,
+    val accountsFile: String,
+    @Transient
+    val accounts: MutableList<BankAccount> = mutableListOf(),
     @SerialName("replace-in-source")
     val replaceInSource: List<ReplaceRule>,
     @SerialName("replace-in-row")
@@ -63,12 +65,16 @@ data class OperationType (
 
 
 fun String.loadConfigFromFile(): ConfigData {
-    val configSource = File(this).readText()
-    return configFormatter.decodeFromString(configSource)
+    val source = File(this).readText()
+    val configData = configFormatter.decodeFromString<ConfigData>(source)
+    val accountsConfig = configData.accountsFile.loadAccountsFromFile()
+    configData.accounts.addAll(accountsConfig.accounts)
+    return configData
 }
 
 fun ConfigData.save(configName: String) {
     File(configName).writeText(configFormatter.encodeToString(this))
+    AccountsConfig(this.accounts).save(this.accountsFile)
 }
 
 
