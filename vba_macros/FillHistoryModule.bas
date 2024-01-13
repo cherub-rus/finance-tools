@@ -8,19 +8,19 @@ Private Sub SortHistory()
     Range(Selection, ActiveCell.SpecialCells(xlLastCell)).Select
     ws.AutoFilter.Sort.SortFields.Clear
 
-    Set lastCell = ActiveSheet.Cells.SpecialCells(xlCellTypeLastCell)
+    Set lastCell = ws.Cells.SpecialCells(xlCellTypeLastCell)
 
-    With ActiveSheet.Sort
+    With ws.Sort
          .SortFields.Add Key:=Columns(hc_category), Order:=xlAscending
          .SortFields.Add Key:=Columns(hc_payee), Order:=xlAscending
          .SortFields.Add Key:=Columns(hc_message), Order:=xlAscending
          .SortFields.Add Key:=Columns(hc_comment), Order:=xlAscending
-         .SetRange Range("$A$4:" + lastCell.Address)
+         .SetRange Range("A4:" + lastCell.Address)
          .Header = xlNo
          .Apply
     End With
 
-    ActiveSheet.Range("$A$3:" + lastCell.Address).RemoveDuplicates Columns:=Array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13), Header:=xlNo
+    ws.Range("A3:" + lastCell.Address).RemoveDuplicates Columns:=Array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13), Header:=xlNo
 
     Range("A4").Select
 
@@ -38,7 +38,7 @@ Private Sub FillHistory()
     ActiveSheet.AutoFilterMode = False
 
     Set lastCell = ActiveSheet.Cells.SpecialCells(xlCellTypeLastCell)
-    Set sheetRange = ActiveSheet.Range("$A$2:" + lastCell.Address)
+    Set sheetRange = ActiveSheet.Range("A2:" + lastCell.Address)
 
     With sheetRange
         .AutoFilter Field:=1, Criteria1:="<>"
@@ -138,7 +138,7 @@ Function LoadHistoryData() As Variant
     Set ws = Workbooks(BOOK_HISTORY).Worksheets(WS_HISTORY)
 
     Set lastCell = ws.Cells.SpecialCells(xlCellTypeLastCell)
-    Set sheetRange = ws.Range("$A$4:" + lastCell.Address)
+    Set sheetRange = ws.Range("A4:" + lastCell.Address)
 
     LoadHistoryData = sheetRange
 
@@ -149,7 +149,7 @@ Function LoadAutoFillData() As Variant
     Set ws = Workbooks(BOOK_HISTORY).Worksheets("AutoFill")
 
     Set lastCell = ws.Cells.SpecialCells(xlCellTypeLastCell)
-    Set sheetRange = ws.Range("$A$2:" + lastCell.Address)
+    Set sheetRange = ws.Range("A2:" + lastCell.Address)
 
     LoadAutoFillData = sheetRange
 End Function

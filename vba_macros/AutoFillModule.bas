@@ -9,7 +9,7 @@ Private Sub FillActiveSheet()
     ActiveSheet.AutoFilterMode = False
 
     Set lastCell = ActiveSheet.Cells.SpecialCells(xlCellTypeLastCell)
-    Set sheetRange = ActiveSheet.Range("$A$2:" + lastCell.Address)
+    Set sheetRange = ActiveSheet.Range("A2:" + lastCell.Address)
 
     With sheetRange
         .AutoFilter Field:=1, Criteria1:="<>"
@@ -61,11 +61,11 @@ Private Sub FillPayeeAndCategory(fillData As Variant, rowRange As Range)
                 .Cells(1, c_mark).value = IIf(fillData(iNum, 4) <> "", fillData(iNum, 4), "#")
                 'Debug.Print .Cells(1, c_date).value & " " & .Cells(1, c_comment).value & " " & fillData(iNum, 2) & " " & fillData(iNum, 3)
             End With
-            GoTo ContinueFor
+            GoTo EndSub
         End If
     Next iNum
 
-ContinueFor:
+EndSub:
 
 End Sub
 
@@ -135,7 +135,7 @@ Function LoadAutoFillData() As Variant
     Set ws = Workbooks(BOOK_HISTORY).Worksheets("AutoFill")
 
     Set lastCell = ws.Cells.SpecialCells(xlCellTypeLastCell)
-    Set sheetRange = ws.Range("$A$2:" + lastCell.Address)
+    Set sheetRange = ws.Range("A2:" + lastCell.Address)
 
     LoadAutoFillData = sheetRange
 End Function
