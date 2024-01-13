@@ -3,7 +3,7 @@ Sub CleanUpDraft()
 Attribute CleanUpDraft.VB_ProcData.VB_Invoke_Func = " \n14"
     
     If ActiveWorkbook.Name = Globals.wbDraft() And _
-       (ActiveSheet.Name = "2 (4 BankM)" Or ActiveSheet.Name = "2 (4 BankM V)" Or ActiveSheet.Name = "3 (4 BankS)") Then
+       (ActiveSheet.Name Like "4 Bank*" Or ActiveSheet.Name Like "5 Марина *" Or ActiveSheet.Name Like "7 Марина *") Then
         Call CleanUpSheet
     Else
         MsgBox ("Invalid workbook or sheet: " + ActiveWorkbook.Name + " [" + ActiveSheet.Name + "]")
@@ -11,11 +11,11 @@ Attribute CleanUpDraft.VB_ProcData.VB_Invoke_Func = " \n14"
     
 End Sub
 
-Sub CleanUpSheet()
+Function CleanUpSheet()
 
     lastRow = ActiveSheet.Cells.SpecialCells(xlCellTypeLastCell).Row
     
-    If lastRow <= 5 Or Range("L" + CStr(lastRow)).value = "" Then Exit Sub
+    If lastRow <= 5 Or Range("L" + CStr(lastRow)).value = "" Then Exit Function
    
     Range("L" + CStr(lastRow)).Select
     Selection.Copy
@@ -32,5 +32,5 @@ Sub CleanUpSheet()
     
     Range("K4").Select
 
-End Sub
+End Function
 

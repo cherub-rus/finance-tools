@@ -2,6 +2,15 @@ package org.cherub.fintools.csvtool
 
 private const val qif_cleaned = "*"
 
+enum class Fields(val idx: Int) {
+    DATE(0),
+    AMOUNT(2),
+    PAYEE(3),
+    CATEGORY(4),
+    MARK(5),
+    COMMENT(1),
+}
+
 class CsvProcessor {
 
     fun process(fileText: String): String {
@@ -24,6 +33,9 @@ class CsvProcessor {
                 ))
                 continue
             }
+            if (tokens[Fields.MARK.idx].startsWith("x")) {
+                continue
+            }
             if (accountList.isEmpty()) {
                 throw Exception("Missing account header")
             }
@@ -43,12 +55,12 @@ class CsvProcessor {
 
     private fun parseCsvTransaction(tokens: List<String>) =
         Transaction(
-            date = tokens[0].trim(),
-            comment = tokens[1].trim(),
-            amount = tokens[2].trim(),
-            payee = tokens[3].trim(),
-            category = tokens[4].trim(),
-            cleaned = tokens.size > 5 && tokens[5].trim() == qif_cleaned
+            date = tokens[Fields.DATE.idx].trim(),
+            amount = tokens[Fields.AMOUNT.idx].trim(),
+            payee = tokens[Fields.PAYEE.idx].trim(),
+            category = tokens[Fields.CATEGORY.idx].trim(),
+            cleaned = tokens[Fields.MARK.idx].trim() == qif_cleaned,
+            comment = tokens[Fields.COMMENT.idx].trim()
         )
 
     private fun makeAccountHeader(account: Account): String = mutableListOf<String>().apply {
