@@ -1,5 +1,5 @@
 Attribute VB_Name = "CleanUpModule"
-Sub CleanUpDraft()
+Private Sub CleanUpDraft()
 Attribute CleanUpDraft.VB_ProcData.VB_Invoke_Func = " \n14"
     
     If ActiveWorkbook.Name = BOOK_DRAFT And _
@@ -11,26 +11,41 @@ Attribute CleanUpDraft.VB_ProcData.VB_Invoke_Func = " \n14"
     
 End Sub
 
-Function CleanUpSheet()
+Private Sub CleanUpSheet()
 
     lastRow = ActiveSheet.Cells.SpecialCells(xlCellTypeLastCell).Row
-    
-    If lastRow <= 5 Or Range("L" + CStr(lastRow)).value = "" Then Exit Function
-   
+    footerRow = 0
+
+    If Range("A" + CStr(lastRow)).value = "#" Then
+        footerRow = lastRow
+        lastRow = lastRow - 1
+    End If
+
+    If lastRow < 5 Or Range("L" + CStr(lastRow)).value = "" Then Exit Sub
+
     Range("L" + CStr(lastRow)).Select
     Selection.Copy
-    Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks:=False, Transpose:=False
-    
-    Range("K" + CStr(lastRow)).Select
-    Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks:=False, Transpose:=False
-    
-    Range("K4").Select
-    Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks:=False, Transpose:=False
-    
-    Rows("5:" + CStr(lastRow - 1)).Select
-    Selection.Delete Shift:=xlUp
-    
-    Range("K4").Select
+    Selection.PasteSpecial Paste:=xlPasteValues
 
-End Function
+    Range("K" + CStr(lastRow)).Select
+    Selection.Copy
+    Selection.PasteSpecial Paste:=xlPasteValues
+
+    If footerRow = 0 Then
+        footerRow = lastRow + 1
+        Range("A" + CStr(footerRow)).value = "#"
+        Range("A" + CStr(footerRow) + ":K" + CStr(footerRow)).Interior.Color = 15773696
+
+        Range("K" + CStr(footerRow)).Select
+        Selection.PasteSpecial Paste:=xlPasteValues
+    End If
+
+    If lastRow > 5 Then
+        Rows("5:" + CStr(lastRow - 1)).Select
+        Selection.Delete Shift:=xlUp
+    End If
+
+    Range("K" + CStr(lastRow + 1)).Select
+
+End Sub
 
