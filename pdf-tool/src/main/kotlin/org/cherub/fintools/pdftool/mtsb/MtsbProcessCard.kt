@@ -38,8 +38,10 @@ class MtsbProcessCard(config: ConfigData) : CommonProcessor(config) {
             val sign = if (fields[6].replace("~", "").startsWith("Зачисление")) "" else "-"
             fields[2] = sign + fields[9] // Added minus sign to expense amount
 
-            if (fields[8].isNotEmpty()) { // If transaction time exists, replace log time with it
-                fields[7] = fields[8]
+            if (fields[8].isNotEmpty()) {
+                if (fields[7].endsWith("00:00:00")) { // If transaction time exists, replace log time with it
+                    fields[7] = fields[8]
+                }
                 fields[8] = ""
             }
         } catch (e: Exception) {
