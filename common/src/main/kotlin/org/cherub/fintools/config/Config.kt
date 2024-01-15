@@ -3,11 +3,14 @@ package org.cherub.fintools.config
 import kotlinx.serialization.*
 import kotlinx.serialization.json.Json
 import java.io.File
+import kotlin.io.path.Path
+import kotlin.io.path.pathString
 
 val configFormatter = Json { isLenient = true; prettyPrint = true }
 
 @Serializable
 data class ConfigData (
+    @SerialName("accounts-file")
     val accountsFile: String,
     @Transient
     val accounts: MutableList<BankAccount> = mutableListOf(),
@@ -67,7 +70,8 @@ data class OperationType (
 fun String.loadConfigFromFile(): ConfigData {
     val source = File(this).readText()
     val configData = configFormatter.decodeFromString<ConfigData>(source)
-    val accountsConfig = configData.accountsFile.loadAccountsFromFile()
+    val accountsFileName = Path(this).parent.resolve(configData.accountsFile).pathString
+    val accountsConfig = accountsFileName.loadAccountsFromFile()
     configData.accounts.addAll(accountsConfig.accounts)
     return configData
 }
