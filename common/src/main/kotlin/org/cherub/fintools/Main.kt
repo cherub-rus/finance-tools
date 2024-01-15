@@ -14,7 +14,6 @@ fun main(args: Array<String>) {
     try {
         val config = configName.loadConfigFromFile()
         println(config.toString())
-
     } catch (e: Exception) {
         log(e)
     }
