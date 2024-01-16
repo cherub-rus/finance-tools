@@ -12,12 +12,13 @@ Public Const c_balance = 11
 Public Const c_balance_formula = 12
 Public Const c_message = 13
 
-Public Const hc_comment = 2
-Public Const hc_payee = 4
-Public Const hc_category = 5
-Public Const hc_message = 13
+Public Const hc_comment = 4
+Public Const hc_payee = 2
+Public Const hc_category = 3
+Public Const hc_message = 5
 
 Public Const TRANS_RANGE = "A3:M5000"
+Public Const PAYEE_RANGE = "B3:C500"
 
 Public Const WS_PAYEE = "получатели"
 Public Const WS_HISTORY = "TransHistory"

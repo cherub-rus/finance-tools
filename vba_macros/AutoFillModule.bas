@@ -9,7 +9,7 @@ Private Sub FillActiveSheet()
     ActiveSheet.AutoFilterMode = False
 
     Set lastCell = ActiveSheet.Cells.SpecialCells(xlCellTypeLastCell)
-    Set sheetRange = ActiveSheet.Range("A2:" + lastCell.Address)
+    Set sheetRange = ActiveSheet.Range(Cells(2, 1).Address, lastCell.Address)
 
     With sheetRange
         .AutoFilter Field:=1, Criteria1:="<>"
@@ -135,7 +135,7 @@ Function LoadAutoFillData() As Variant
     Set ws = Workbooks(BOOK_HISTORY).Worksheets("AutoFill")
 
     Set lastCell = ws.Cells.SpecialCells(xlCellTypeLastCell)
-    Set sheetRange = ws.Range("A2:" + lastCell.Address)
+    Set sheetRange = ws.Range(Cells(2, 1).Address, lastCell.Address)
 
     LoadAutoFillData = sheetRange
 End Function

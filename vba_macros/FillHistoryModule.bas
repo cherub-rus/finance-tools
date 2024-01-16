@@ -3,11 +3,9 @@ Attribute VB_Name = "FillHistoryModule"
 Private Sub SortHistory()
 
     Set ws = Workbooks(BOOK_HISTORY).Worksheets(WS_HISTORY)
-
-    Range("A4").Select
-    Range(Selection, ActiveCell.SpecialCells(xlLastCell)).Select
     ws.AutoFilter.Sort.SortFields.Clear
 
+    Set firstCell = Cells(4, 1)
     Set lastCell = ws.Cells.SpecialCells(xlCellTypeLastCell)
 
     With ws.Sort
@@ -15,14 +13,14 @@ Private Sub SortHistory()
          .SortFields.Add Key:=Columns(hc_payee), Order:=xlAscending
          .SortFields.Add Key:=Columns(hc_message), Order:=xlAscending
          .SortFields.Add Key:=Columns(hc_comment), Order:=xlAscending
-         .SetRange Range("A4:" + lastCell.Address)
+         .SetRange Range(firstCell.Address, lastCell.Address)
          .Header = xlNo
          .Apply
     End With
 
-    ws.Range("A3:" + lastCell.Address).RemoveDuplicates Columns:=Array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13), Header:=xlNo
+    ws.Range(firstCell.Address, lastCell.Address).RemoveDuplicates Columns:=Array(1, hc_payee, hc_category, hc_comment, hc_message), Header:=xlNo
 
-    Range("A4").Select
+    firstCell.Select
 
 End Sub
 
@@ -38,7 +36,7 @@ Private Sub FillHistory()
     ActiveSheet.AutoFilterMode = False
 
     Set lastCell = ActiveSheet.Cells.SpecialCells(xlCellTypeLastCell)
-    Set sheetRange = ActiveSheet.Range("A2:" + lastCell.Address)
+    Set sheetRange = ActiveSheet.Range(Cells(2, 1).Address, lastCell.Address)
 
     With sheetRange
         .AutoFilter Field:=1, Criteria1:="<>"
@@ -88,9 +86,6 @@ Function FindOrAddHistoryRow(historyData As Variant, fillData As Variant, rowRan
     If rowRange.Cells(1, c_mark).value = "*" Or trComment Like "*:*" Or trComment Like "*;*" Then 'Or trComment Like "#*" Then
         trComment = ""
     End If
-'    If Not IsEmpty(trComment) And Not trComment Like "[#]*" Then
-'        trComment = ""
-'    End If
 
     For iNum = 1 To UBound(historyData, 1)
         hdComment = historyData(iNum, hc_comment)
@@ -138,7 +133,7 @@ Function LoadHistoryData() As Variant
     Set ws = Workbooks(BOOK_HISTORY).Worksheets(WS_HISTORY)
 
     Set lastCell = ws.Cells.SpecialCells(xlCellTypeLastCell)
-    Set sheetRange = ws.Range("A4:" + lastCell.Address)
+    Set sheetRange = ws.Range(Cells(4, 1).Address, lastCell.Address)
 
     LoadHistoryData = sheetRange
 
@@ -149,7 +144,7 @@ Function LoadAutoFillData() As Variant
     Set ws = Workbooks(BOOK_HISTORY).Worksheets("AutoFill")
 
     Set lastCell = ws.Cells.SpecialCells(xlCellTypeLastCell)
-    Set sheetRange = ws.Range("A2:" + lastCell.Address)
+    Set sheetRange = ws.Range(Cells(2, 1).Address, lastCell.Address)
 
     LoadAutoFillData = sheetRange
 End Function

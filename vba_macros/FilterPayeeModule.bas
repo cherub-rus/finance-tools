@@ -19,8 +19,8 @@ Attribute FilterPayee.VB_ProcData.VB_Invoke_Func = "Ê\n14"
     Workbooks(BOOK_HISTORY).Activate
     Worksheets(WS_PAYEE).Activate
 
-    ActiveSheet.Range("B3:C500").AutoFilter Field:=2
-    ActiveSheet.Range("B3:C500").AutoFilter Field:=1, Criteria1:=pattern
+    ActiveSheet.Range(PAYEE_RANGE).AutoFilter Field:=2
+    ActiveSheet.Range(PAYEE_RANGE).AutoFilter Field:=1, Criteria1:=pattern
     ActiveWindow.ScrollRow = 1
     ActiveSheet.Cells(3, 2).Select
 End Sub
@@ -38,8 +38,8 @@ Attribute FilterPayeeByCategory.VB_ProcData.VB_Invoke_Func = "Ö\n14"
     Workbooks(BOOK_HISTORY).Activate
     Worksheets(WS_PAYEE).Activate
 
-    ActiveSheet.Range("B3:C500").AutoFilter Field:=1
-    ActiveSheet.Range("B3:C500").AutoFilter Field:=2, Criteria1:=pattern
+    ActiveSheet.Range(PAYEE_RANGE).AutoFilter Field:=1
+    ActiveSheet.Range(PAYEE_RANGE).AutoFilter Field:=2, Criteria1:=pattern
     ActiveWindow.ScrollRow = 1
     ActiveSheet.Cells(3, 2).Select
 End Sub
