@@ -8,19 +8,19 @@ Private Sub CleanUpDraft()
     Workbooks(BOOK_DRAFT).Activate
 
     For iNum = 1 To UBound(accountsData, 1)
-        ac_account = accountsData(iNum, 1)
-        ac_type = accountsData(iNum, 2)
-        ac_order = accountsData(iNum, 4)
-        ac_sheet = accountsData(iNum, 5)
+        a_account = accountsData(iNum, ac_account)
+        a_type = accountsData(iNum, ac_type)
+        a_order = accountsData(iNum, ac_order)
+        a_sheet = accountsData(iNum, ac_sheet)
 
-        If ac_account <> "" Then
-            If ac_sheet = "" Then
-                Debug.Print "[" & ac_account & "]"
-                Call CleanUpSheet(CStr(ac_account))
+        If a_account <> "" Then
+            If a_sheet = "" Then
+                Debug.Print "[" & a_account & "]"
+                Call CleanUpSheet(CStr(a_account))
             End If
 
-            If ac_sheet = "Percent" Then
-                Debug.Print ac_account & " " & ac_type & " " & ac_order
+            If a_sheet = "Percent" Then
+                Debug.Print a_account & " " & a_type & " " & a_order
             End If
         End If
 
@@ -88,7 +88,7 @@ Function LoadAccountsData() As Variant
 
     With ws.AutoFilter.Sort
          .SortFields.Clear
-         .SortFields.Add Key:=Columns(4), Order:=xlAscending
+         .SortFields.Add Key:=Columns(ac_order), Order:=xlAscending
          .Apply
     End With
 
@@ -99,8 +99,8 @@ Function LoadAccountsData() As Variant
 
     With ws.AutoFilter.Sort
          .SortFields.Clear
-         .SortFields.Add Key:=Columns(2), Order:=xlAscending
-         .SortFields.Add Key:=Columns(1), Order:=xlAscending
+         .SortFields.Add Key:=Columns(ac_type), Order:=xlAscending
+         .SortFields.Add Key:=Columns(ac_account), Order:=xlAscending
          .Apply
     End With
 
