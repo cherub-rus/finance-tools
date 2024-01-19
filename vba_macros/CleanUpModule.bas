@@ -43,36 +43,42 @@ Private Sub CleanUpSheet(sheetName As String)
 
     Set ws = Workbooks(BOOK_DRAFT).Worksheets(sheetName)
     ws.Activate
+    ws.AutoFilterMode = False
 
     lastRow = ws.Cells.SpecialCells(xlCellTypeLastCell).Row
     footerRow = 0
 
-    If Range("A" + CStr(lastRow)).value = "#" Then
+    If Cells(lastRow, c_date).value = "#" Then
         footerRow = lastRow
         lastRow = lastRow - 1
+    Else
+        noFooter = True
+        footerRow = lastRow + 1
     End If
 
-    If lastRow < 5 Or Range("L" + CStr(lastRow)).value = "" Then Exit Sub
+    Set balanceTestCell = Cells(lastRow, c_balance_formula)
+    Set balanceCell = Cells(lastRow, c_balance)
 
-    balanceL = Range("L" + CStr(lastRow)).value
-    Range("L" + CStr(lastRow)).value = balanceL
+    If lastRow < 5 Or balanceTestCell.value = "" Then Exit Sub
 
-    balance = Range("K" + CStr(lastRow)).value
-    Range("K" + CStr(lastRow)).value = balance
+    balanceTest = balanceTestCell.value
+    balanceTestCell.value = balanceTest
 
-    If footerRow = 0 Then
-        footerRow = lastRow + 1
-        Range("A" + CStr(footerRow)).value = "#"
-        Range("K" + CStr(footerRow)).value = balance
-        Range("A" + CStr(footerRow) + ":K" + CStr(footerRow)).Interior.Color = 15773696
+    balance = balanceCell.value
+    balanceCell.value = balance
+
+    If noFooter Then
+        Cells(footerRow, c_date).value = "#"
+        Cells(footerRow, c_balance).value = balance
+        Range(Cells(footerRow, c_date), Cells(footerRow, c_balance)).Interior.Color = 15773696
     End If
 
     If lastRow > 5 Then
-        Rows("5:" + CStr(lastRow - 1)).Select
+        Range(Cells(5, 1), Cells(lastRow - 1, 1)).EntireRow.Select
         Selection.Delete Shift:=xlUp
     End If
 
-    Range("K" + CStr(lastRow + 1)).Select
+    balanceCell.Select
 
 End Sub
 
@@ -87,7 +93,7 @@ Function LoadAccountsData() As Variant
     End With
 
     Set lastCell = ws.Cells.SpecialCells(xlCellTypeLastCell)
-    Set sheetRange = ws.Range("A4:" + lastCell.Address)
+    Set sheetRange = ws.Range(Cells(4, 1).Address, lastCell.Address)
 
     LoadAccountsData = sheetRange
 
