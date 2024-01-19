@@ -19,6 +19,7 @@ Public Const hc_message = 5
 
 Public Const ac_account = 1
 Public Const ac_type = 2
+Public Const ac_card = 3
 Public Const ac_order = 4
 Public Const ac_sheet = 5
 
