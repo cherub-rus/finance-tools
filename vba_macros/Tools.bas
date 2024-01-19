@@ -1,6 +1,6 @@
 Attribute VB_Name = "Tools"
 
-Private Sub BackupModules()
+Sub BackupModules()
 
     Dim VBComponent As Object
     Dim path As String
