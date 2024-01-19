@@ -8,20 +8,20 @@ Private Sub CleanUpDraft()
     Workbooks(BOOK_DRAFT).Activate
 
     For iNum = 1 To UBound(accountsData, 1)
-        a_account = accountsData(iNum, ac_account)
-        a_type = accountsData(iNum, ac_type)
-        a_order = accountsData(iNum, ac_order)
-        a_sheet = accountsData(iNum, ac_sheet)
+        aAccount = accountsData(iNum, ac_account)
+        aType = accountsData(iNum, ac_type)
+        aOrder = accountsData(iNum, ac_order)
+        aSheet = accountsData(iNum, ac_sheet)
 
-        If a_account <> "" Then
-            If a_sheet = "" Then
-                Debug.Print "[" & a_account & "]"
-                Call CleanUpSheet(CStr(a_account))
+        If aAccount <> "" Then
+            If aSheet = "" Then
+                'Debug.Print "[" & aAccount & "]"
+                Call CleanUpSheet(CStr(aAccount))
             End If
 
-            If a_sheet = "Percents" Then
-                'TODO
-                Debug.Print a_account & " " & a_type & " " & a_order
+            If aSheet = "Percents" Then
+                'TODO cleanup amounts and rollback marks.
+                Debug.Print aAccount & " " & aType & " " & aOrder
             End If
         End If
 
