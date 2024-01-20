@@ -6,6 +6,7 @@ Sub Export()
     accountsData = LoadAccountsData()
 
     Workbooks(BOOK_DRAFT).Activate
+    'TODO backup workbook
 
     outputPrefix = ActiveWorkbook.path & "\" & OWNER & "\" & "my_" & Format(Now(), "yyyy-mm-dd") '-hhmmss")
 
@@ -23,7 +24,6 @@ Sub Export()
         If aAccount <> "" Then
             If aSheet = "" Then
                 Call UpdateBalances(aAccount)
-                'TODO backup
                 Call ExportSheet(outputPrefix, aAccount, aType, aCard)
                 Call CleanUpSheet(aAccount)
             End If
@@ -75,7 +75,45 @@ Function LoadAccountsData() As Variant
 
 End Function
 
-Sub CleanUpSheet(sheetName As String)
+Private Sub UpdateBalances(sheetName As String)
+
+    Set ws = Workbooks(BOOK_DRAFT).Worksheets(sheetName)
+    ws.Activate
+    ws.AutoFilterMode = False
+
+    lastRow = ws.Cells.SpecialCells(xlCellTypeLastCell).Row
+    footerRow = 0
+
+    If Cells(lastRow, c_date).value = "#" Then
+        footerRow = lastRow
+        lastRow = lastRow - 1
+    Else
+        noFooter = True
+        footerRow = lastRow + 1
+    End If
+
+    Set balanceTestCell = Cells(lastRow, c_balance_formula)
+    Set balanceCell = Cells(lastRow, c_balance)
+
+    If lastRow < 5 Or balanceTestCell.value = "" Then Exit Sub
+
+    balanceTest = balanceTestCell.value
+    balanceTestCell.value = balanceTest
+
+    balance = balanceCell.value
+    balanceCell.value = balance
+
+    If noFooter Then
+        Cells(footerRow, c_date).value = "#"
+        Cells(footerRow, c_balance).value = balance
+        Range(Cells(footerRow, c_date), Cells(footerRow, c_balance)).Interior.Color = 15773696
+    End If
+    
+    'TODO update balances on Accounts sheet
+
+End Sub
+
+Private Sub CleanUpSheet(sheetName As String)
 
     Set ws = Workbooks(BOOK_DRAFT).Worksheets(sheetName)
     ws.Activate

@@ -1,6 +1,5 @@
 Attribute VB_Name = "ExportModule"
 
-
 Sub ExportSheet(flName As String, accountName As String, accountType As String, accountCard As String)
 
     csvContent = ""
@@ -79,40 +78,4 @@ Function MakeCsvAccountHeader(accountName As String, accountType As String, acco
         "Account" & vbTab & accountCard & vbTab & accountType & vbTab & accountName & vbTab & vbTab & vbCrLf & _
         "" & vbTab & vbTab & vbTab & vbTab & vbTab '& vbCrLf
 End Function
-
-Sub UpdateBalances(sheetName As String)
-
-    Set ws = Workbooks(BOOK_DRAFT).Worksheets(sheetName)
-    ws.Activate
-    ws.AutoFilterMode = False
-
-    lastRow = ws.Cells.SpecialCells(xlCellTypeLastCell).Row
-    footerRow = 0
-
-    If Cells(lastRow, c_date).value = "#" Then
-        footerRow = lastRow
-        lastRow = lastRow - 1
-    Else
-        noFooter = True
-        footerRow = lastRow + 1
-    End If
-
-    Set balanceTestCell = Cells(lastRow, c_balance_formula)
-    Set balanceCell = Cells(lastRow, c_balance)
-
-    If lastRow < 5 Or balanceTestCell.value = "" Then Exit Sub
-
-    balanceTest = balanceTestCell.value
-    balanceTestCell.value = balanceTest
-
-    balance = balanceCell.value
-    balanceCell.value = balance
-
-    If noFooter Then
-        Cells(footerRow, c_date).value = "#"
-        Cells(footerRow, c_balance).value = balance
-        Range(Cells(footerRow, c_date), Cells(footerRow, c_balance)).Interior.Color = 15773696
-    End If
-
-End Sub
 
