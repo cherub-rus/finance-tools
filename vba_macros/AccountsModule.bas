@@ -6,9 +6,13 @@ Sub Export()
     accountsData = LoadAccountsData()
 
     Workbooks(BOOK_DRAFT).Activate
-    'TODO backup workbook
 
-    outputPrefix = ActiveWorkbook.path & "\" & OWNER & "\" & "my_" & Format(Now(), "yyyy-mm-dd") '-hhmmss")
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    backupName = ActiveWorkbook.path & "\" & fso.GetBaseName(ActiveWorkbook.Name) & "_" & Format(Now(), "yyyy-mm-dd-hhmmss") & "." & fso.GetExtensionName(ActiveWorkbook.Name)
+
+    ActiveWorkbook.SaveCopyAs backupName
+
+    outputPrefix = ActiveWorkbook.path & "\" & OWNER & "\" & "my_" & Format(Now(), "yyyy-mm-dd") 'TODO -hhmmss")
 
     Call CleanOutput(outputPrefix)
 
