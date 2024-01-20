@@ -1,34 +1,7 @@
 Attribute VB_Name = "ExportModule"
-Private Sub ExportUpDraft()
 
-    Dim accountsData As Variant
-    accountsData = LoadAccountsData()
 
-    Workbooks(BOOK_DRAFT).Activate
-
-    flName = ActiveWorkbook.path & "\" & OWNER & "\" & "my_" & Format(Now(), "yyyy-mm-dd-hhmmss")
-
-    For iNum = 1 To UBound(accountsData, 1)
-        aAccount = accountsData(iNum, ac_account)
-        aType = accountsData(iNum, ac_type)
-        aCard = accountsData(iNum, ac_card)
-        aOrder = accountsData(iNum, ac_order)
-        aSheet = accountsData(iNum, ac_sheet)
-
-        If aAccount <> "" Then
-            If aSheet = "" Then
-                Call ExportSheet(CStr(flName), CStr(aAccount), CStr(aType), CStr(aCard))
-            End If
-
-            If aSheet = "Percents" Then
-                'Debug.Print aAccount & " " & aAype & " " & a_order
-            End If
-        End If
-    Next iNum
-
-End Sub
-
-Private Sub ExportSheet(flName As String, accountName As String, accountType As String, accountCard As String)
+Sub ExportSheet(flName As String, accountName As String, accountType As String, accountCard As String)
 
     csvContent = ""
     qifContent = ""
@@ -107,4 +80,39 @@ Function MakeCsvAccountHeader(accountName As String, accountType As String, acco
         "" & vbTab & vbTab & vbTab & vbTab & vbTab '& vbCrLf
 End Function
 
+Sub UpdateBalances(sheetName As String)
+
+    Set ws = Workbooks(BOOK_DRAFT).Worksheets(sheetName)
+    ws.Activate
+    ws.AutoFilterMode = False
+
+    lastRow = ws.Cells.SpecialCells(xlCellTypeLastCell).Row
+    footerRow = 0
+
+    If Cells(lastRow, c_date).value = "#" Then
+        footerRow = lastRow
+        lastRow = lastRow - 1
+    Else
+        noFooter = True
+        footerRow = lastRow + 1
+    End If
+
+    Set balanceTestCell = Cells(lastRow, c_balance_formula)
+    Set balanceCell = Cells(lastRow, c_balance)
+
+    If lastRow < 5 Or balanceTestCell.value = "" Then Exit Sub
+
+    balanceTest = balanceTestCell.value
+    balanceTestCell.value = balanceTest
+
+    balance = balanceCell.value
+    balanceCell.value = balance
+
+    If noFooter Then
+        Cells(footerRow, c_date).value = "#"
+        Cells(footerRow, c_balance).value = balance
+        Range(Cells(footerRow, c_date), Cells(footerRow, c_balance)).Interior.Color = 15773696
+    End If
+
+End Sub
 
