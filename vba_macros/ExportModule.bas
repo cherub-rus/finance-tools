@@ -1,6 +1,6 @@
 Attribute VB_Name = "ExportModule"
 
-Sub ExportSheet(flName As String, accountName As String, accountType As String, accountCard As String)
+Sub ExportAccount(flName As String, sheetName As String, accountName As String, accountType As String, accountCard As String)
 
     csvContent = ""
     qifContent = ""
@@ -8,7 +8,7 @@ Sub ExportSheet(flName As String, accountName As String, accountType As String, 
     csvHeader = MakeCsvAccountHeader(accountName, accountType, accountCard)
     qifHeader = MakeQifAccountHeader(accountName, accountType)
 
-    Set ws = Workbooks(BOOK_DRAFT).Worksheets(accountName)
+    Set ws = Workbooks(BOOK_DRAFT).Worksheets(sheetName)
     ws.AutoFilterMode = False
 
     Set lastCell = ws.Cells.SpecialCells(xlCellTypeLastCell)
@@ -22,7 +22,12 @@ Sub ExportSheet(flName As String, accountName As String, accountType As String, 
         trComment = trans.Cells(1, c_comment).value
         trMark = trans.Cells(1, c_mark).value
 
-        If trDate = "" Or trMark Like "x*" Then GoTo nextTrans
+        If sheetName <> accountName Then 'Percents mode
+            trOperation = trans.Cells(1, c_operation).value
+            If trOperation <> accountName Then GoTo nextTrans
+        End If
+
+        If trDate = "" Or (trDate = "#" And trComment = "") Or trMark Like "x*" Then GoTo nextTrans
 
         csvContent = csvContent & vbCrLf & _
             trDate & vbTab & _

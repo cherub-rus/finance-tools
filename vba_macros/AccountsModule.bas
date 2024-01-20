@@ -23,14 +23,13 @@ Sub Export()
 
         If aAccount <> "" Then
             If aSheet = "" Then
-                Call UpdateBalances(aAccount)
-                Call ExportSheet(outputPrefix, aAccount, aType, aCard)
+                Call UpdateBalances(aAccount) 'TODO update balances on Accounts sheet
+                Call ExportAccount(outputPrefix, aAccount, aAccount, aType, aCard)
                 Call CleanUpSheet(aAccount)
             End If
 
             If aSheet = "Percents" Then
-                'Debug.Print aAccount & " " & aAype & " " & a_order
-                'TODO export
+                Call ExportAccount(outputPrefix, "Percents", aAccount, aType, aCard)
                 'TODO cleanup amounts and rollback marks.
             End If
         End If
@@ -72,6 +71,8 @@ Function LoadAccountsData() As Variant
          .SortFields.Add Key:=Columns(ac_account), Order:=xlAscending
          .Apply
     End With
+    
+    Cells(3, 1).Select
 
 End Function
 
@@ -108,8 +109,6 @@ Private Sub UpdateBalances(sheetName As String)
         Cells(footerRow, c_balance).value = balance
         Range(Cells(footerRow, c_date), Cells(footerRow, c_balance)).Interior.Color = 15773696
     End If
-    
-    'TODO update balances on Accounts sheet
 
 End Sub
 
@@ -130,7 +129,7 @@ Private Sub CleanUpSheet(sheetName As String)
         Selection.Delete Shift:=xlUp
     End If
 
-    Cells(lastRow, c_balance).Select
+    Cells(6, c_balance).Select
 
 End Sub
 
