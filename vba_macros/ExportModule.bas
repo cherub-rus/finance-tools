@@ -2,8 +2,7 @@ Attribute VB_Name = "ExportModule"
 
 Sub ExportAccount(flName As String, sheetName As String, accountName As String, accountType As String, accountCard As String)
 
-    csvContent = ""
-    qifContent = ""
+    Dim csvContent As String, qifContent As String
 
     csvHeader = MakeCsvAccountHeader(accountName, accountType, accountCard)
     qifHeader = MakeQifAccountHeader(accountName, accountType)
@@ -22,7 +21,7 @@ Sub ExportAccount(flName As String, sheetName As String, accountName As String, 
         trComment = trans.Cells(1, c_comment).value
         trMark = trans.Cells(1, c_mark).value
 
-        If sheetName <> accountName Then 'Percents mode
+        If sheetName = WS_PERCENTS Then
             trOperation = trans.Cells(1, c_operation).value
             If trOperation <> accountName Then GoTo nextTrans
         End If
@@ -53,17 +52,31 @@ nextTrans:
 
     If csvContent <> "" Then
         csvContent = csvHeader & csvContent
-        Open flName & ".csv" For Append As #1
-            Print #1, csvContent
-        Close #1
+        Call FileAppend(flName & ".csv", csvContent)
     End If
 
     If qifContent <> "" Then
         qifContent = qifHeader & qifContent
-        Open flName & ".qif" For Append As #2
-            Print #2, qifContent
-        Close #2
+        Call FileAppend(flName & ".qif", qifContent)
     End If
+
+End Sub
+
+Sub FileAppend(fileName As String, content As String)
+
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    If Not fso.FileExists(fileName) Then
+        Call fso.CreateTextFile(fileName).Close
+    End If
+
+    With CreateObject("ADODB.Stream")
+        .Type = 2: .Charset = "utf-8": .Open
+        .LoadFromFile (fileName)
+        .ReadText
+        .WriteText content & vbCrLf
+        .SaveToFile fileName, 2
+        .Close
+    End With
 
 End Sub
 
@@ -83,4 +96,3 @@ Function MakeCsvAccountHeader(accountName As String, accountType As String, acco
         "Account" & vbTab & accountCard & vbTab & accountType & vbTab & accountName & vbTab & vbTab & vbCrLf & _
         "" & vbTab & vbTab & vbTab & vbTab & vbTab '& vbCrLf
 End Function
-

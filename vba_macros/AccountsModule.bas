@@ -28,12 +28,12 @@ Sub Export()
                 Call CleanUpSheet(aAccount)
             End If
 
-            If aSheet = "Percents" Then
-                Call ExportAccount(outputPrefix, "Percents", aAccount, aType, aCard)
-                'TODO cleanup amounts and rollback marks.
+            If aSheet = WS_PERCENTS Then
+                Call ExportAccount(outputPrefix, WS_PERCENTS, aAccount, aType, aCard)
             End If
         End If
     Next iNum
+    Call CleanUpPercents
 
 End Sub
 
@@ -129,8 +129,29 @@ Private Sub CleanUpSheet(sheetName As String)
         Selection.Delete Shift:=xlUp
     End If
 
-    Cells(6, c_balance).Select
+    Cells(3, 1).Select
 
 End Sub
 
+Private Sub CleanUpPercents()
 
+    Set ws = Workbooks(BOOK_DRAFT).Worksheets(WS_PERCENTS)
+    ws.Activate
+    ws.AutoFilterMode = False
+
+    Set lastCell = ws.Cells.SpecialCells(xlCellTypeLastCell)
+    Set sheetRows = ws.Range(Cells(5, 1).Address, lastCell.Address).EntireRow
+
+    For Each trans In sheetRows
+        If trans.Cells(1, c_amount).value <> "" Then
+            trans.Cells(1, c_amount).value = ""
+        End If
+
+        If trans.Cells(1, c_mark).value = "" Then
+            trans.Cells(1, c_mark).value = "x"
+        End If
+    Next
+
+    Cells(3, 1).Select
+
+End Sub

@@ -26,6 +26,7 @@ Public Const ac_sheet = 5
 Public Const TRANS_RANGE = "A3:M5000"
 Public Const PAYEE_RANGE = "B3:C500"
 
+Public Const WS_PERCENTS = "Percents"
 Public Const WS_PAYEE = "получатели"
 Public Const WS_HISTORY = "TransHistory"
 
