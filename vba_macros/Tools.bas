@@ -39,7 +39,7 @@ Sub BackupModules()
         End If
     Next
 
-    Call MsgBox("Successfully exported " & CStr(count) & " VBA files to " & directory)
+    'Call MsgBox("Successfully exported " & CStr(count) & " VBA files to " & directory)
 End Sub
 
 Private Sub FixMonth()
