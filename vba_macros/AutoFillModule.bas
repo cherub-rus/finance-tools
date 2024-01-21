@@ -6,7 +6,7 @@ Private Sub FillActiveSheet()
 
     fillData = LoadAutoFillData()
 
-    ActiveSheet.AutoFilterMode = False
+    Call ClearWsFilter(ActiveSheet)
 
     Set lastCell = ActiveSheet.Cells.SpecialCells(xlCellTypeLastCell)
     Set sheetRange = ActiveSheet.Range(Cells(2, 1).Address, lastCell.Address)
@@ -41,7 +41,7 @@ Private Sub FillActiveSheet()
         Next
     End With
 
-    ActiveSheet.AutoFilterMode = False
+    Call ClearWsFilter(ActiveSheet)
 End Sub
 
 Private Sub FillPayeeAndCategory(fillData As Variant, rowRange As Range)

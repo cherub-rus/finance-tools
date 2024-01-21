@@ -8,11 +8,11 @@ Sub Export()
     Workbooks(BOOK_DRAFT).Activate
 
     Set fso = CreateObject("Scripting.FileSystemObject")
-    backupName = ActiveWorkbook.path & "\" & fso.GetBaseName(ActiveWorkbook.Name) & "_" & Format(Now(), "yyyy-mm-dd-hhmmss") & "." & fso.GetExtensionName(ActiveWorkbook.Name)
+    backupName = ActiveWorkbook.path & "\" & OWNER & "\" & fso.GetBaseName(ActiveWorkbook.Name) & "_" & Format(Now(), "yyyy-mm-dd-hhmmss") & "." & fso.GetExtensionName(ActiveWorkbook.Name)
 
     ActiveWorkbook.SaveCopyAs backupName
 
-    outputPrefix = ActiveWorkbook.path & "\" & OWNER & "\" & "my_" & Format(Now(), "yyyy-mm-dd") 'TODO -hhmmss")
+    outputPrefix = ActiveWorkbook.path & "\" & OWNER & "\" & "my_" & Format(Now(), "yyyy-mm-dd-hhmmss")
 
     Call CleanOutput(outputPrefix)
 
@@ -82,9 +82,10 @@ End Function
 
 Private Sub UpdateBalances(sheetName As String)
 
+    Dim ws As Worksheet
     Set ws = Workbooks(BOOK_DRAFT).Worksheets(sheetName)
     ws.Activate
-    ws.AutoFilterMode = False
+    Call ClearWsFilter(ws)
 
     lastRow = ws.Cells.SpecialCells(xlCellTypeLastCell).Row
     footerRow = 0
@@ -118,9 +119,10 @@ End Sub
 
 Private Sub CleanUpSheet(sheetName As String)
 
+    Dim ws As Worksheet
     Set ws = Workbooks(BOOK_DRAFT).Worksheets(sheetName)
     ws.Activate
-    ws.AutoFilterMode = False
+    Call ClearWsFilter(ws)
 
     lastRow = ws.Cells.SpecialCells(xlCellTypeLastCell).Row
 
@@ -139,9 +141,10 @@ End Sub
 
 Private Sub CleanUpPercents()
 
+    Dim ws As Worksheet
     Set ws = Workbooks(BOOK_DRAFT).Worksheets(WS_PERCENTS)
     ws.Activate
-    ws.AutoFilterMode = False
+    Call ClearWsFilter(ws)
 
     Set lastCell = ws.Cells.SpecialCells(xlCellTypeLastCell)
     Set sheetRows = ws.Range(Cells(5, 1).Address, lastCell.Address).EntireRow

@@ -7,8 +7,9 @@ Sub ExportAccount(flName As String, sheetName As String, accountName As String, 
     csvHeader = MakeCsvAccountHeader(accountName, accountType, accountCard)
     qifHeader = MakeQifAccountHeader(accountName, accountType)
 
+    Dim ws As Worksheet
     Set ws = Workbooks(BOOK_DRAFT).Worksheets(sheetName)
-    ws.AutoFilterMode = False
+    Call ClearWsFilter(ws)
 
     Set lastCell = ws.Cells.SpecialCells(xlCellTypeLastCell)
     Set sheetRows = ws.Range(Cells(4, 1).Address, lastCell.Address).EntireRow

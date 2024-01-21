@@ -4,8 +4,13 @@ Sub ClearFilter()
 Attribute ClearFilter.VB_ProcData.VB_Invoke_Func = "É\n14"
     'Ctrl Shift + Q [É]
 
-    If ActiveSheet.AutoFilterMode Then
-        If ActiveSheet.FilterMode Then ActiveSheet.ShowAllData
+    Call ClearFilter(ActiveSheet)
+End Sub
+
+Sub ClearWsFilter(ws As Worksheet)
+
+    If ws.AutoFilterMode Then
+        If ws.FilterMode Then ws.ShowAllData
     End If
 
 End Sub

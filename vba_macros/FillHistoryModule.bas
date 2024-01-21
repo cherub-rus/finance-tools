@@ -33,7 +33,7 @@ Private Sub FillHistory()
     fillData = LoadAutoFillData()
     historyData = LoadHistoryData()
 
-    ActiveSheet.AutoFilterMode = False
+    Call ClearWsFilter(ActiveSheet)
 
     Set lastCell = ActiveSheet.Cells.SpecialCells(xlCellTypeLastCell)
     Set sheetRange = ActiveSheet.Range(Cells(2, 1).Address, lastCell.Address)
@@ -64,7 +64,7 @@ Private Sub FillHistory()
         Next
     End With
 
-    ActiveSheet.AutoFilterMode = False
+    Call ClearWsFilter(ActiveSheet)
 End Sub
 
 Function FindOrAddHistoryRow(historyData As Variant, fillData As Variant, rowRange As Range) As Boolean
