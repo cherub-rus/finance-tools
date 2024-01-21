@@ -29,7 +29,8 @@ Sub Export()
 
         If aAccount <> "" Then
             If aSheet = "" Then
-                Call UpdateBalances(aAccount) 'TODO update balances on Accounts sheet
+                balance@ = UpdateBalances(aAccount)
+                Call SetAccountBalance(aAccount, balance)
                 Call ExportAccount(outputPrefix, aAccount, aAccount, aType, aCard)
                 Call CleanUpSheet(aAccount)
             End If
@@ -82,7 +83,7 @@ Function LoadAccountsData() As Variant
 
 End Function
 
-Private Sub UpdateBalances(sheetName As String)
+Function UpdateBalances(sheetName As String) As Currency
 
     Dim ws As Worksheet
     Set ws = Workbooks(BOOK_DRAFT).Worksheets(sheetName)
@@ -103,7 +104,7 @@ Private Sub UpdateBalances(sheetName As String)
     Set balanceTestCell = Cells(lastRow, c_balance_formula)
     Set balanceCell = Cells(lastRow, c_balance)
 
-    If lastRow < 5 Or balanceTestCell.value = "" Then Exit Sub
+    If lastRow < 5 Or balanceTestCell.value = "" Then Exit Function
 
     balanceTest = balanceTestCell.value
     balanceTestCell.value = balanceTest
@@ -116,6 +117,20 @@ Private Sub UpdateBalances(sheetName As String)
         Cells(footerRow, c_balance).value = balance
         Range(Cells(footerRow, c_date), Cells(footerRow, c_balance)).Interior.Color = 15773696
     End If
+
+    UpdateBalances = balance
+End Function
+
+Sub SetAccountBalance(accountName As String, balance As Currency)
+
+    Set ws = Workbooks(BOOK_DRAFT).Worksheets("Accounts")
+
+    With ws.Columns(ac_account)
+        If Not .Find(What:=accountName, LookIn:=xlValues) Is Nothing Then
+            accountRow = .Find(What:=accountName, LookIn:=xlValues).Row
+            ws.Cells(accountRow, ac_balance).value = balance
+        End If
+    End With
 
 End Sub
 

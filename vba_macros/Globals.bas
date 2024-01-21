@@ -23,6 +23,7 @@ Public Const ac_type = 2
 Public Const ac_card = 3
 Public Const ac_order = 4
 Public Const ac_sheet = 5
+Public Const ac_balance = 6
 
 Public Const TRANS_RANGE = "A3:M5000"
 Public Const PAYEE_RANGE = "B3:C500"
@@ -38,4 +39,3 @@ Public Const BOOK_HISTORY = OWNER + "_history.xlsx"
 
 Public Const BASE_PATH = ".."
 Public Const BACKUP_TO_GIT_PATH = BASE_PATH + "\finance-tools\vba_macros"
-
