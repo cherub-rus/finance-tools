@@ -2,28 +2,30 @@ Attribute VB_Name = "AccountsModule"
 
 Sub Export()
 
-    Dim accountsData As Variant, outputPrefix As String
+    Dim accountsData As Variant
     accountsData = LoadAccountsData()
 
     Workbooks(BOOK_DRAFT).Activate
 
     Set fso = CreateObject("Scripting.FileSystemObject")
-    backupName = ActiveWorkbook.path & "\" & OWNER & "\" & fso.GetBaseName(ActiveWorkbook.Name) & "_" & Format(Now(), "yyyy-mm-dd-hhmmss") & "." & fso.GetExtensionName(ActiveWorkbook.Name)
+    basePath$ = ActiveWorkbook.path & "\" & OWNER & "\"
+    awFileName$ = fso.GetBaseName(ActiveWorkbook.Name)
+    awFileExt$ = fso.GetExtensionName(ActiveWorkbook.Name)
+    stringNow$ = Format(Now(), "yyyy-mm-dd-hhmmss")
 
+    backupName$ = basePath & awFileName & "_" & stringNow & "." & awFileExt
     ActiveWorkbook.SaveCopyAs backupName
 
-    outputPrefix = ActiveWorkbook.path & "\" & OWNER & "\" & "my_" & Format(Now(), "yyyy-mm-dd-hhmmss")
-
+    outputPrefix$ = basePath & "my_" & stringNow
     Call CleanOutput(outputPrefix)
 
-    For iNum = 1 To UBound(accountsData, 1)
-        Dim aAccount As String, aType As String, aCard As String, aOrder As String, aSheet As String
+    For iNum& = 1 To UBound(accountsData, 1)
 
-        aAccount = accountsData(iNum, ac_account)
-        aType = accountsData(iNum, ac_type)
-        aCard = accountsData(iNum, ac_card)
-        aOrder = accountsData(iNum, ac_order)
-        aSheet = accountsData(iNum, ac_sheet)
+        aAccount$ = accountsData(iNum, ac_account)
+        aType$ = accountsData(iNum, ac_type)
+        aCard$ = accountsData(iNum, ac_card)
+        aOrder% = accountsData(iNum, ac_order)
+        aSheet$ = accountsData(iNum, ac_sheet)
 
         If aAccount <> "" Then
             If aSheet = "" Then

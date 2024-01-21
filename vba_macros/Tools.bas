@@ -2,12 +2,7 @@ Attribute VB_Name = "Tools"
 
 Sub BackupModules()
 
-    Dim VBComponent As Object
-    Dim path As String
-    Dim directory As String
-    Dim fso As Object
-
-    directory = ActiveWorkbook.path & "\arc\macro_" & Format(Now(), "yyyy-mm-dd-hhmmss")
+    directory$ = ActiveWorkbook.path & "\arc\macro_" & Format(Now(), "yyyy-mm-dd-hhmmss")
     Response = MsgBox("Экспортируем макросы PERSONAL.XLSB в Git:" + vbCrLf + "Да - " + BACKUP_TO_GIT_PATH + vbCrLf + "Нет - " + directory, vbYesNoCancel + vbQuestion, "Уверен?")
 
     Select Case Response
@@ -20,7 +15,7 @@ Sub BackupModules()
             If Not fso.FolderExists(directory) Then
                 Call fso.CreateFolder(directory)
             End If
-        Set fso = Nothing
+            Set fso = Nothing
     End Select
 
     count = 0
@@ -28,7 +23,7 @@ Sub BackupModules()
     For Each VBComponent In Workbooks("PERSONAL.XLSB").VBProject.VBComponents
         If VBComponent.Type = 1 And Not VBComponent.Name = "MailTools" Then
             Debug.Print VBComponent.Name
-            path = directory & "\" & VBComponent.Name & ".bas"
+            path$ = directory & "\" & VBComponent.Name & ".bas"
             Call VBComponent.Export(path)
 
             If Err.Number = 0 Then
@@ -39,12 +34,11 @@ Sub BackupModules()
         End If
     Next
 
-    'Call MsgBox("Successfully exported " & CStr(count) & " VBA files to " & directory)
+    'Call MsgBox("Successfully exported " & count & " VBA files to " & directory)
 End Sub
 
 Private Sub FixMonth()
 
-    Dim findValues, replaceValues As Variant
     findValues = Array("января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "бря")
     replaceValues = Array("январь", "февраль", "март", "апрель", "май", "июнь", "июль", "август", "брь")
 
