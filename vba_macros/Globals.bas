@@ -11,6 +11,7 @@ Public Const c_time = 8
 Public Const c_balance = 11
 Public Const c_balance_formula = 12
 Public Const c_message = 13
+Public Const c_account = 7
 
 Public Const hc_comment = 4
 Public Const hc_payee = 2

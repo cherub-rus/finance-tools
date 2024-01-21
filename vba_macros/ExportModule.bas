@@ -23,8 +23,8 @@ Sub ExportAccount(flName As String, sheetName As String, accountName As String, 
         trMark = trans.Cells(1, c_mark).value
 
         If sheetName = WS_PERCENTS Then
-            trOperation = trans.Cells(1, c_operation).value
-            If trOperation <> accountName Then GoTo nextTrans
+            trAccount = trans.Cells(1, c_account).value
+            If trAccount <> accountName Then GoTo nextTrans
         End If
 
         If trDate = "" Or (trDate = "#" And trComment = "") Or trMark Like "x*" Then GoTo nextTrans
