@@ -7,9 +7,11 @@ Sub Export()
 
     Workbooks(BOOK_DRAFT).Activate
 
-    nameBase$ = ActiveWorkbook.path & "\" & OWNER & "\" & Format(Now(), "yyyymmdd-hhmmss") & "_"
+    nameBase$ = ActiveWorkbook.path & "\" & OWNER & "\export\" & Format(Now(), "yyyymmdd-hhmmss") & "_"
     balanceFileName$ = nameBase & "остатки.txt"
     outputPrefix$ = nameBase & OWNER
+
+    Call CleanOutput(nameBase)
 
     ActiveWorkbook.SaveCopyAs nameBase & ActiveWorkbook.Name
 
@@ -25,6 +27,7 @@ Sub Export()
             If aSheet = "" Then
                 balance@ = UpdateBalances(aAccount)
                 Call SetAccountBalance(aAccount, balance)
+                Call FileAppend(balanceFileName, aAccount & vbTab & FormatCurrency(balance, 2, vbTrue, vbFalse, vbTrue))
                 Call ExportAccount(outputPrefix, aAccount, aAccount, aType, aCard)
                 Call CleanUpSheet(aAccount)
             End If
@@ -36,21 +39,13 @@ Sub Export()
     Next iNum
     Call CleanUpPercents
 
+    ActiveWorkbook.Worksheets("Accounts").Activate
+
 End Sub
 
-'Call CleanOutput(outputPrefix)
-
 Sub CleanOutput(filePrefix As String)
-
-    With CreateObject("Scripting.FileSystemObject")
-        If .FileExists(filePrefix & ".csv") Then
-            .DeleteFile filePrefix & ".csv"
-        End If
-        If .FileExists(filePrefix & ".qif") Then
-            .DeleteFile filePrefix & ".qif"
-        End If
-    End With
-
+    On Error Resume Next
+    Kill filePrefix & "*.*"
 End Sub
 
 Function LoadAccountsData() As Variant
