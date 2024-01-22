@@ -7,16 +7,15 @@ Sub Export()
 
     Workbooks(BOOK_DRAFT).Activate
 
-    Set fso = CreateObject("Scripting.FileSystemObject")
-    basePath$ = ActiveWorkbook.path & "\" & OWNER & "\"
-    awFileName$ = fso.GetBaseName(ActiveWorkbook.Name)
-    awFileExt$ = fso.GetExtensionName(ActiveWorkbook.Name)
-    stringNow$ = Format(Now(), "yyyy-mm-dd-hhmmss")
+    awFileName$ = CreateObject("Scripting.FileSystemObject").GetFileName(ActiveWorkbook.Name)
+    nameBase$ = ActiveWorkbook.path & "\" & OWNER & "\" & Format(Now(), "yyyymmdd-hhmmss") & "_"
 
-    backupName$ = basePath & awFileName & "_" & stringNow & "." & awFileExt
-    ActiveWorkbook.SaveCopyAs backupName
+    backupBookName$ = nameBase & awFileName
+    balanceFileName$ = nameBase & "остатки.txt"
+    outputPrefix$ = nameBase & "my"
 
-    outputPrefix$ = basePath & "my_" & stringNow
+    ActiveWorkbook.SaveCopyAs backupBookName
+
     Call CleanOutput(outputPrefix)
 
     For iNum& = 1 To UBound(accountsData, 1)
