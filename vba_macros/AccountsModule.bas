@@ -7,16 +7,11 @@ Sub Export()
 
     Workbooks(BOOK_DRAFT).Activate
 
-    awFileName$ = CreateObject("Scripting.FileSystemObject").GetFileName(ActiveWorkbook.Name)
     nameBase$ = ActiveWorkbook.path & "\" & OWNER & "\" & Format(Now(), "yyyymmdd-hhmmss") & "_"
-
-    backupBookName$ = nameBase & awFileName
     balanceFileName$ = nameBase & "остатки.txt"
-    outputPrefix$ = nameBase & "my"
+    outputPrefix$ = nameBase & OWNER
 
-    ActiveWorkbook.SaveCopyAs backupBookName
-
-    Call CleanOutput(outputPrefix)
+    ActiveWorkbook.SaveCopyAs nameBase & ActiveWorkbook.Name
 
     For iNum& = 1 To UBound(accountsData, 1)
 
@@ -42,6 +37,8 @@ Sub Export()
     Call CleanUpPercents
 
 End Sub
+
+'Call CleanOutput(outputPrefix)
 
 Sub CleanOutput(filePrefix As String)
 
