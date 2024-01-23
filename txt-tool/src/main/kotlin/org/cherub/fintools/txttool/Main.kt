@@ -27,10 +27,10 @@ fun main(args: Array<String>) {
                 SberPushProcessor(config).process(fileText, sourceName)
             } else if (firstLine.matches(SmsProcessor.checkFormatRegex)) {
                 SmsProcessor(config).process(fileText, sourceName)
-            } else ProcessResult("Невозможно определить тип выписки!")
+            } else ProcessResult(mapOf(Pair(targetName, "Невозможно определить тип выписки!")))
 
         result.skipped?.also { File("$sourceName.unparsed").writeText(it.joinToString("\n"))}
-        File(targetName).writeText(result.csv)
+        result.csvMap.forEach { File(it.key + ".sms.csv").writeText(it.value) }
     } catch (e: Exception) {
         log(e)
     }

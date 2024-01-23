@@ -17,6 +17,6 @@ data class Transaction(
 )
 
 data class ProcessResult(
-    val csv: String, val skipped: List<String>? = null
+    val csvMap: Map<String, String>, val skipped: List<String>? = null
 )
 

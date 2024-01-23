@@ -28,14 +28,16 @@ class SmsProcessor(private val config: ConfigData) {
             parseSms(line)?.also { accountList.addSms(it, config.accounts) } ?: notSmsList.add(line)
         }
 
-        val builder = StringBuilder()
+        val resultMap = mutableMapOf<String, String>()
         accountList.forEach { account ->
+            val builder = StringBuilder()
             builder.append(makeAccountHeader(account.key, config.accounts, sourceName))
             account.value.forEach {
                 builder.appendLine(convertToCsv(it))
             }
+            resultMap[config.accounts.findCode(account.key)] = builder.toString()
         }
-        return ProcessResult(builder.toString(), notSmsList)
+        return ProcessResult(resultMap, notSmsList)
     }
 
     private fun parseSms(source: String): Sms? {

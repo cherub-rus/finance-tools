@@ -24,14 +24,16 @@ class SberPushProcessor (private val config: ConfigData) {
             parsePush(line, config.getSberOperationTypeNames())?.also { accountList.addPush(it, config.accounts) } ?: notSmsList.add(line)
         }
 
-        val builder = StringBuilder()
+        val resultMap = mutableMapOf<String, String>()
         accountList.forEach { account ->
+            val builder = StringBuilder()
             builder.append(makeAccountHeader(account.key, config.accounts, sourceName))
             account.value.forEach {
                 builder.appendLine(convertToCsv(it))
             }
+            resultMap[config.accounts.findCode(account.key)] = builder.toString()
         }
-        return ProcessResult(builder.toString(), notSmsList)
+        return ProcessResult(resultMap, notSmsList)
     }
 
     private fun parsePush(source: String, operationTypes: List<String>): Push? {
