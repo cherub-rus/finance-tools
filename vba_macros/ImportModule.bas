@@ -14,11 +14,14 @@ Sub Import()
 
         aAccount$ = accountsData(iNum, ac_account)
         aSheet$ = accountsData(iNum, ac_sheet)
+        aSource$ = accountsData(iNum, ac_source)
 
         content$ = ""
         If aAccount <> "" And aSheet = "" Then
-            content = FileRead(srcPath & aAccount & ".pdf.csv")
-            Call LoadSheet(aAccount, content)
+            content = FileRead(srcPath & aAccount & "." & aSource & ".csv")
+            If content <> "" Then
+                Call LoadSheet(aAccount, content)
+            End If
         End If
     Next iNum
 
@@ -55,11 +58,15 @@ Private Sub LoadSheet(sheetName As String, content As String)
             For Each cCell In Split(cLine, vbTab)
                 Select Case iCol
                 Case c_date
-                    .Cells(iRow, iCol).FormulaR1C1 = cCell
+                    .Cells(iRow, iCol).FormulaR1C1 = FixRussianDate(CStr(cCell))
                 Case c_amount, c_amount_fee, c_amount_abs
-                    .Cells(iRow, iCol).FormulaR1C1 = Replace(cCell, ",", ".")
+                    .Cells(iRow, iCol).FormulaR1C1 = FixAmount(CStr(cCell))
                 Case c_balance, c_balance_formula
-                    .Cells(iRow, iCol).FormulaR1C1 = FixFormula(CStr(cCell))
+                    If Left(cCell, 1) = "=" Then
+                        .Cells(iRow, iCol).FormulaR1C1 = FixFormula(CStr(cCell))
+                    Else
+                        .Cells(iRow, iCol).FormulaR1C1 = FixAmount(CStr(cCell))
+                    End If
                 Case Else
                     .Cells(iRow, iCol).FormulaR1C1 = cCell
                 End Select
@@ -74,6 +81,24 @@ nextLine:
 
 End Sub
 
+Private Function FixRussianDate(cellValue As String) As String
+    'convert RUS date to ISO format "YYYY-MM-DD"
+    FixRussianDate = IIf(Mid(cellValue, 3, 1) = ".", Right(cellValue, 4) & "-" & Mid(cellValue, 4, 2) & "-" & Left(cellValue, 2), cellValue)
+End Function
+
+Private Function FixAmount(cellValue As String) As String
+    FixAmount = Replace(Replace(cellValue, " ", ""), ",", ".")
+End Function
+
 Private Function FixFormula(cellValue As String) As String
-    FixFormula = IIf(Left(cellValue, 7) = "=Œ –”√À", Replace(Replace(cellValue, ";", ","), "Œ –”√À", "ROUND"), cellValue)
+    If Left(cellValue, 1) <> "=" Then
+        FixFormula = cellValue
+    Else
+        cellValue = Replace(cellValue, ";", ",")
+        If Left(cellValue, 7) = "=Œ –”√À" Then
+            FixFormula = Replace(cellValue, "Œ –”√À", "ROUND")
+        Else
+            FixFormula = cellValue
+        End If
+    End If
 End Function

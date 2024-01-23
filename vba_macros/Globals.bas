@@ -25,7 +25,8 @@ Public Const ac_type = 2
 Public Const ac_card = 3
 Public Const ac_order = 4
 Public Const ac_sheet = 5
-Public Const ac_balance = 6
+Public Const ac_source = 6
+Public Const ac_balance = 7
 
 Public Const TRANS_RANGE = "A3:M5000"
 Public Const PAYEE_RANGE = "B3:C500"
