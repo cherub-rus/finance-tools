@@ -40,6 +40,7 @@ Sub Export()
     Call CleanUpPercents
 
     ActiveWorkbook.Worksheets("Accounts").Activate
+    Cells(3, 1).Select
 
 End Sub
 
@@ -69,8 +70,6 @@ Function LoadAccountsData() As Variant
          .SortFields.Add Key:=Columns(ac_account), Order:=xlAscending
          .Apply
     End With
-    
-    Cells(3, 1).Select
 
 End Function
 
@@ -78,7 +77,6 @@ Function UpdateBalances(sheetName As String) As Currency
 
     Dim ws As Worksheet
     Set ws = Workbooks(BOOK_DRAFT).Worksheets(sheetName)
-    ws.Activate
     Call ClearWsFilter(ws)
 
     lastRow = ws.Cells.SpecialCells(xlCellTypeLastCell).Row
@@ -92,8 +90,8 @@ Function UpdateBalances(sheetName As String) As Currency
         footerRow = lastRow + 1
     End If
 
-    Set balanceTestCell = Cells(lastRow, c_balance_formula)
-    Set balanceCell = Cells(lastRow, c_balance)
+    Set balanceTestCell = ws.Cells(lastRow, c_balance_formula)
+    Set balanceCell = ws.Cells(lastRow, c_balance)
 
     If lastRow < 5 Or balanceTestCell.value = "" Then Exit Function
 
@@ -104,9 +102,9 @@ Function UpdateBalances(sheetName As String) As Currency
     balanceCell.value = balance
 
     If noFooter Then
-        Cells(footerRow, c_date).value = "#"
-        Cells(footerRow, c_balance).value = balance
-        Range(Cells(footerRow, c_date), Cells(footerRow, c_balance)).Interior.Color = 15773696
+        ws.Cells(footerRow, c_date).value = "#"
+        ws.Cells(footerRow, c_balance).value = balance
+        ws.Range(ws.Cells(footerRow, c_date), ws.Cells(footerRow, c_balance)).Interior.Color = 15773696
     End If
 
     UpdateBalances = balance
@@ -129,21 +127,21 @@ Private Sub CleanUpSheet(sheetName As String)
 
     Dim ws As Worksheet
     Set ws = Workbooks(BOOK_DRAFT).Worksheets(sheetName)
-    ws.Activate
     Call ClearWsFilter(ws)
 
     lastRow = ws.Cells.SpecialCells(xlCellTypeLastCell).Row
 
-    If Cells(lastRow, c_date).value = "#" Then
+    If ws.Cells(lastRow, c_date).value = "#" Then
         lastRow = lastRow - 1
     End If
 
     If lastRow > 5 Then
-        Range(Cells(5, 1), Cells(lastRow - 1, 1)).EntireRow.Select
+        ws.Range(ws.Cells(5, 1), ws.Cells(lastRow - 1, 1)).EntireRow.Select
         Selection.Delete Shift:=xlUp
     End If
 
-    Cells(3, 1).Select
+    'ws.Activate
+    'ws.Cells(3, 1).Select
 
 End Sub
 
@@ -151,7 +149,6 @@ Private Sub CleanUpPercents()
 
     Dim ws As Worksheet
     Set ws = Workbooks(BOOK_DRAFT).Worksheets(WS_PERCENTS)
-    ws.Activate
     Call ClearWsFilter(ws)
 
     Set lastCell = ws.Cells.SpecialCells(xlCellTypeLastCell)
@@ -167,6 +164,7 @@ Private Sub CleanUpPercents()
         End If
     Next
 
-    Cells(3, 1).Select
+    'ws.Activate
+    'ws.Cells(3, 1).Select
 
 End Sub
