@@ -1,15 +1,20 @@
 Attribute VB_Name = "AutoFillModule"
 
 Private Sub FillActiveSheet()
+    FillSheet (ActiveSheet.Name)
+End Sub
 
-    Dim lastCell As Range, sheetRange As Range, filterRange As Range, rowRange As Range, fillData As Variant
+Private Sub FillSheet(sheetName As String)
+
+    Dim ws As Worksheet, lastCell As Range, sheetRange As Range, filterRange As Range, rowRange As Range ', fillData As Variant
 
     fillData = LoadAutoFillData()
 
-    Call ClearWsFilter(ActiveSheet)
+    Set ws = Workbooks(BOOK_DRAFT).Worksheets(sheetName)
+    Call ClearWsFilter(ws)
 
-    Set lastCell = ActiveSheet.Cells.SpecialCells(xlCellTypeLastCell)
-    Set sheetRange = ActiveSheet.Range(Cells(2, 1).Address, lastCell.Address)
+    Set lastCell = ws.Cells.SpecialCells(xlCellTypeLastCell)
+    Set sheetRange = ws.Range(Cells(2, 1).Address, lastCell.Address)
 
     With sheetRange
         .AutoFilter Field:=1, Criteria1:="<>"
@@ -41,19 +46,18 @@ Private Sub FillActiveSheet()
         Next
     End With
 
-    Call ClearWsFilter(ActiveSheet)
+    Call ClearWsFilter(ws)
 End Sub
 
 Private Sub FillPayeeAndCategory(fillData As Variant, rowRange As Range)
-    Dim trMessage As String, iNum As Integer, fdMask As String
 
-    trMessage = rowRange.Cells(1, c_comment).value
-    trBigMessage = rowRange.Cells(1, c_message).value
+    trComment$ = rowRange.Cells(1, c_comment).value
+    trMessage$ = rowRange.Cells(1, c_message).value
 
     For iNum = 1 To UBound(fillData, 1)
-        fdMask = fillData(iNum, 1)
+        fdMask$ = fillData(iNum, 1)
 
-        If (LCase(trMessage) Like LCase(fdMask)) Or (LCase(trBigMessage) Like LCase(fdMask)) Then
+        If (LCase(trComment) Like LCase(fdMask)) Or (LCase(trMessage) Like LCase(fdMask)) Then
             With rowRange
                 .Cells(1, c_payee).value = fillData(iNum, 2)
                 .Cells(1, c_category).value = fillData(iNum, 3)
@@ -71,10 +75,8 @@ End Sub
 
 Private Sub MTSBPreProcess(rowRange As Range, accountName As String)
 
-    Dim trOperation As String, trMessage As String
-
-    trOperation = rowRange.Cells(1, c_operation).value
-    trMessage = rowRange.Cells(1, c_comment).value
+    trOperation$ = rowRange.Cells(1, c_operation).value
+    trMessage$ = rowRange.Cells(1, c_message).value
 
     If trOperation Like "~Зачисление ЗП*" And accountName = "4 BankM Z" Then
         Dim newPayee As String, newMessage As String
