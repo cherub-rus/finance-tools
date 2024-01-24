@@ -6,7 +6,7 @@ End Sub
 
 Private Sub FillSheet(sheetName As String)
 
-    Dim ws As Worksheet, lastCell As Range, sheetRange As Range, filterRange As Range, rowRange As Range ', fillData As Variant
+    Dim ws As Worksheet, lastCell As Range, sheetRange As Range, filterRange As Range, rowRange As Range
 
     fillData = LoadAutoFillData()
 
