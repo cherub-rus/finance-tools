@@ -25,18 +25,23 @@ Private Sub SortHistory()
 End Sub
 
 Private Sub FillHistory()
+    FillHistoryFromSheet (ActiveSheet.Name)
+End Sub
 
-    If ActiveSheet.Name = WS_HISTORY Then Exit Sub
+Private Sub FillHistoryFromSheet(sheetName As String)
 
-    Dim lastCell As Range, sheetRange As Range, filterRange As Range, rowRange As Range, fillData As Variant, historyData As Variant
+    Dim ws As Worksheet, lastCell As Range, sheetRange As Range, filterRange As Range, rowRange As Range, fillData As Variant, historyData As Variant
+
+    Set ws = ActiveWorkbook.Worksheets(sheetName)
+    If ws.Name = WS_HISTORY Then Exit Sub
 
     fillData = LoadAutoFillData()
     historyData = LoadHistoryData()
 
-    Call ClearWsFilter(ActiveSheet)
+    Call ClearWsFilter(ws)
 
-    Set lastCell = ActiveSheet.Cells.SpecialCells(xlCellTypeLastCell)
-    Set sheetRange = ActiveSheet.Range(Cells(2, 1).Address, lastCell.Address)
+    Set lastCell = ws.Cells.SpecialCells(xlCellTypeLastCell)
+    Set sheetRange = ws.Range(Cells(2, 1).Address, lastCell.Address)
 
     With sheetRange
         .AutoFilter Field:=1, Criteria1:="<>"
@@ -64,7 +69,7 @@ Private Sub FillHistory()
         Next
     End With
 
-    Call ClearWsFilter(ActiveSheet)
+    Call ClearWsFilter(ws)
 End Sub
 
 Function FindOrAddHistoryRow(historyData As Variant, fillData As Variant, rowRange As Range) As Boolean
