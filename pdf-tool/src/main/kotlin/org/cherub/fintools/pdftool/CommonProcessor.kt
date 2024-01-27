@@ -61,7 +61,7 @@ abstract class CommonProcessor(val config: ConfigData) {
     open fun reorderCsvRows(text: String) = text
 
     open fun discoverAccountInfo(text: String): AccountInfo =
-        AccountInfo("")
+        AccountInfo(null)
 
     private fun prepareHeaderAndFooter(info: AccountInfo): Pair<String?, String?> {
 
@@ -81,7 +81,7 @@ abstract class CommonProcessor(val config: ConfigData) {
         val footer =  (info.endBalance ?: info.currentBalance)?.let {
             "#" + "\t".repeat(10) + it + "\t".repeat(2)
         }
-        return Pair(header.toString(), footer)
+        return Pair(header, footer)
     }
 }
 
