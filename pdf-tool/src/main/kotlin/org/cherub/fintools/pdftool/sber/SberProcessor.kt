@@ -6,9 +6,9 @@ import org.cherub.fintools.pdftool.CommonProcessor
 import org.cherub.fintools.pdftool.findByAccountNumber
 import org.cherub.fintools.pdftool.gv
 
-const val SB_ACCOUNT_REGEX = "<p>Счёт Валюта Доступно на (?<currentDate>\\d{2}\\.\\d{2}\\.\\d{4})<b>(?<account>40817 810 \\d \\d{4} \\d{7}) РУБЛЬ РФ (?<currentBalance>(\\d{1,3} )?\\d{1,3},\\d{2})</b></p>"
-const val SB_REPORT_DATES_REGEX = "<p><b>ОСТАТОК НА (?<startDate>\\d{2}\\.\\d{2}\\.\\d{4}) ОСТАТОК НА (?<endDate>\\d{2}\\.\\d{2}\\.\\d{4}) ВСЕГО СПИСАНИЙ ВСЕГО ПОПОЛНЕНИЙ</b></p>"
-const val SB_REPORT_BALANCES_REGEX = "<p><b>(?<startBalance>(\\d{1,3} )?\\d{1,3},\\d{2}) (?<endBalance>(\\d{1,3} )?\\d{1,3},\\d{2}) ((\\d{1,3} )?\\d{1,3},\\d{2}) ((\\d{1,3} )?\\d{1,3},\\d{2})</b></p>"
+private const val SB_ACCOUNT_REGEX = "<p>Счёт Валюта Доступно на (?<currentDate>\\d{2}\\.\\d{2}\\.\\d{4})<b>(?<account>40817 810 \\d \\d{4} \\d{7}) РУБЛЬ РФ (?<currentBalance>(\\d{1,3} )?\\d{1,3},\\d{2})</b></p>"
+private const val SB_REPORT_DATES_REGEX = "<p><b>ОСТАТОК НА (?<startDate>\\d{2}\\.\\d{2}\\.\\d{4}) ОСТАТОК НА (?<endDate>\\d{2}\\.\\d{2}\\.\\d{4}) ВСЕГО СПИСАНИЙ ВСЕГО ПОПОЛНЕНИЙ</b></p>"
+private const val SB_REPORT_BALANCES_REGEX = "<p><b>(?<startBalance>(\\d{1,3} )?\\d{1,3},\\d{2}) (?<endBalance>(\\d{1,3} )?\\d{1,3},\\d{2}) ((\\d{1,3} )?\\d{1,3},\\d{2}) ((\\d{1,3} )?\\d{1,3},\\d{2})</b></p>"
 
 abstract class SberProcessor(config: ConfigData) : CommonProcessor(config) {
 
@@ -39,5 +39,4 @@ abstract class SberProcessor(config: ConfigData) : CommonProcessor(config) {
             currentBalance = mAcc?.gv("currentBalance")
         )
     }
-
 }
