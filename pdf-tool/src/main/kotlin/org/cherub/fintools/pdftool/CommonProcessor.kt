@@ -19,14 +19,16 @@ abstract class CommonProcessor(val config: ConfigData) {
         val info = discoverAccountInfo(html)
         val hfPair = prepareHeaderAndFooter(info)
 
+        val result = StringBuilder()
+        hfPair.first?.let {result.appendLine(hfPair.first)}
         val builder = StringBuilder()
-        hfPair.first?.let {builder.appendLine(hfPair.first)}
         splitToTransactionRows(html).forEach {
             builder.appendLine(transformToCsv(cleanUpRow(it)))
         }
-        hfPair.second?.let {builder.appendLine(hfPair.second)}
+        result.append(cleanUpResult(builder.toString()))
+        hfPair.second?.let {result.appendLine(hfPair.second)}
 
-        return ProcessResult(cleanUpResult(builder.toString()), info.accountCode)
+        return ProcessResult(result.toString(), info.accountCode)
     }
 
     protected abstract fun rowFilter(row: String) : Boolean

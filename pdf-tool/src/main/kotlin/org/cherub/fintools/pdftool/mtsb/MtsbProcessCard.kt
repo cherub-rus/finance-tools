@@ -3,14 +3,15 @@ package org.cherub.fintools.pdftool.mtsb
 import org.cherub.fintools.cleanUpByRules
 import org.cherub.fintools.config.ConfigData
 import org.cherub.fintools.log.log
+import org.cherub.fintools.pdftool.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-import org.cherub.fintools.pdftool.CommonProcessor
-import org.cherub.fintools.pdftool.formula_c11
-import org.cherub.fintools.pdftool.formula_c12
-
 private const val BIN = 220028 // Bank Identification Number for PAYMENT SYSTEM: NSPK MIR; BANK: PJSC MTS BANK
+
+private const val MB_ACCOUNT_REGEX = "<p>Номер счета: (?<account>40817810\\d{12})</p>"
+private const val MB_CURRENT_REGEX = "<p>Доступный остаток\\* на (?<currentDate>\\d{2}\\.\\d{2}\\.\\d{4}): (?<currentBalance>\\d{1,6}\\.\\d{2}) RUB</p>"
+private const val MB_CARD_REGEX = "<p>  ###(?<card>${BIN}\\*\\*\\*\\*\\*\\*\\d{4})Номер карты:([а-яА-Я ]+)</p>"
 
 class MtsbProcessCard(config: ConfigData) : CommonProcessor(config) {
 
@@ -68,4 +69,25 @@ class MtsbProcessCard(config: ConfigData) : CommonProcessor(config) {
             }
         }
         .joinToString(separator = "\n", postfix = "\n")
+
+    override fun discoverAccountInfo(text: String): AccountInfo {
+
+        val mAcc = MB_ACCOUNT_REGEX.toRegex().matchEntire(text.lines()[4])
+        val mCurrent = MB_CURRENT_REGEX.toRegex().matchEntire(text.lines()[7])
+        val mCard = MB_CARD_REGEX.toRegex().matchEntire(text.lines()[9])
+
+        val number = mAcc?.gv("account")
+        val code =  number?.let {
+            val s = it.takeLast(4)
+            config.accounts.findByAccountNumber("*$s")?.code
+        }
+
+        return AccountInfo(
+            accountCode = code,
+            accountNumber = number,
+            cardNumber = mCard?.gv("card"),
+            currentDate = mCurrent?.gv("currentDate"),
+            currentBalance = mCurrent?.gv("currentBalance")
+        )
+    }
 }
