@@ -14,6 +14,7 @@ import org.cherub.fintools.pdftool.mtsb.*
 import org.cherub.fintools.pdftool.sber.*
 import org.cherub.fintools.pdftool.gpb.*
 import org.cherub.fintools.pdftool.usb.*
+import kotlin.io.path.Path
 
 const val WRITE_HTML = true
 
@@ -24,7 +25,6 @@ fun main(args: Array<String>) {
     }
 
     val sourceName = args[0]
-    val targetName = "$sourceName.csv"
     val configName = args[1]
     val config = configName.loadConfigFromFile()
 
@@ -47,10 +47,14 @@ fun main(args: Array<String>) {
                 GpbDepositProcessor(config).process(fileText, sourceName)
             } else if (fileText.contains("Сведения об операции Категории Дата и время MSK Сумма Валюта")) {
                 UsbCardProcessor(config).process(fileText, sourceName)
-            } else "Невозможно определить тип выписки!"
+            } else ProcessResult("Невозможно определить тип выписки!")
 
-
-        File(targetName).writeText(result)
+        val targetName =
+            result.accountCode?.let {
+                val path = Path(sourceName).toAbsolutePath().parent
+                path.resolve("$it.pdf.csv").toString()
+            } ?: "$sourceName.csv"
+        File(targetName).writeText(result.csvText)
     } catch (e: Exception) {
         log(e)
     }

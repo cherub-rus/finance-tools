@@ -1,6 +1,7 @@
 package org.cherub.fintools.pdftool
 
 import org.cherub.fintools.cleanUpByRules
+import org.cherub.fintools.config.BankAccount
 import org.cherub.fintools.config.ConfigData
 import java.io.File
 
@@ -11,15 +12,21 @@ abstract class CommonProcessor(val config: ConfigData) {
 
     open fun reversRows() = true
 
-    fun process(fileText: String, sourceName: String): String {
+    fun process(fileText: String, sourceName: String): ProcessResult {
         val html = cleanUpHtml(removeNewLines(fileText))
         if (WRITE_HTML) File("$sourceName.2.html").writeText(html)
 
+        val info = discoverAccountInfo(html)
+        val hfPair = prepareHeaderAndFooter(info)
+
         val builder = StringBuilder()
+        hfPair.first?.let {builder.appendLine(hfPair.first)}
         splitToTransactionRows(html).forEach {
             builder.appendLine(transformToCsv(cleanUpRow(it)))
         }
-        return cleanUpResult(builder.toString())
+        hfPair.second?.let {builder.appendLine(hfPair.second)}
+
+        return ProcessResult(cleanUpResult(builder.toString()), info.accountCode)
     }
 
     protected abstract fun rowFilter(row: String) : Boolean
@@ -50,4 +57,49 @@ abstract class CommonProcessor(val config: ConfigData) {
         .cleanUpByRules(config.replaceInResult)
 
     open fun reorderCsvRows(text: String) = text
+
+    open fun discoverAccountInfo(text: String): AccountInfo =
+        AccountInfo("")
+
+    private fun prepareHeaderAndFooter(info: AccountInfo): Pair<String?, String?> {
+
+        val header = ifAnyNotNull(info.currentDate, info.startBalance) { currentDate, startBalance ->
+            StringBuilder().apply {
+                append("#\t")
+                append("Report date: " + (currentDate ?: ""))
+                info.startDate?.let {
+                    append(" [" + it + ":" + (info.endDate ?: "") + "] ")
+                }
+                append("\t".repeat(9))
+                append(startBalance ?: "")
+                append("\t".repeat(2))
+            }.toString()
+        }
+
+        val footer =  (info.endBalance ?: info.currentBalance)?.let {
+            "#" + "\t".repeat(10) + it + "\t".repeat(2)
+        }
+        return Pair(header.toString(), footer)
+    }
+}
+
+data class AccountInfo (
+    val accountCode: String?,
+    val accountNumber: String? = null, val cardNumber: String? = null,
+    val startDate: String? = null, val endDate: String? = null, val currentDate: String? = null,
+    val startBalance: String? = null, val endBalance: String? = null, val currentBalance: String? = null
+)
+
+data class ProcessResult(
+    val csvText: String, val accountCode: String? = null
+)
+
+fun MatchResult.gv(name: String) =
+    this.groups[name]?.value
+
+fun List<BankAccount>.findByAccountNumber(number: String): BankAccount? =
+    this.firstOrNull { it.account == number }
+
+inline fun <T1: Any, T2: Any, R: Any> ifAnyNotNull(p1: T1?, p2: T2?, block: (T1?, T2?)->R?): R? {
+    return if (p1 != null || p2 != null) block(p1, p2) else null
 }
