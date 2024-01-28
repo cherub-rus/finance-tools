@@ -9,9 +9,10 @@ import java.time.format.DateTimeFormatter
 
 private const val BIN = 220028 // Bank Identification Number for PAYMENT SYSTEM: NSPK MIR; BANK: PJSC MTS BANK
 
-private const val MB_ACCOUNT_REGEX = "<p>Номер счета: (?<account>40817810\\d{12})</p>"
-private const val MB_CURRENT_REGEX = "<p>Доступный остаток\\* на (?<currentDate>\\d{2}\\.\\d{2}\\.\\d{4}): (?<currentBalance>\\d{1,6}\\.\\d{1,2}) RUB</p>"
-private const val MB_CARD_REGEX = "<p>  ###(?<card>${BIN}\\*\\*\\*\\*\\*\\*\\d{4})Номер карты:([а-яА-Я ]+)</p>"
+private val MB_ACCOUNT_REGEX = "<p>Номер счета: (?<account>40817810\\d{12})</p>".toRegex()
+private val MB_CURRENT_REGEX = "<p>Доступный остаток\\* на (?<currentDate>\\d{2}\\.\\d{2}\\.\\d{4}): (?<currentBalance>\\d{1,6}\\.\\d{1,2}) RUB</p>".toRegex()
+private val MB_REPORT_DATES_REGEX = "<p><b>Операции за период с (?<startDate>\\d{2}\\.\\d{2}\\.\\d{4}) по (?<endDate>\\d{2}\\.\\d{2}\\.\\d{4})</b></p>".toRegex()
+private val MB_CARD_REGEX = "<p>  ###(?<card>${BIN}\\*\\*\\*\\*\\*\\*\\d{4})Номер карты:([а-яА-Я ]+)</p>".toRegex()
 
 class MtsbProcessCard(config: ConfigData) : CommonProcessor(config) {
 
@@ -72,9 +73,10 @@ class MtsbProcessCard(config: ConfigData) : CommonProcessor(config) {
 
     override fun discoverAccountInfo(text: String): AccountInfo {
 
-        val mAcc = MB_ACCOUNT_REGEX.toRegex().matchEntire(text.lines()[4])
-        val mCurrent = MB_CURRENT_REGEX.toRegex().matchEntire(text.lines()[7])
-        val mCard = MB_CARD_REGEX.toRegex().matchEntire(text.lines()[9])
+        val mAcc = MB_ACCOUNT_REGEX.matchEntire(text.lines()[4])
+        val mCurrent = MB_CURRENT_REGEX.matchEntire(text.lines()[7])
+        val mDates = MB_REPORT_DATES_REGEX.matchEntire(text.lines()[11])
+        val mCard = MB_CARD_REGEX.matchEntire(text.lines()[9])
 
         val number = mAcc?.gv("account")
         val code =  number?.let {
@@ -86,6 +88,8 @@ class MtsbProcessCard(config: ConfigData) : CommonProcessor(config) {
             accountCode = code,
             accountNumber = number,
             cardNumber = mCard?.gv("card"),
+            startDate = mDates?.gv("startDate"),
+            endDate = mDates?.gv("endDate"),
             currentDate = mCurrent?.gv("currentDate"),
             currentBalance = mCurrent?.gv("currentBalance")?.replace(".",",")
         )

@@ -3,9 +3,9 @@ package org.cherub.fintools.pdftool.sber
 import org.cherub.fintools.config.ConfigData
 import org.cherub.fintools.pdftool.*
 
-private const val SB_ACCOUNT_REGEX = "<p>Счёт Валюта Доступно на (?<currentDate>\\d{2}\\.\\d{2}\\.\\d{4})<b>(?<account>40817 810 \\d \\d{4} \\d{7}) РУБЛЬ РФ (?<currentBalance>(\\d{1,3} )?\\d{1,3},\\d{2})</b></p>"
-private const val SB_REPORT_DATES_REGEX = "<p><b>ОСТАТОК НА (?<startDate>\\d{2}\\.\\d{2}\\.\\d{4}) ОСТАТОК НА (?<endDate>\\d{2}\\.\\d{2}\\.\\d{4}) ВСЕГО СПИСАНИЙ ВСЕГО ПОПОЛНЕНИЙ</b></p>"
-private const val SB_REPORT_BALANCES_REGEX = "<p><b>(?<startBalance>(\\d{1,3} )?\\d{1,3},\\d{2}) (?<endBalance>(\\d{1,3} )?\\d{1,3},\\d{2}) ((\\d{1,3} )?\\d{1,3},\\d{2}) ((\\d{1,3} )?\\d{1,3},\\d{2})</b></p>"
+private val SB_ACCOUNT_REGEX = "<p>Счёт Валюта Доступно на (?<currentDate>\\d{2}\\.\\d{2}\\.\\d{4})<b>(?<account>40817 810 \\d \\d{4} \\d{7}) РУБЛЬ РФ (?<currentBalance>(\\d{1,3} )?\\d{1,3},\\d{2})</b></p>".toRegex()
+private val SB_REPORT_DATES_REGEX = "<p><b>ОСТАТОК НА (?<startDate>\\d{2}\\.\\d{2}\\.\\d{4}) ОСТАТОК НА (?<endDate>\\d{2}\\.\\d{2}\\.\\d{4}) ВСЕГО СПИСАНИЙ ВСЕГО ПОПОЛНЕНИЙ</b></p>".toRegex()
+private val SB_REPORT_BALANCES_REGEX = "<p><b>(?<startBalance>(\\d{1,3} )?\\d{1,3},\\d{2}) (?<endBalance>(\\d{1,3} )?\\d{1,3},\\d{2}) ((\\d{1,3} )?\\d{1,3},\\d{2}) ((\\d{1,3} )?\\d{1,3},\\d{2})</b></p>".toRegex()
 
 class SberProcessPayAcc(config: ConfigData) : SberProcessor(config) {
 
@@ -23,9 +23,9 @@ class SberProcessPayAcc(config: ConfigData) : SberProcessor(config) {
 
     override fun discoverAccountInfo(text: String): AccountInfo {
 
-        val mAcc = SB_ACCOUNT_REGEX.toRegex().matchEntire(text.lines()[3])
-        val mDates = SB_REPORT_DATES_REGEX.toRegex().matchEntire(text.lines()[5])
-        val mBal = SB_REPORT_BALANCES_REGEX.toRegex().matchEntire(text.lines()[6])
+        val mAcc = SB_ACCOUNT_REGEX.matchEntire(text.lines()[3])
+        val mDates = SB_REPORT_DATES_REGEX.matchEntire(text.lines()[5])
+        val mBal = SB_REPORT_BALANCES_REGEX.matchEntire(text.lines()[6])
 
         val number = mAcc?.gv("account")
         val code =  number?.let {
