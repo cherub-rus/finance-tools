@@ -1,6 +1,6 @@
 Attribute VB_Name = "AutoFillModule"
 
-Private Sub FillActiveSheet()
+Sub FillActiveSheet()
     FillSheet (ActiveSheet.Name)
 End Sub
 
