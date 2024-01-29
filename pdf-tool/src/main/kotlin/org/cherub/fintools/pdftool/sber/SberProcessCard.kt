@@ -1,8 +1,9 @@
 package org.cherub.fintools.pdftool.sber
 
 import org.cherub.fintools.config.ConfigData
-import org.cherub.fintools.pdftool.formula_c11
-import org.cherub.fintools.pdftool.formula_c12
+import org.cherub.fintools.pdftool.*
+
+private val SB_CARD_REGEX = "<p>Карта Валюта Доступно на (?<currentDate>\\d{2}\\.\\d{2}\\.\\d{4})<b>(?<card>[a-zA-Zа-яА-я ]+ •••• \\d{4}) РУБЛЬ РФ (?<currentBalance>(\\d{1,3} )?\\d{1,3},\\d{2})</b></p>".toRegex()
 
 class SberProcessCard(config: ConfigData) : SberProcessor(config) {
 
@@ -18,4 +19,32 @@ class SberProcessCard(config: ConfigData) : SberProcessor(config) {
             "$1\t$4\t-$5\t\t\t\t$3\t$2:00\t\t\t$formula_c11\t$formula_c12\t$4"
         )
         .replace("-+", "")
+    override fun discoverAccountInfo(text: String): AccountInfo {
+
+        val mCard = SB_CARD_REGEX.matchEntire(text.lines()[3])
+        val mDates = SB_REPORT_DATES_REGEX.matchEntire(text.lines()[5])
+        val mBal = SB_REPORT_BALANCES_REGEX.matchEntire(text.lines()[6])
+
+        val number = mCard?.gv("card")
+        val code =  number?.let {
+            val cParts = it.split(" •••• ")
+            val cType = when {
+                cParts[0] == "MIR" -> "MIR-"
+                cParts[0].startsWith("Visa") -> "VISA"
+                cParts[0].startsWith("MasterCard") -> "ECMC"
+                else -> "UNKNOWN"
+            }
+            config.accounts.findByCard("$cType${cParts[1]}")?.code
+        }
+
+        return AccountInfo(
+            accountCode = code,
+            startDate = mDates?.gv("startDate"),
+            endDate = mDates?.gv("endDate"),
+            currentDate = mCard?.gv("currentDate"),
+            startBalance = mBal?.gv("startBalance"),
+            endBalance = mBal?.gv("endBalance"),
+            currentBalance = mCard?.gv("currentBalance")
+        )
+    }
 }
