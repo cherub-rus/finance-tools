@@ -19,6 +19,7 @@ class SberProcessCard(config: ConfigData) : SberProcessor(config) {
             "$1\t$4\t-$5\t\t\t\t$3\t$2:00\t\t\t$formula_c11\t$formula_c12\t$4"
         )
         .replace("-+", "")
+
     override fun discoverAccountInfo(text: String): AccountInfo {
 
         val mCard = SB_CARD_REGEX.matchEntire(text.lines()[3])
