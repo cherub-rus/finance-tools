@@ -4,7 +4,7 @@ Sub ClearFilter()
 Attribute ClearFilter.VB_ProcData.VB_Invoke_Func = "É\n14"
     'Ctrl Shift + Q [É]
 
-    Call ClearFilter(ActiveSheet)
+    Call ClearWsFilter(ActiveSheet)
 End Sub
 
 Sub ClearWsFilter(ws As Worksheet)
