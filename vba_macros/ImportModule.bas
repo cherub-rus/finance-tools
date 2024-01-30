@@ -21,6 +21,7 @@ Sub Import()
             content = FileRead(srcPath & aAccount & "." & aSource & ".csv")
             If content <> "" Then
                 Call LoadSheet(aAccount, content)
+                Call FillSheet(aAccount)
             End If
         End If
     Next iNum

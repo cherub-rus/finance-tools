@@ -4,7 +4,7 @@ Sub FillActiveSheet()
     FillSheet (ActiveSheet.Name)
 End Sub
 
-Private Sub FillSheet(sheetName As String)
+Sub FillSheet(sheetName As String)
 
     Dim ws As Worksheet, lastCell As Range, sheetRange As Range, filterRange As Range, rowRange As Range
 
