@@ -30,17 +30,16 @@ class UsbCardProcessor(config: ConfigData) : CommonProcessor(config) {
         .replace(
             "<p>(.+) (Между своими счетами) ([0-9]{2}[.][0-9]{2}[.][0-9]{4}) ([0-9]{2}:[0-9]{2}) <b>(-?[0-9]+[.][0-9]{2}) </b>RUB</p>".toRegex(),
             "$3\t$1\t$5\t\t\t\t$2\t$4\t\t\t$formula_c11\t$formula_c12\t$1"
-        ).fixCsv()
+        )
 
-    private fun String.fixCsv(): String {
-        val fields = this.split("\t").toMutableList()
+    override fun fixCsv(csvRow: String): String {
+        val fields = csvRow.split("\t").toMutableList()
 
         try {
             fields[2] = fields[2].replace('.', ',') // Changed currency separator
         } catch (e: Exception) {
-            log(e, this)
+            log(e, csvRow)
         }
-
-        return fields.joinToString("\t")
+        return super.fixCsv(fields.joinToString("\t"))
     }
 }

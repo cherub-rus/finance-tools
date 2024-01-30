@@ -30,10 +30,9 @@ class MtsbProcessCard(config: ConfigData) : CommonProcessor(config) {
             "<p>[0-9]{1,3} ([0-9.]{10}) ([0-9:]{8}) ([0-9]+\\.[0-9]{1,2}) RUR (((.+?)(, ))?(.+?))( дата транзакции ([0-9/]{10}) ([0-9:]{8}))? ###$BIN.+</p>".toRegex(),
             "$1\t$8\t\t\t\t\t$6\t$2\t$11\t$3\t$formula_c11\t$formula_c12\t$8"
         )
-        .fixCsv()
 
-    private fun String.fixCsv(): String {
-        val fields = this.split("\t").toMutableList()
+    override fun fixCsv(csvRow: String): String {
+        val fields = csvRow.split("\t").toMutableList()
 
         try {
             fields[9] = fields[9].replace('.', ',') // Changed currency separator
@@ -47,10 +46,10 @@ class MtsbProcessCard(config: ConfigData) : CommonProcessor(config) {
                 fields[8] = ""
             }
         } catch (e: Exception) {
-            log(e, this)
+            log(e, csvRow)
         }
 
-        return fields.joinToString("\t")
+        return super.fixCsv(fields.joinToString("\t"))
     }
 
     override fun cleanUpRow(row: String) = row
@@ -63,7 +62,7 @@ class MtsbProcessCard(config: ConfigData) : CommonProcessor(config) {
         .sortedBy {
             try {
                 val fields = it.split("\t")
-                LocalDateTime.parse("${fields[0]} ${fields[7]}", DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss"))
+                LocalDateTime.parse("${fields[0]} ${fields[7]}", DateTimeFormatter.ofPattern(TIMESTAMP_ISO_PATTERN))
             } catch (e: Exception) {
                 log(e, it)
                 LocalDateTime.MIN
