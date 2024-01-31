@@ -29,7 +29,6 @@ Sub Export()
                 Call SetAccountBalance(aAccount, balance)
                 Call FileAppend(balanceFileName, aAccount & vbTab & FormatCurrency(balance, 2, vbTrue, vbFalse, vbTrue))
                 Call ExportAccount(outputPrefix, aAccount, aAccount, aType, aCard)
-                Call CleanUpSheet(aAccount)
             End If
 
             If aSheet = WS_PERCENTS Then
@@ -37,10 +36,27 @@ Sub Export()
             End If
         End If
     Next iNum
-    Call CleanUpPercents
+
+    Call CleanUp(accountsData)
 
     ActiveWorkbook.Worksheets("Accounts").Activate
     Cells(3, 1).Select
+
+End Sub
+
+Private Sub CleanUp(accountsData As Variant)
+
+    For iNum& = 1 To UBound(accountsData, 1)
+
+        aAccount$ = accountsData(iNum, ac_account)
+        aSheet$ = accountsData(iNum, ac_sheet)
+
+        If aAccount <> "" And aSheet = "" Then
+            Call CleanUpSheet(aAccount)
+        End If
+
+    Next iNum
+    Call CleanUpPercents
 
 End Sub
 
@@ -82,7 +98,7 @@ Function UpdateBalances(sheetName As String) As Currency
     lastRow = ws.Cells.SpecialCells(xlCellTypeLastCell).Row
     footerRow = 0
 
-    If Cells(lastRow, c_date).value = "#" Then
+    If ws.Cells(lastRow, c_date).value = "#" Then
         footerRow = lastRow
         lastRow = lastRow - 1
     Else
@@ -136,12 +152,10 @@ Private Sub CleanUpSheet(sheetName As String)
     End If
 
     If lastRow > 5 Then
-        ws.Range(ws.Cells(5, 1), ws.Cells(lastRow - 1, 1)).EntireRow.Select
-        Selection.Delete Shift:=xlUp
+        ws.Range(ws.Cells(5, 1), ws.Cells(lastRow - 1, 1)).EntireRow.Delete
     End If
 
-    'ws.Activate
-    'ws.Cells(3, 1).Select
+    Application.Goto ws.Cells(1, 1), True
 
 End Sub
 
@@ -163,8 +177,5 @@ Private Sub CleanUpPercents()
             trans.Cells(1, c_mark).value = "x"
         End If
     Next
-
-    'ws.Activate
-    'ws.Cells(3, 1).Select
 
 End Sub
