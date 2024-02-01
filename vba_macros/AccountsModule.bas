@@ -27,7 +27,7 @@ Sub Export()
             If aSheet = "" Then
                 balance@ = UpdateBalances(aAccount)
                 Call SetAccountBalance(aAccount, balance)
-                Call FileAppend(balanceFileName, aAccount & vbTab & FormatCurrency(balance, 2, vbTrue, vbFalse, vbTrue))
+                Call FileAppend(balanceFileName, aAccount & vbTab & FormatCurrency(balance, 2, vbTrue, vbFalse, vbFalse))
                 Call ExportAccount(outputPrefix, aAccount, aAccount, aType, aCard)
             End If
 
