@@ -1,5 +1,28 @@
 Attribute VB_Name = "FillHistoryModule"
 
+Sub FillHistory()
+    FillHistoryFromSheet (ActiveSheet.Name)
+End Sub
+
+Sub FillHistoryForAll()
+
+    Dim accountsData As Variant
+    accountsData = LoadAccountsData()
+
+    For iNum& = 1 To UBound(accountsData, 1)
+        aAccount$ = accountsData(iNum, ac_account)
+        aSheet$ = accountsData(iNum, ac_sheet)
+
+        If aAccount <> "" And aSheet = "" Then
+            Call FillHistoryFromSheet(aAccount)
+        End If
+    Next iNum
+
+    ActiveWorkbook.Worksheets("Accounts").Activate
+    Cells(3, 1).Select
+
+End Sub
+
 Private Sub SortHistory()
 
     Set ws = Workbooks(BOOK_HISTORY).Worksheets(WS_HISTORY)
@@ -22,10 +45,6 @@ Private Sub SortHistory()
 
     firstCell.Select
 
-End Sub
-
-Private Sub FillHistory()
-    FillHistoryFromSheet (ActiveSheet.Name)
 End Sub
 
 Private Sub FillHistoryFromSheet(sheetName As String)
@@ -60,7 +79,7 @@ Private Sub FillHistoryFromSheet(sheetName As String)
                 'Skip
             Case Else
                 If Not IsEmpty(rowRange.Cells(1, c_message)) And Not rowRange.Cells(1, c_mark) = "*" Then
-                   added = FindOrAddHistoryRow(historyData, fillData, rowRange)
+                   added = FindOrAddHistoryRow(historyData, fillData, rowRange, sheetName)
                    If added Then
                        historyData = LoadHistoryData()
                    End If
@@ -72,7 +91,7 @@ Private Sub FillHistoryFromSheet(sheetName As String)
     Call ClearWsFilter(ws)
 End Sub
 
-Function FindOrAddHistoryRow(historyData As Variant, fillData As Variant, rowRange As Range) As Boolean
+Function FindOrAddHistoryRow(historyData As Variant, fillData As Variant, rowRange As Range, account As String) As Boolean
 
     Dim iNum As Integer, newRowRange As Range
 
@@ -121,7 +140,7 @@ Function FindOrAddHistoryRow(historyData As Variant, fillData As Variant, rowRan
     'Debug.Print "NEW ROW FOR:" + trMessageSource
     Set newRowRange = AddHistoryRow()
     With newRowRange
-        .Cells(1, 1).value = "+"
+        .Cells(1, 1).value = account
         .Cells(1, hc_comment).value = trComment
         .Cells(1, hc_payee).value = trPayee
         .Cells(1, hc_category).value = trCategory
