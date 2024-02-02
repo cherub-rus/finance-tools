@@ -139,6 +139,10 @@ Sub SetAccountBalance(accountName As String, balance As Currency)
 
 End Sub
 
+Sub CleanUpActiveSheet()
+    Call CleanUpSheet(ActiveSheet.Name)
+End Sub
+
 Private Sub CleanUpSheet(sheetName As String)
 
     Dim ws As Worksheet

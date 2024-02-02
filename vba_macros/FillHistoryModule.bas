@@ -1,10 +1,10 @@
 Attribute VB_Name = "FillHistoryModule"
 
-Sub FillHistory()
+Sub FillHistoryFromActiveSheet()
     FillHistoryFromSheet (ActiveSheet.Name)
 End Sub
 
-Sub FillHistoryForAll()
+Sub FillHistory()
 
     Dim accountsData As Variant
     accountsData = LoadAccountsData()
