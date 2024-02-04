@@ -4,6 +4,8 @@ import org.cherub.fintools.config.ConfigData
 import org.cherub.fintools.log.log
 import org.cherub.fintools.pdftool.*
 
+private val USB_HEAD_REGEX = "<p>(?<currentDate>\\d{1,2} [а-я]* \\d{4}) г\\.</p><p><b>[А-Я ]+</b>Cчет: (?<account>40817810\\d{12})</p><p><b>Поступления:</b></p><p><b>([0-9 ]{1,9},\\d{2}) ₽ Расходы:</b></p><p><b>([0-9 ]{1,9},\\d{2}) ₽</b></p><p><b>Выписка за период</b>(?<startDate>\\d{1,2} [а-я]* \\d{4}) г\\. - (?<endDate>\\d{1,2} [а-я]* \\d{4}) г\\.</p><p><b>Доступно средств:</b></p><p><b>(?<currentBalance>(\\d{1,3} )?\\d{1,3},\\d{2}) ₽</b></p><p><b>Детальная информация</b></p><p><b>Сведения об операции Категории Дата и время MSK Сумма Валюта</b></p>".toRegex()
+
 class UsbCardProcessor(config: ConfigData) : CommonProcessor(config) {
 
     override fun cleanUpHtmlSpecific(text: String) = text
@@ -41,5 +43,24 @@ class UsbCardProcessor(config: ConfigData) : CommonProcessor(config) {
             log(e, csvRow)
         }
         return super.fixCsv(fields.joinToString("\t"))
+    }
+    override fun discoverAccountInfo(text: String): AccountInfo {
+
+        val mHead = USB_HEAD_REGEX.matchEntire(text.lines()[1])
+
+        val number = mHead?.gv("account")
+        val code =  number?.let {
+            val s = it.takeLast(4)
+            config.accounts.findByAccountNumber("*$s")?.code
+        }
+
+        return AccountInfo(
+            accountCode = code,
+            accountNumber = number,
+            startDate = mHead?.gv("startDate"),
+            endDate = mHead?.gv("endDate"),
+            currentDate = mHead?.gv("currentDate"),
+            currentBalance = mHead?.gv("currentBalance")
+        )
     }
 }

@@ -26,7 +26,7 @@ data class ConfigData (
     companion object {
         const val MTS_BANK_ID = "MTS-Bank"
         const val SBER_BANK_ID = "900"
-        const val US_BANK_ID = "URALSIB"
+        const val US_BANK_ID = "USB"
     }
 
     fun getSberOperationTypeNames() =
