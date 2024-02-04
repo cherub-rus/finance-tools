@@ -12,7 +12,7 @@ private const val BIN = 220028 // Bank Identification Number for PAYMENT SYSTEM:
 private val MB_ACCOUNT_REGEX = "<p>Номер счета: (?<account>40817810\\d{12})</p>".toRegex()
 private val MB_CURRENT_REGEX = "<p>Доступный остаток\\* на (?<currentDate>\\d{2}\\.\\d{2}\\.\\d{4}): (?<currentBalance>\\d{1,6}\\.\\d{1,2}) RUB</p>".toRegex()
 private val MB_REPORT_DATES_REGEX = "<p><b>Операции за период с (?<startDate>\\d{2}\\.\\d{2}\\.\\d{4}) по (?<endDate>\\d{2}\\.\\d{2}\\.\\d{4})</b></p>".toRegex()
-private val MB_CARD_REGEX = "<p>  ###(?<card>${BIN}\\*\\*\\*\\*\\*\\*\\d{4})Номер карты:([а-яА-Я ]+)</p>".toRegex()
+private val MB_CARD_REGEX = "<p>  ###(?<card>${BIN}\\*{6}\\d{4})Номер карты:([а-яА-Я ]+)</p>".toRegex()
 
 class MtsbProcessCard(config: ConfigData) : CommonProcessor(config) {
 
