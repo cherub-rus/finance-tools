@@ -3,6 +3,9 @@ package org.cherub.fintools.pdftool.gpb
 import org.cherub.fintools.config.ConfigData
 import org.cherub.fintools.pdftool.*
 
+private val GPB_CARD_ACCOUNT_REGEX = "<p>.+ (?<account>40817810\\d{12}) Российский Рубль (?<card>\\*{12}\\d{4})</p>".toRegex()
+private val GPB_CARD_DATES_REGEX = "<p><b>ВЫПИСКА ПО КАРТЕ</b>За период с (?<startDate>\\d{2}\\.\\d{2}\\.\\d{4}) по (?<endDate>\\d{2}\\.\\d{2}\\.\\d{4}) Выписка сформирована на (?<currentDate>\\d{2}\\.\\d{2}\\.\\d{4} \\d{2}:\\d{2})</p>".toRegex()
+
 class GpbCardProcessor(config: ConfigData) : CommonProcessor(config) {
 
     override fun reversRows() = false
@@ -17,7 +20,6 @@ class GpbCardProcessor(config: ConfigData) : CommonProcessor(config) {
         .replace("возникшего по счету</p>\n<p>банковской карты", "возникшего по счету банковской карты")
 
     override fun rowFilter(row: String) =
-//        row.contains("</p><p>+") && !row.contains("Погашение ТО, возникшего по счету банковской карты")
         row.contains("<p>[0-9]{2}[.][0-9]{2}[.][0-9]{4} [0-9]{2}[.][0-9]{2}[.][0-9]{4}".toRegex())  &&
         !row.contains("Погашение ТО, возникшего по счету банковской карты")
 
@@ -48,4 +50,25 @@ class GpbCardProcessor(config: ConfigData) : CommonProcessor(config) {
             "<p>([0-9.]{10}) [0-9.]{10} (Перевод) (между своими счетами) (.+)</p>".toRegex(),
             "$1\t$3\t$4\t\t\t\t$2\t\t\t\t$formula_c11\t$formula_c12\t$3"
         )
+
+    override fun discoverAccountInfo(text: String): AccountInfo {
+
+        val mAcc = GPB_CARD_ACCOUNT_REGEX.matchEntire(text.lines()[5])
+        val mDates = GPB_CARD_DATES_REGEX.matchEntire(text.lines()[6])
+
+        val number = mAcc?.gv("account")
+        val code =  number?.let {
+            val s = it.takeLast(4)
+            config.accounts.findByAccountNumber("*$s")?.code
+        }
+
+        return AccountInfo(
+            accountCode = code,
+            accountNumber = number,
+            cardNumber = mAcc?.gv("card"),
+            startDate = mDates?.gv("startDate"),
+            endDate = mDates?.gv("endDate"),
+            currentDate = mDates?.gv("currentDate"),
+        )
+    }
 }
