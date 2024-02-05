@@ -26,20 +26,12 @@ class SberProcessCard(config: ConfigData) : SberProcessor(config) {
         val mDates = SB_REPORT_DATES_REGEX.matchEntire(text.lines()[5])
         val mBal = SB_REPORT_BALANCES_REGEX.matchEntire(text.lines()[6])
 
-        val number = mCard?.gv("card")
-        val code =  number?.let {
-            val cParts = it.split(" •••• ")
-            val cType = when {
-                cParts[0] == "MIR" -> "MIR-"
-                cParts[0].startsWith("Visa") -> "VISA"
-                cParts[0].startsWith("MasterCard") -> "ECMC"
-                else -> "UNKNOWN"
-            }
-            config.accounts.findByCard("$cType${cParts[1]}")?.code
-        }
+        val card = mCard?.gv("card")?.let { getAccountCard(it) }
+        val code = card?.let { config.accounts.findByCard(it)?.code }
 
         return AccountInfo(
             accountCode = code,
+            cardNumber = card,
             startDate = mDates?.gv("startDate"),
             endDate = mDates?.gv("endDate"),
             currentDate = mCard?.gv("currentDate"),
@@ -49,3 +41,16 @@ class SberProcessCard(config: ConfigData) : SberProcessor(config) {
         )
     }
 }
+
+internal fun getAccountCard(sbCardText: String) =
+    sbCardText.let {
+        val cParts = it.split(" •••• ")
+        val cType = when {
+            cParts[0] == "MIR" -> "MIR-"
+            cParts[0] == "СберКарта" -> "MIR-"
+            cParts[0].startsWith("Visa") -> "VISA"
+            cParts[0].startsWith("MasterCard") -> "ECMC"
+            else -> "UNKNOWN"
+        }
+        "$cType${cParts[1]}"
+    }
