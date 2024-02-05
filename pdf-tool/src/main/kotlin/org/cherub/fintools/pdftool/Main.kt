@@ -37,6 +37,8 @@ fun main(args: Array<String>) {
                 SberProcessPayAcc(config).process(fileText, sourceName)
             } else if (fileText.contains("Выписка по счёту дебетовой карты")) {
                 SberProcessCard(config).process(fileText, sourceName)
+            } else if (fileText.contains("Выписка по счёту кредитной карты")) {
+                SberProcessCreditCard(config).process(fileText, sourceName)
             } else if (fileText.contains("Выписка из лицевого счёта по вкладу")) {
                 SberProcessDeposit(config).process(fileText, sourceName)
             } else if (fileText.contains("www.mtsbank.ru")) {
