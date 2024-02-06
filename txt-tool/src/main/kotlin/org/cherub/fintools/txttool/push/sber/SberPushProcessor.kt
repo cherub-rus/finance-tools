@@ -66,41 +66,22 @@ class SberPushProcessor (private val config: ConfigData) {
         this[key]!!.add(push)
     }
 
-    @Suppress("ConstantConditionIf")
     private fun convertToCsv(push: Push): String =
-        if (true) convertToCsvNewStyle(push) else convertToCsvOldStyle(push)
-
-    private fun convertToCsvNewStyle(push: Push) = mutableListOf<String>().apply {
-        add(push.date.toString())
-        add(push.message)
-        add(push.amount)
-        add("")
-        add("")
-        add("")
-        add(push.operation)
-        add(push.time.toString())
-        add("")
-        add("")
-        add(push.balance)
-        add(formula_c12)
-        add(push.message)
-    }.joinToString("\t")
-
-    private fun convertToCsvOldStyle(push: Push) = mutableListOf<String>().apply {
-        add(push.date.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")))
-        add(push.message)
-        add(push.amount)
-        add("")
-        add("")
-        add("")
-        add(push.operation.lowercase())
-        add(push.time.format(DateTimeFormatter.ofPattern("HH:mm:ss")))
-        add("")
-        add(push.amount.replace("-", "").replace(",00", ""))
-        add(push.balance)
-        add("=R[-1]C[-1]+RC[-9]")
-        add(push.message)
-    }.joinToString("\t")
+        mutableListOf<String>().apply {
+            add(push.date.toString())
+            add(push.message)
+            add(push.amount)
+            add("")
+            add("")
+            add("")
+            add(push.operation)
+            add(push.time.toString())
+            add("")
+            add("")
+            add(push.balance)
+            add(formula_c12)
+            add(push.message)
+        }.joinToString("\t")
 
     private fun findOperation(message: String, operationTypes: List<String>) =
         operationTypes.sortedByDescending { it.length }
