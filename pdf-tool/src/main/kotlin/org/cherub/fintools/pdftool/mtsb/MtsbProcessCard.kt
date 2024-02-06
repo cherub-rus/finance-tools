@@ -4,17 +4,15 @@ import org.cherub.fintools.cleanUpByRules
 import org.cherub.fintools.config.ConfigData
 import org.cherub.fintools.log.log
 import org.cherub.fintools.pdftool.*
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 private const val BIN = 220028 // Bank Identification Number for PAYMENT SYSTEM: NSPK MIR; BANK: PJSC MTS BANK
 
 private val MB_ACCOUNT_REGEX = "<p>Номер счета: (?<account>40817810\\d{12})</p>".toRegex()
 private val MB_CURRENT_REGEX = "<p>Доступный остаток\\* на (?<currentDate>\\d{2}\\.\\d{2}\\.\\d{4}): (?<currentBalance>\\d{1,6}\\.\\d{1,2}) RUB</p>".toRegex()
 private val MB_REPORT_DATES_REGEX = "<p><b>Операции за период с (?<startDate>\\d{2}\\.\\d{2}\\.\\d{4}) по (?<endDate>\\d{2}\\.\\d{2}\\.\\d{4})</b></p>".toRegex()
-private val MB_CARD_REGEX = "<p>  ###(?<card>${BIN}\\*{6}\\d{4})Номер карты:([а-яА-Я ]+)</p>".toRegex()
+private val MB_CARD_REGEX = "<p> {2}###(?<card>${BIN}\\*{6}\\d{4})Номер карты:([а-яА-Я ]+)</p>".toRegex()
 
-class MtsbProcessCard(config: ConfigData) : CommonProcessor(config) {
+class MtsbProcessCard(config: ConfigData) : CommonProcessor(config, true) {
 
     override fun cleanUpHtmlSpecific(text: String) = text
         .replace("(</p><p>)($BIN\\*\\*)".toRegex(), " ###$2")
@@ -54,21 +52,6 @@ class MtsbProcessCard(config: ConfigData) : CommonProcessor(config) {
 
     override fun cleanUpRow(row: String) = row
         .cleanUpByRules(config.replaceInRow)
-
-    // reorder by date and time
-    override fun reorderCsvRows(text: String) = text
-        .split("\n")
-        .filter { it.isNotEmpty() }
-        .sortedBy {
-            try {
-                val fields = it.split("\t")
-                LocalDateTime.parse("${fields[0]} ${fields[7]}", DateTimeFormatter.ofPattern(TIMESTAMP_ISO_PATTERN))
-            } catch (e: Exception) {
-                log(e, it)
-                LocalDateTime.MIN
-            }
-        }
-        .joinToString(separator = "\n", postfix = "\n")
 
     override fun discoverAccountInfo(text: String): AccountInfo {
 

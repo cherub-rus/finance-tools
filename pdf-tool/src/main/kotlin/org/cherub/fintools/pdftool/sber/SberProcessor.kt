@@ -6,7 +6,7 @@ import org.cherub.fintools.pdftool.CommonProcessor
 import org.cherub.fintools.pdftool.findByAccountNumber
 import org.cherub.fintools.pdftool.gv
 
-abstract class SberProcessor(config: ConfigData) : CommonProcessor(config) {
+abstract class SberProcessor(config: ConfigData, reorderCsvRows: Boolean = false) : CommonProcessor(config, reorderCsvRows) {
 
     override fun cleanUpHtml(text: String) = super.cleanUpHtml(text)
         .replace("(В валюте счёта</p>)".toRegex(), "$1\n")

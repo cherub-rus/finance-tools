@@ -6,6 +6,8 @@ import org.cherub.fintools.config.ConfigData
 import org.cherub.fintools.log.log
 import java.io.File
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 const val formula_c11 = "=ОКРУГЛ(R[-1]C+RC[-8];2)"
 const val formula_c12 = "=ОКРУГЛ(R[-1]C[-1]+RC[-9];2)"
@@ -14,7 +16,7 @@ private const val DATE_ISO_PATTERN = "yyyy-MM-dd"
 private const val DATE_RUSSIAN_PATTERN = "dd.MM.yyyy"
 internal const val TIMESTAMP_ISO_PATTERN = "$DATE_ISO_PATTERN HH:mm:ss"
 
-abstract class CommonProcessor(val config: ConfigData) {
+abstract class CommonProcessor(val config: ConfigData, val reorderCsvRows: Boolean =  false) {
 
     open fun reversRows() = true
 
@@ -51,12 +53,24 @@ abstract class CommonProcessor(val config: ConfigData) {
         .let { if (reversRows()) it.reversed() else it }
 
     private fun cleanUpResult(content: String) =
-        reorderCsvRows(content)
+        if (reorderCsvRows) sortCsvRows(content) else content
         .replace(" +".toRegex(), " ")
         .replace("\"", "")
         .cleanUpByRules(config.replaceInResult)
 
-    open fun reorderCsvRows(text: String) = text
+    private fun sortCsvRows(text: String) = text
+        .split("\n")
+        .filter { it.isNotEmpty() }
+        .sortedBy {
+            try {
+                val fields = it.split("\t")
+                LocalDateTime.parse("${fields[0]} ${fields[7]}", DateTimeFormatter.ofPattern(TIMESTAMP_ISO_PATTERN))
+            } catch (e: Exception) {
+                log(e, it)
+                LocalDateTime.MIN
+            }
+        }
+        .joinToString(separator = "\n", postfix = "\n")
 
     open fun fixCsv(csvRow: String): String {
         val fields = csvRow.split("\t").toMutableList()

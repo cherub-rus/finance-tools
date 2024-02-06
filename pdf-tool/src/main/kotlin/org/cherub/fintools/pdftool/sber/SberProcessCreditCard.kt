@@ -8,8 +8,9 @@ private val SB_CCARD_REGEX = "<p>Карта Ставка Кредитный ли
 private val SB_CCARD_DATES_REGEX = "<p><b>ОСТАТОК ПО СЧЁТУ НА (?<startDate>\\d{2}\\.\\d{2}\\.\\d{4}) ОСТАТОК ПО СЧЁТУ НА (?<endDate>\\d{2}\\.\\d{2}\\.\\d{4})</b></p>".toRegex()
 private val SB_CCARD_BALANCES_REGEX = "<p><b>(?<startBalance>(\\d{1,3} )?\\d{1,3},\\d{2}) (?<endBalance>(\\d{1,3} )?\\d{1,3},\\d{2})</b></p>".toRegex()
 private val SB_CCARD_ACCOUNT_REGEX = "<p>Счёт получателя: <b>(?<account>40817 810 \\d \\d{4} \\d{7})</b></p>".toRegex()
+private val SB_CCARD_CURRENT_DATE_REGEX = "<p>Дата формирования <b>(?<currentDate>\\d{2}\\.\\d{2}\\.\\d{4})</b></p>".toRegex()
 
-class SberProcessCreditCard(config: ConfigData) : SberProcessor(config) {
+class SberProcessCreditCard(config: ConfigData) : SberProcessor(config, true) {
 
     override fun cleanUpHtmlSpecific(text: String) = text
         .replace("(</b></p>)".toRegex(), "$1\n")
@@ -31,22 +32,16 @@ class SberProcessCreditCard(config: ConfigData) : SberProcessor(config) {
         )
         .replace("-+", "")
 
-    // TODO Reorder by date and time
-
     override fun discoverAccountInfo(text: String): AccountInfo {
 
         val mAcc = SB_CCARD_ACCOUNT_REGEX.matchEntire(text.lines()[text.lines().size - 9])
         val mCard = SB_CCARD_REGEX.matchEntire(text.lines()[3])
         val mDates = SB_CCARD_DATES_REGEX.matchEntire(text.lines()[8])
         val mBal = SB_CCARD_BALANCES_REGEX.matchEntire(text.lines()[9])
+        val mCur = SB_CCARD_CURRENT_DATE_REGEX.matchEntire(text.lines()[text.lines().size - 2])
 
         val number = mAcc?.gv("account")
-/*  code from footer
-        val code = number?.let {
-            val s = it.replace(" ", "").takeLast(4)
-            config.accounts.findByAccountNumber("*$s")?.code
-        }
-*/
+
         val card = mCard?.gv("card")?.let { getAccountCard(it) }
         val code = card?.let { config.accounts.findByCard(it)?.code }
 
@@ -56,10 +51,9 @@ class SberProcessCreditCard(config: ConfigData) : SberProcessor(config) {
             cardNumber = card,
             startDate = mDates?.gv("startDate"),
             endDate = mDates?.gv("endDate"),
-            // TODO currentDate = mCard?.gv("currentDate"),
             startBalance = mBal?.gv("startBalance"),
             endBalance = mBal?.gv("endBalance"),
-            // TODO currentBalance = mCard?.gv("currentBalance")
+            currentDate = mCur?.gv("currentDate")
         )
     }
 }
