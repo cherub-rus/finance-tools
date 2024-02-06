@@ -11,7 +11,7 @@ class SberProcessCard(config: ConfigData) : SberProcessor(config) {
         .replace("(</b></p>)".toRegex(), "$1\n")
 
     override fun rowFilter(row: String) =
-        row.contains(".202") && row.contains("</p><p><b>") && !row.contains("<!DOCTYPE")
+        row.contains(".202") && row.contains("</p><p><b>") && !row.contains("<!DOCTYPE") && !row.contains("по счёту не производилось.")
 
     override fun transformToCsv(row: String) = row
         .replace(
