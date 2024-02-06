@@ -24,7 +24,7 @@ class SberParserMain : IContentParser {
         }
         val regex = ("^" +
                 "(?<cardId>[a-zA-Zа-яА-ЯёЁ-]{4}[0-9]{4})( (?<date>[0-9.]{8}))?( (?<time>[0-9:]{5}))? (?<operation>[^0-9]+) (?<amount>[0-9 ]{1,10}(.[0-9]{2})?)р" +
-                "( (?<message>.+))? Баланс(:)? (?<balance>.+)р( Сообщение\\: \"(?<userMessage>.+)\")?" +
+                "( (?<message>.+))? Баланс: (?<balance>.+)р( Сообщение\\: \"(?<userMessage>.+)\")?" +
                 "$").toRegex()
         val m = regex.matchEntire(content) ?: return null
 
