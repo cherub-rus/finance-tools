@@ -99,6 +99,7 @@ Function FindOrAddHistoryRow(historyData As Variant, fillData As Variant, rowRan
     trPayee = rowRange.Cells(1, c_payee).value
     trCategory = rowRange.Cells(1, c_category).value
     trMessageSource = rowRange.Cells(1, c_message).value
+    trOperation$ = rowRange.Cells(1, c_operation).value
 
     'Debug.Print "PROCESSING:" + trMessageSource
 
@@ -127,14 +128,26 @@ Function FindOrAddHistoryRow(historyData As Variant, fillData As Variant, rowRan
     Next iNum
 
     For iNum = 1 To UBound(fillData, 1)
-        fdMask = fillData(iNum, 1)
-        fdPayee = fillData(iNum, 2)
-        fdCategory = fillData(iNum, 3)
+        ' TODO account and operation
+        fdAccount$ = fillData(iNum, fdc_account)
+        If Len(fdAccount) > 0 And fdAccount <> "[" & account & "]" Then
+            GoTo Continue
+        End If
+
+        fdOperationMask$ = fillData(iNum, fdc_operation)
+        If Len(fdOperationMask) > 0 And Not LCase(trOperation) Like LCase(fdOperationMask) Then
+            GoTo Continue
+        End If
+        
+        fdMask = fillData(iNum, fdc_mask)
+        fdPayee = fillData(iNum, fdc_payee)
+        fdCategory = fillData(iNum, fdc_category)
 
         If (LCase(trMessageSource) Like LCase(fdMask)) And (LCase(trPayee) = LCase(fdPayee)) And (LCase(trCategory) = LCase(fdCategory)) Then
             FindOrAddHistoryRow = False
             GoTo ReturnFun
         End If
+Continue:
     Next iNum
 
     'Debug.Print "NEW ROW FOR:" + trMessageSource
@@ -165,7 +178,7 @@ End Function
 
 Function LoadAutoFillData() As Variant
 
-    Set ws = Workbooks(BOOK_HISTORY).Worksheets("AutoFill")
+    Set ws = Workbooks(BOOK_HISTORY).Worksheets(WS_AUTOFILL)
 
     Set lastCell = ws.Cells.SpecialCells(xlCellTypeLastCell)
     Set sheetRange = ws.Range(Cells(2, 1).Address, lastCell.Address)

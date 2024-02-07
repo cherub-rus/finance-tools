@@ -20,6 +20,14 @@ Public Const hc_payee = 2
 Public Const hc_category = 3
 Public Const hc_message = 5
 
+Public Const fdc_account = 6
+Public Const fdc_operation = 7
+Public Const fdc_mask = 1
+Public Const fdc_payee = 2
+Public Const fdc_category = 3
+Public Const fdc_mark = 4
+Public Const fdc_comment = 5
+
 Public Const ac_account = 1
 Public Const ac_type = 2
 Public Const ac_card = 3
@@ -34,3 +42,4 @@ Public Const PAYEE_RANGE = "B3:C500"
 Public Const WS_PERCENTS = "Percents"
 Public Const WS_PAYEE = "получатели"
 Public Const WS_HISTORY = "TransHistory"
+Public Const WS_AUTOFILL = "AutoFill"
