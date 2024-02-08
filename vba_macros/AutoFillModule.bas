@@ -36,9 +36,6 @@ Sub FillSheet(sheetName As String)
                 accountName = rowRange.Cells(1, c_payee).value
                 'Debug.Print accountName
             Case Else
-                If accountName Like "4 BankM*" Then
-                   Call MTSBPreProcess(rowRange, accountName)
-                End If
                 If IsEmpty(rowRange.Cells(1, c_category)) Then
                    Call FillPayeeAndCategory(fillData, rowRange, accountName)
                 End If
@@ -58,7 +55,7 @@ Private Sub FillPayeeAndCategory(fillData As Variant, rowRange As Range, account
     For iNum = 1 To UBound(fillData, 1)
 
         fdAccount$ = fillData(iNum, fdc_account)
-        If Len(fdAccount) > 0 And fdAccount <> "[" & accountName & "]" Then
+        If Len(fdAccount) > 0 And Not accountName Like fdAccount Then
             GoTo Continue
         End If
 
@@ -72,7 +69,7 @@ Private Sub FillPayeeAndCategory(fillData As Variant, rowRange As Range, account
             With rowRange
                 .Cells(1, c_payee).value = fillData(iNum, fdc_payee)
                 .Cells(1, c_category).value = fillData(iNum, fdc_category)
-                .Cells(1, c_comment).value = fillData(iNum, fdc_comment)
+                .Cells(1, c_comment).value = IIf(fillData(iNum, fdc_comment) <> "?", fillData(iNum, fdc_comment), trComment)
                 .Cells(1, c_mark).value = IIf(fillData(iNum, fdc_mark) <> "", fillData(iNum, fdc_mark), "#")
                 'Debug.Print .Cells(1, c_date).value & " " & .Cells(1, c_comment).value & " " & fillData(iNum, fdc_payee) & " " & fillData(iNum, fdc_category)
             End With
@@ -81,57 +78,6 @@ Private Sub FillPayeeAndCategory(fillData As Variant, rowRange As Range, account
 Continue:
     Next iNum
 Break:
-
-End Sub
-
-Private Sub MTSBPreProcess(rowRange As Range, accountName As String)
-
-    trOperation$ = rowRange.Cells(1, c_operation).value
-    trMessage$ = rowRange.Cells(1, c_message).value
-
-    If accountName = "4 BankM Z" And trOperation Like "~Зачисление ЗП*" Then
-        Dim newPayee As String, newMessage As String
-
-        If trMessage Like "*Отпускные*" Then
-            newPayee = "Зарплата - Аванс"
-            newMessage = "Отпускные"
-        ElseIf trMessage Like "*Аванс*" Then
-            newPayee = "Зарплата - Аванс"
-            newMessage = ""
-        Else
-            newPayee = "Зарплата"
-            newMessage = ""
-        End If
-
-        rowRange.Cells(1, c_comment).value = newMessage
-        rowRange.Cells(1, c_payee).value = newPayee
-        rowRange.Cells(1, c_category).value = "Зарплата"
-        rowRange.Cells(1, c_mark).value = "#"
-
-    ElseIf trOperation Like "~Комиссия*" Then
-        rowRange.Cells(1, c_category).value = "Банк. Расходы"
-        rowRange.Cells(1, c_payee).value = "Банк. Обслуживание"
-        rowRange.Cells(1, c_mark).value = "#"
-
-    ElseIf trOperation = "~Списание" And trMessage = "Перевод с карты на счет" Then
-        Call FillBankTransfer(rowRange, "[8 BankM D]")
-
-    ElseIf trOperation = "~Зачисление" And trMessage = "Перевод между счетами" Then
-        Call FillBankTransfer(rowRange, "[8 BankM D]")
-
-    ElseIf accountName = "4 BankM Z" And trOperation = "Списание с картсчета" And trMessage = "PEREVOD NA KARTU MTSB" Then
-        Call FillBankTransfer(rowRange, "[4 BankM]")
-
-    ElseIf accountName = "4 BankM" And trOperation = "Списание с картсчета" And trMessage = "PEREVOD NA KARTU MTSB" Then
-        Call FillBankTransfer(rowRange, "[4 BankM V]")
-
-    ElseIf accountName = "4 BankM" And trOperation = "Зачисление на картсчет" And trMessage = "PEREVOD NA KARTU MTSB" Then
-        Call FillBankTransfer(rowRange, "[4 BankM V]")
-
-    ElseIf accountName = "4 BankM V" And trMessage = "PEREVOD NA KARTU MTSB" Then
-        Call FillBankTransfer(rowRange, "[4 BankM]")
-
-    End If
 
 End Sub
 
