@@ -3,9 +3,9 @@ package org.cherub.fintools.txttool
 import org.cherub.fintools.config.BankAccount
 import java.io.File
 
-const val formula_c10 = "=RC[-1]-RC[-7]"
-const val formula_c11 = "=ОКРУГЛ(R[-1]C+RC[-8];2)"
-const val formula_c12 = "=ОКРУГЛ(R[-1]C[-1]+RC[-9];2)"
+const val formula_c10 = "=RC[-1]-RC4"
+const val formula_c11 = "=ОКРУГЛ(R[-1]C+RC4;2)"
+const val formula_c12 = "=ОКРУГЛ(R[-1]C[-1]+RC4;2)"
 
 const val KEY_SEPARATOR = "#"
 

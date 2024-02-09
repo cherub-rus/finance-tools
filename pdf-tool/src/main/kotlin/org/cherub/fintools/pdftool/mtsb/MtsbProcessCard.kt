@@ -26,14 +26,14 @@ class MtsbProcessCard(config: ConfigData) : CommonProcessor(config, true) {
     override fun transformToCsv(row: String) = row
         .replace(
             "<p>[0-9]{1,3} ([0-9.]{10}) ([0-9:]{8}) ([0-9]+\\.[0-9]{1,2}) RUR (((.+?)(, ))?(.+?))( дата транзакции ([0-9/]{10}) ([0-9:]{8}))? ###$BIN.+</p>".toRegex(),
-            "$1\t$2\t\t\t\t\t\t$8\t$formula_c11\t$formula_c12\t$11\t$3\t$6\t$8"
+            prepareCsvOutputMask("$1", "$2", "", "$8", formula_c11, formula_c12, "$11", "$3", "$6")
         )
 
     override fun fixCsv(csvRow: String): String {
         val fields = csvRow.split("\t").toMutableList()
 
         try {
-            val sign = if (fields[13].replace("~", "").startsWith("Зачисление")) "" else "-"
+            val sign = if (fields[12].replace("~", "").startsWith("Зачисление")) "" else "-"
             fields[3] = sign + fields[11].replace('.', ',') // Added minus sign to expense amount and change currency separator
             fields[11] = ""
 

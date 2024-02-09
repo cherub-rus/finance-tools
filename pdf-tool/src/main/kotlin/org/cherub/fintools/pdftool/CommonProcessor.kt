@@ -9,8 +9,8 @@ import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-const val formula_c11 = "=ОКРУГЛ(R[-1]C+RC[-8];2)"
-const val formula_c12 = "=ОКРУГЛ(R[-1]C[-1]+RC[-9];2)"
+const val formula_c11 = "=ОКРУГЛ(R[-1]C+RC4;2)"
+const val formula_c12 = "=ОКРУГЛ(R[-1]C[-1]+RC4;2)"
 
 private const val DATE_ISO_PATTERN = "yyyy-MM-dd"
 private const val DATE_RUSSIAN_PATTERN = "dd.MM.yyyy"
@@ -40,11 +40,20 @@ abstract class CommonProcessor(val config: ConfigData, val reorderCsvRows: Boole
     }
 
     protected abstract fun rowFilter(row: String) : Boolean
+
     protected abstract fun transformToCsv(row: String): String
-    protected abstract fun cleanUpHtmlSpecific(text: String): String
+
+    internal fun prepareCsvOutputMask(
+        date: String, time: String, amount: String, message: String,
+        balance1: String, balance2: String, amount1: String, amount2: String, operation: String,
+    ): String {
+        return "$date\t$time\t\t$amount\t\t\t\t$message\t$balance1\t$balance2\t$amount1\t$amount2\t$operation\t$message"
+    }
 
     open fun cleanUpHtml(text: String) =
         cleanUpHtmlSpecific(text)
+
+    protected abstract fun cleanUpHtmlSpecific(text: String): String
 
     open fun cleanUpRow(row: String) = row
 
