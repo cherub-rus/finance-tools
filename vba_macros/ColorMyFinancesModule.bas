@@ -15,50 +15,50 @@ Sub ColorSheet(sheetName As String)
     Set ws = ActiveWorkbook.Worksheets(sheetName)
     ws.Cells.FormatConditions.Delete
 
-    Set fc_C1 = ws.Columns(c_date).FormatConditions
-    With fc_C1.Add(Type:=xlExpression, Formula1:="=х(ме(еосярн(RC));ме(RC=""#"");ме(RC=""Account"");ме(кебяхлб(RC6;1)=""x""))")
+    Set fc_date = ws.Columns(c_date).FormatConditions
+    With fc_date.Add(Type:=xlExpression, Formula1:="=х(ме(еосярн(RC));ме(RC=""#"");ме(RC=""Account"");ме(кебяхлб(RC7;1)=""x""))")
         .Interior.Color = RGB(255, 255, 0)
         .StopIfTrue = False
     End With
 
-    Set fc_C3 = ws.Columns(c_amount).FormatConditions
-    With fc_C3.Add(Type:=xlExpression, Formula1:="=х(евхякн(RC3);еосярн(RC5))")
+    Set fc_amount = ws.Columns(c_amount).FormatConditions
+    With fc_amount.Add(Type:=xlExpression, Formula1:="=х(евхякн(RC4);еосярн(RC6))")
         .Interior.Color = RGB(242, 242, 242)
         .Font.Color = RGB(255, 0, 0)
         .StopIfTrue = False
     End With
 
-    Set fc_C5 = ws.Columns(c_category).FormatConditions
-    With fc_C5.Add(Type:=xlExpression, Formula1:="=х(ме(еосярн(RC3));ме(RC1=""Account"");еосярн(RC))")
+    Set fc_category = ws.Columns(c_category).FormatConditions
+    With fc_category.Add(Type:=xlExpression, Formula1:="=х(ме(еосярн(RC4));ме(RC1=""Account"");еосярн(RC))")
         .Interior.Color = RGB(250, 191, 143)
         .StopIfTrue = False
     End With
 
-    Set fc_C6 = ws.Columns(c_mark).FormatConditions
-    With fc_C6.Add(Type:=xlCellValue, Operator:=xlEqual, Formula1:="?")
+    Set fc_mark = ws.Columns(c_mark).FormatConditions
+    With fc_mark.Add(Type:=xlCellValue, Operator:=xlEqual, Formula1:="?")
         .Interior.Color = RGB(255, 192, 0)
         .Font.Color = RGB(255, 255, 255)
         .StopIfTrue = False
     End With
-    With fc_C6.Add(Type:=xlCellValue, Operator:=xlEqual, Formula1:="*")
+    With fc_mark.Add(Type:=xlCellValue, Operator:=xlEqual, Formula1:="*")
         .Interior.Color = RGB(255, 0, 0)
         .StopIfTrue = False
     End With
-    With fc_C6.Add(Type:=xlCellValue, Operator:=xlEqual, Formula1:="#")
+    With fc_mark.Add(Type:=xlCellValue, Operator:=xlEqual, Formula1:="#")
         .Interior.Color = RGB(127, 255, 255)
         .StopIfTrue = False
     End With
-    With fc_C6.Add(Type:=xlCellValue, Operator:=xlEqual, Formula1:="яо")
+    With fc_mark.Add(Type:=xlCellValue, Operator:=xlEqual, Formula1:="яо")
         .Interior.Color = RGB(146, 208, 80)
         .StopIfTrue = False
     End With
 
-    Set fc_C12 = ws.Columns(c_balance_formula).FormatConditions
-    With fc_C12.Add(Type:=xlCellValue, Operator:=xlNotEqual, Formula1:="=RC[-1]")
+    Set fc_bf = ws.Columns(c_balance_formula).FormatConditions
+    With fc_bf.Add(Type:=xlCellValue, Operator:=xlNotEqual, Formula1:="=RC[-1]")
         .Font.Color = RGB(255, 0, 0)
         .StopIfTrue = False
     End With
-    With fc_C12.Add(Type:=xlCellValue, Operator:=xlLess, Formula1:="0")
+    With fc_bf.Add(Type:=xlCellValue, Operator:=xlLess, Formula1:="0")
         .Interior.Color = RGB(245, 157, 232)
         .StopIfTrue = False
     End With
