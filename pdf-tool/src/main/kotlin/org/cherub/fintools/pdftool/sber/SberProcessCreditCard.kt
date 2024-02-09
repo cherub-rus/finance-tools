@@ -25,11 +25,11 @@ class SberProcessCreditCard(config: ConfigData) : CommonProcessor(config, true) 
     override fun transformToCsv(row: String) = row
         .replace(
             "<p><b>([0-9.]{10}) ([0-9:]{5}) (.+?)( • Сниженная ставка – [0-9.]{1,5}%)?</b>([+]?(\\d{1,3} )?\\d{1,3},\\d{2}) ((\\d{1,3} )+\\d{1,3},\\d{2}) [0-9.]{10} [0-9]{6} (Tomsk )?(.+)</p>".toRegex(),
-            "$1\t$10\t-$5\t\t\t\t$3\t$2:00\t\t\t$7\t$formula_c12\t$10"
+            "$1\t$2:00\t\t-$5\t\t\t\t$10\t$7\t$formula_c12\t\t\t$3\t$10"
         )
         .replace(
             "<p><b>([0-9.]{10}) ([0-9:]{5}) (.+?)</b>([+]?(\\d{1,3} )?\\d{1,3},\\d{2}) ((\\d{1,3} )+\\d{1,3},\\d{2}) [0-9.]{10} - (.+)</p>".toRegex(),
-            "$1\t$8\t-$4\t\t\t\t$3\t$2:00\t\t\t$6\t$formula_c12\t$8"
+            "$1\t$2:00\t\t-$4\t\t\t\t$8\t$6\t$formula_c12\t\t\t$3\t$8"
         )
         .replace("-+", "")
 
