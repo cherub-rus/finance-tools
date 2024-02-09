@@ -64,7 +64,7 @@ abstract class CommonProcessor(val config: ConfigData, val reorderCsvRows: Boole
         .sortedBy {
             try {
                 val fields = it.split("\t")
-                LocalDateTime.parse("${fields[0]} ${fields[7]}", DateTimeFormatter.ofPattern(TIMESTAMP_ISO_PATTERN))
+                LocalDateTime.parse("${fields[0]} ${fields[1]}", DateTimeFormatter.ofPattern(TIMESTAMP_ISO_PATTERN))
             } catch (e: Exception) {
                 log(e, it)
                 LocalDateTime.MIN
@@ -102,14 +102,14 @@ abstract class CommonProcessor(val config: ConfigData, val reorderCsvRows: Boole
                 info.startDate?.let {
                     append(" [" + it + ":" + (info.endDate ?: "") + "] ")
                 }
-                append("\t".repeat(9))
+                append("\t".repeat(7))
                 append(startBalance ?: "")
-                append("\t".repeat(2))
+                append("\t".repeat(5))
             }.toString()
         }
 
         val footer =  (info.endBalance ?: info.currentBalance)?.let {
-            "#" + "\t".repeat(10) + it + "\t".repeat(2)
+            "#" + "\t".repeat(8) + it + "\t".repeat(5)
         }
         return Pair(header, footer)
     }

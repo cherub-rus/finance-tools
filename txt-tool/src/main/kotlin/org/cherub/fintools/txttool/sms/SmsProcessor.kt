@@ -76,17 +76,17 @@ class SmsProcessor(private val config: ConfigData) {
 
     private fun convertToCsv(sms: Sms): String =
         "${sms.date}\t" +
-        "${sms.trans.message}\t" +
+        "${sms.time}\t" +
+        "\t" +
         "${sms.trans.amount}\t" +
         "\t" +
         "\t" +
         "\t" +
-        "${sms.trans.operation}\t" +
-        "${sms.time}\t" +
-        "${sms.trans.discount}\t" +
-        "${if (sms.trans.discount.isNotEmpty()) formula_c10 else ""}\t" +
+        "${sms.trans.message}\t" +
         "${sms.trans.balance ?: formula_c11}\t" +
         "$formula_c12\t" +
+        "${sms.trans.discount}\t" +
+        "${if (sms.trans.discount.isNotEmpty()) formula_c10 else ""}\t" +
+        "${sms.trans.operation}\t" +
         "${sms.trans.message}"
-
 }

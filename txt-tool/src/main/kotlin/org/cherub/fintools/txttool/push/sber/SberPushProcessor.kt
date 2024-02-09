@@ -69,17 +69,18 @@ class SberPushProcessor (private val config: ConfigData) {
     private fun convertToCsv(push: Push): String =
         mutableListOf<String>().apply {
             add(push.date.toString())
-            add(push.message)
+            add(push.time.toString())
+            add("")
             add(push.amount)
             add("")
             add("")
             add("")
-            add(push.operation)
-            add(push.time.toString())
-            add("")
-            add("")
+            add(push.message)
             add(push.balance)
             add(formula_c12)
+            add("")
+            add("")
+            add(push.operation)
             add(push.message)
         }.joinToString("\t")
 
