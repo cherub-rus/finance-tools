@@ -117,6 +117,8 @@ Function UpdateBalances(sheetName As String) As Currency
     balance = balanceCell.value
     balanceCell.value = balance
 
+    ws.Cells(lastRow, c_mark).value = "x"
+
     If noFooter Then
         ws.Cells(footerRow, c_date).value = "#"
         ws.Cells(footerRow, c_balance).value = balance

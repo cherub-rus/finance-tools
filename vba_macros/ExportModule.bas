@@ -27,15 +27,23 @@ Sub ExportAccount(flName As String, sheetName As String, accountName As String, 
             If trAccount <> accountName Then GoTo nextTrans
         End If
 
-        If trDate = "" Or (trDate = "#" And trComment = "") Or trMark Like "x*" Then GoTo nextTrans
+        If trDate = "" Or trMark Like "x*" Then GoTo nextTrans
+
+        If trans.Cells(1, 1).value = "#" Then
+            If trans.Cells(1, 2).value <> "" Then
+                csvContent = csvContent & vbCrLf & _
+                    "#" & vbTab & trans.Cells(1, 2).value & vbTab & vbTab & vbTab & vbTab
+            End If
+            GoTo nextTrans
+        End If
 
         csvContent = csvContent & vbCrLf & _
             trDate & vbTab & _
-            trComment & vbTab _
-            & trAmount & vbTab _
-            & trPayee & vbTab _
-            & trCategory & vbTab _
-            & trMark
+            trComment & vbTab & _
+            trAmount & vbTab & _
+            trPayee & vbTab & _
+            trCategory & vbTab & _
+            trMark
 
         If trDate = "#" Then GoTo nextTrans
 
