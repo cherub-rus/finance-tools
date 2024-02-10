@@ -19,26 +19,26 @@ class UsbCardProcessor(config: ConfigData) : CommonProcessor(config) {
     override fun transformToCsv(row: String) = row
         .replace(
             "<p>(.+)( |</p><p>)(Перевод на счет) ([0-9]{2}[.][0-9]{2}[.][0-9]{4}) ([0-9]{2}:[0-9]{2}) <b>([0-9]+[.][0-9]{2}) </b>RUB</p>".toRegex(),
-            "$4\t$1\t$6\t\t\t\t$3\t$5\t\t\t$formula_c11\t$formula_c12\t$1"
+            prepareCsvOutputMask("$4", "$5", "$6", "$1", formula_c11, formula_c12, "", "", "$3")
         )
         .replace(
             "<p>(.+) (По номеру телефона через СБП)</p><p>([0-9]{2}[.][0-9]{2}[.][0-9]{4}) ([0-9]{2}:[0-9]{2}) <b>(-?[0-9]+[.][0-9]{2}) </b>RUB</p>".toRegex(),
-            "$3\t$1\t$5\t\t\t\t$2\t$4\t\t\t$formula_c11\t$formula_c12\t$1"
+            prepareCsvOutputMask("$3", "$4", "$5", "$1", formula_c11, formula_c12, "", "", "$2")
         )
         .replace(
             "<p>(.+) (Комиссия) ([0-9]{2}[.][0-9]{2}[.][0-9]{4}) ([0-9]{2}:[0-9]{2}) <b>(-?[0-9]+[.][0-9]{2}) </b>RUB</p>".toRegex(),
-            "$3\t$1\t$5\t\t\t\t$2\t$4\t\t\t$formula_c11\t$formula_c12\t$1"
+            prepareCsvOutputMask("$3", "$4", "$5", "$1", formula_c11, formula_c12, "", "", "$2")
         )
         .replace(
             "<p>(.+) (Между своими счетами) ([0-9]{2}[.][0-9]{2}[.][0-9]{4}) ([0-9]{2}:[0-9]{2}) <b>(-?[0-9]+[.][0-9]{2}) </b>RUB</p>".toRegex(),
-            "$3\t$1\t$5\t\t\t\t$2\t$4\t\t\t$formula_c11\t$formula_c12\t$1"
+            prepareCsvOutputMask("$3", "$4", "$5", "$1", formula_c11, formula_c12, "", "", "$2")
         )
 
     override fun fixCsv(csvRow: String): String {
         val fields = csvRow.split("\t").toMutableList()
 
         try {
-            fields[2] = fields[2].replace('.', ',') // Changed currency separator
+            fields[3] = fields[3].replace('.', ',') // Changed currency separator
         } catch (e: Exception) {
             log(e, csvRow)
         }
