@@ -62,7 +62,7 @@ abstract class CommonProcessor(val config: ConfigData, val reorderCsvRows: Boole
         .let { if (reversRows()) it.reversed() else it }
 
     private fun cleanUpResult(content: String) =
-        if (reorderCsvRows) sortCsvRows(content) else content
+        (if (reorderCsvRows) sortCsvRows(content) else content)
         .replace(" +".toRegex(), " ")
         .replace("\"", "")
         .cleanUpByRules(config.replaceInResult)
