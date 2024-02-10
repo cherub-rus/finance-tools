@@ -26,22 +26,22 @@ class MtsbProcessCard(config: ConfigData) : CommonProcessor(config, true) {
     override fun transformToCsv(row: String) = row
         .replace(
             "<p>[0-9]{1,3} ([0-9.]{10}) ([0-9:]{8}) ([0-9]+\\.[0-9]{1,2}) RUR (((.+?)(, ))?(.+?))( дата транзакции ([0-9/]{10}) ([0-9:]{8}))? ###$BIN.+</p>".toRegex(),
-            "$1\t$8\t\t\t\t\t$6\t$2\t$11\t$3\t$formula_c11\t$formula_c12\t$8"
+            prepareCsvOutputMask("$1", "$2", "", "$8", "", "$11", "$3", "$6")
         )
 
     override fun fixCsv(csvRow: String): String {
         val fields = csvRow.split("\t").toMutableList()
 
         try {
-            fields[9] = fields[9].replace('.', ',') // Changed currency separator
-            val sign = if (fields[6].replace("~", "").startsWith("Зачисление")) "" else "-"
-            fields[2] = sign + fields[9] // Added minus sign to expense amount
+            val sign = if (fields[C_OPERATION].replace("~", "").startsWith("Зачисление")) "" else "-"
+            fields[C_AMOUNT] = sign + fields[C_VAR2].replace('.', ',') // Added minus sign to expense amount and change currency separator
+            fields[C_VAR2] = ""
 
-            if (fields[8].isNotEmpty()) {
-                if (fields[7].endsWith("00:00:00")) { // If transaction time exists, replace log time with it
-                    fields[7] = fields[8]
+            if (fields[C_VAR1].isNotEmpty()) {
+                if (fields[C_DATE].endsWith("00:00:00")) { // If transaction time exists, replace log time with it
+                    fields[C_DATE] = fields[C_VAR1]
                 }
-                fields[8] = ""
+                fields[C_VAR1] = ""
             }
         } catch (e: Exception) {
             log(e, csvRow)

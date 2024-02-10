@@ -1,23 +1,23 @@
 Attribute VB_Name = "Globals"
 
 Public Const c_date = 1
-Public Const c_comment = 2
-Public Const c_amount = 3
-Public Const c_payee = 4
-Public Const c_category = 5
-Public Const c_mark = 6
-Public Const c_operation = 7
-Public Const c_time = 8
-Public Const c_amount_fee = 9
-Public Const c_amount_abs = 10
-Public Const c_balance = 11
-Public Const c_balance_formula = 12
-Public Const c_message = 13
-Public Const c_account = 7
+Public Const c_time = 2
+Public Const c_account = 3
+Public Const c_amount = 4
+Public Const c_payee = 5
+Public Const c_category = 6
+Public Const c_comment = 7
+Public Const c_mark = 8
+Public Const c_balance = 9
+Public Const c_balance_formula = 10
+Public Const c_amount_fee = 11
+Public Const c_amount_abs = 12
+Public Const c_operation = 13
+Public Const c_message = 14
 
-Public Const hc_comment = 4
 Public Const hc_payee = 2
 Public Const hc_category = 3
+Public Const hc_comment = 4
 Public Const hc_message = 5
 
 Public Const fdc_account = 6

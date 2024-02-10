@@ -28,26 +28,27 @@ class GpbCardProcessor(config: ConfigData) : CommonProcessor(config) {
         .replace("+0,00 ", "")
         .replace(" +".toRegex(), " ")
 
+    // TODO
     override fun transformToCsv(row: String) = row
         .replace(
             "<p>([0-9.]{10}) [0-9.]{10} Операция: (.+ [(](.+)[)]) [(]ФИЛИАЛ ГПБ[)][.] Устройство: (.+)[.] Город: .+[.] Сумма операции: .+[.] Валюта операции: Российские рубли[.] (.+)</p>".toRegex(),
-            "$1\t$4\t$5\t\t\t\t$3\t\t\t\t$formula_c11\t$formula_c12\t$4"
+            prepareCsvOutputMask("$1", "", "$5", "$4", "", "", "", "$3")
         )
         .replace(
             "<p>([0-9.]{10}) [0-9.]{10} Операция: (.+)[.] Карта .+[.] Устройство: (.*)[.] Город: .*[.] Сумма операции: .+[.] Валюта операции: Российские рубли[.] (.+)</p>".toRegex(),
-            "$1\t$3\t$4\t\t\t\t$2\t\t\t\t$formula_c11\t$formula_c12\t$3"
+            prepareCsvOutputMask("$1", "", "$4", "$3", "", "", "", "$2")
         )
         .replace(
             "<p>([0-9.]{10}) [0-9.]{10} (Перевод с банковской карты) [0-9]{6}x{8}[0-9]{4} (на счет [0-9]{20})[.]( .+[.])? (.+)</p>".toRegex(),
-            "$1\t$3\t$5\t\t\t\t$2\t\t\t\t$formula_c11\t$formula_c12\t$3"
+            prepareCsvOutputMask("$1", "", "$5", "$3", "", "", "", "$2")
         )
         .replace(
             "<p>([0-9.]{10}) [0-9.]{10} (Перевод в онлайн-сервисе) (согласно распоряжению) [0-9A-Z]{12} (.+)</p>".toRegex(),
-            "$1\t$3\t$4\t\t\t\t$2\t\t\t\t$formula_c11\t$formula_c12\t$3"
+            prepareCsvOutputMask("$1", "", "$4", "$3", "", "", "", "$2")
         )
         .replace(
             "<p>([0-9.]{10}) [0-9.]{10} (Перевод) (между своими счетами) (.+)</p>".toRegex(),
-            "$1\t$3\t$4\t\t\t\t$2\t\t\t\t$formula_c11\t$formula_c12\t$3"
+            prepareCsvOutputMask("$1", "", "$4", "$3", "", "", "", "$2")
         )
 
     override fun discoverAccountInfo(text: String): AccountInfo {

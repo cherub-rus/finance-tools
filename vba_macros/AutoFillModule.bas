@@ -33,7 +33,7 @@ Sub FillSheet(sheetName As String)
             Case "#", ""
                 'Skip
             Case "Account"
-                accountName = rowRange.Cells(1, c_payee).value
+                accountName = rowRange.Cells(1, 4).value
                 'Debug.Print accountName
             Case Else
                 If IsEmpty(rowRange.Cells(1, c_category)) Then
@@ -79,14 +79,6 @@ Continue:
     Next iNum
 Break:
 
-End Sub
-
-Private Sub FillBankTransfer(rowRange As Range, account As String)
-    With rowRange
-        .Cells(1, c_category).value = account
-        .Cells(1, c_comment).value = ""
-        .Cells(1, c_mark).value = "#"
-    End With
 End Sub
 
 Function LoadAutoFillData() As Variant

@@ -9,12 +9,19 @@ import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-const val formula_c11 = "=ОКРУГЛ(R[-1]C+RC[-8];2)"
-const val formula_c12 = "=ОКРУГЛ(R[-1]C[-1]+RC[-9];2)"
+const val FORMULA_BALANCE1 = "=ОКРУГЛ(R[-1]C+RC4;2)"
+const val FORMULA_BALANCE2 = "=ОКРУГЛ(R[-1]C[-1]+RC4;2)"
 
 private const val DATE_ISO_PATTERN = "yyyy-MM-dd"
 private const val DATE_RUSSIAN_PATTERN = "dd.MM.yyyy"
 internal const val TIMESTAMP_ISO_PATTERN = "$DATE_ISO_PATTERN HH:mm:ss"
+
+internal const val C_DATE = 0
+internal const val C_TIME = 1
+internal const val C_AMOUNT = 3
+internal const val C_VAR1 = 10
+internal const val C_VAR2 = 11
+internal const val C_OPERATION = 12
 
 abstract class CommonProcessor(val config: ConfigData, val reorderCsvRows: Boolean =  false) {
 
@@ -40,11 +47,35 @@ abstract class CommonProcessor(val config: ConfigData, val reorderCsvRows: Boole
     }
 
     protected abstract fun rowFilter(row: String) : Boolean
+
     protected abstract fun transformToCsv(row: String): String
-    protected abstract fun cleanUpHtmlSpecific(text: String): String
+
+    internal fun prepareCsvOutputMask(
+        date: String, time: String, amount: String, message: String,
+        balance: String, var1: String, var2: String, operation: String,
+    ): String {
+        return mutableListOf<String>().apply {
+            add(date)
+            add(time)
+            add("")
+            add(amount)
+            add("")
+            add("")
+            add(message)
+            add("")
+            add(balance.ifEmpty { FORMULA_BALANCE1 })
+            add(FORMULA_BALANCE2)
+            add(var1)
+            add(var2)
+            add(operation)
+            add(message)
+        }.joinToString("\t")
+    }
 
     open fun cleanUpHtml(text: String) =
         cleanUpHtmlSpecific(text)
+
+    protected abstract fun cleanUpHtmlSpecific(text: String): String
 
     open fun cleanUpRow(row: String) = row
 
@@ -53,7 +84,7 @@ abstract class CommonProcessor(val config: ConfigData, val reorderCsvRows: Boole
         .let { if (reversRows()) it.reversed() else it }
 
     private fun cleanUpResult(content: String) =
-        if (reorderCsvRows) sortCsvRows(content) else content
+        (if (reorderCsvRows) sortCsvRows(content) else content)
         .replace(" +".toRegex(), " ")
         .replace("\"", "")
         .cleanUpByRules(config.replaceInResult)
@@ -64,7 +95,7 @@ abstract class CommonProcessor(val config: ConfigData, val reorderCsvRows: Boole
         .sortedBy {
             try {
                 val fields = it.split("\t")
-                LocalDateTime.parse("${fields[0]} ${fields[7]}", DateTimeFormatter.ofPattern(TIMESTAMP_ISO_PATTERN))
+                LocalDateTime.parse("${fields[C_DATE]} ${fields[C_TIME]}", DateTimeFormatter.ofPattern(TIMESTAMP_ISO_PATTERN))
             } catch (e: Exception) {
                 log(e, it)
                 LocalDateTime.MIN
@@ -76,7 +107,7 @@ abstract class CommonProcessor(val config: ConfigData, val reorderCsvRows: Boole
         val fields = csvRow.split("\t").toMutableList()
 
         try {
-            fields[0] = fields[0].fixRussianDate()
+            fields[C_DATE] = fields[C_DATE].fixRussianDate()
         } catch (e: Exception) {
             log(e, csvRow)
         }
@@ -102,14 +133,14 @@ abstract class CommonProcessor(val config: ConfigData, val reorderCsvRows: Boole
                 info.startDate?.let {
                     append(" [" + it + ":" + (info.endDate ?: "") + "] ")
                 }
-                append("\t".repeat(9))
+                append("\t".repeat(7))
                 append(startBalance ?: "")
-                append("\t".repeat(2))
+                append("\t".repeat(5))
             }.toString()
         }
 
         val footer =  (info.endBalance ?: info.currentBalance)?.let {
-            "#" + "\t".repeat(10) + it + "\t".repeat(2)
+            "#" + "\t".repeat(8) + it + "\t".repeat(5)
         }
         return Pair(header, footer)
     }
