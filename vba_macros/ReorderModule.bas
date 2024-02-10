@@ -53,19 +53,19 @@ End Sub
 
 Private Sub FixSizes()
 
-    Columns(1).ColumnWidth = 11
-    Columns(2).ColumnWidth = 10
-    Columns(3).ColumnWidth = 11
-    Columns(4).ColumnWidth = 11
-    Columns(5).ColumnWidth = 25
-    Columns(6).ColumnWidth = 25
-    Columns(7).ColumnWidth = 2.2
-    Columns(8).ColumnWidth = 51
-    Columns(9).ColumnWidth = 11
-    Columns(10).ColumnWidth = 11
-    Columns(11).ColumnWidth = 10
-    Columns(12).ColumnWidth = 10
-    Columns(13).ColumnWidth = 25
-    Columns(14).ColumnWidth = 37
+    Columns(c_date).ColumnWidth = 11
+    Columns(c_time).ColumnWidth = 10
+    Columns(c_account).ColumnWidth = 11
+    Columns(c_amount).ColumnWidth = 11
+    Columns(c_payee).ColumnWidth = 25
+    Columns(c_category).ColumnWidth = 25
+    Columns(c_mark).ColumnWidth = 2.2
+    Columns(c_comment).ColumnWidth = 51
+    Columns(c_balance).ColumnWidth = 11
+    Columns(c_balance_formula).ColumnWidth = 11
+    Columns(c_amount_fee).ColumnWidth = 10
+    Columns(c_amount_abs).ColumnWidth = 10
+    Columns(c_operation).ColumnWidth = 25
+    Columns(c_message).ColumnWidth = 37
 
 End Sub
