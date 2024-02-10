@@ -52,9 +52,24 @@ abstract class CommonProcessor(val config: ConfigData, val reorderCsvRows: Boole
 
     internal fun prepareCsvOutputMask(
         date: String, time: String, amount: String, message: String,
-        balance1: String, balance2: String, var1: String, var2: String, operation: String,
+        balance: String, var1: String, var2: String, operation: String,
     ): String {
-        return "$date\t$time\t\t$amount\t\t\t$message\t\t$balance1\t$balance2\t$var1\t$var2\t$operation\t$message"
+        return mutableListOf<String>().apply {
+            add(date)
+            add(time)
+            add("")
+            add(amount)
+            add("")
+            add("")
+            add(message)
+            add("")
+            add(balance.ifEmpty { FORMULA_BALANCE1 })
+            add(FORMULA_BALANCE2)
+            add(var1)
+            add(var2)
+            add(operation)
+            add(message)
+        }.joinToString("\t")
     }
 
     open fun cleanUpHtml(text: String) =

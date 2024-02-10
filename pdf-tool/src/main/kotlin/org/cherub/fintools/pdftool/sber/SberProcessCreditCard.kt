@@ -29,7 +29,7 @@ class SberProcessCreditCard(config: ConfigData) : CommonProcessor(config, true) 
         )
         .replace(
             "<p><b>([0-9.]{10}) ([0-9:]{5}) (.+?)</b>([+]?(\\d{1,3} )?\\d{1,3},\\d{2}) ((\\d{1,3} )+\\d{1,3},\\d{2}) [0-9.]{10} - (.+)</p>".toRegex(),
-            prepareCsvOutputMask("$1", "$2:00", "-$4", "$8", "$6", FORMULA_BALANCE2, "", "", "$3")
+            prepareCsvOutputMask("$1", "$2:00", "-$4", "$8", "$6", "", "", "$3")
         )
         .replace("-+", "")
 

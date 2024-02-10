@@ -22,7 +22,7 @@ class SberProcessDeposit(config: ConfigData) : SberProcessor(config) {
     override fun transformToCsv(row: String) = row
         .replace(
             "<p><b>([0-9.]{10}) (.+?)</b></p><p>(.+?)<b>-?[0-9] ([+-]?[0-9 ]+,[0-9]{2}) ([0-9 ]+,[0-9]{2})</b></p>".toRegex(),
-            prepareCsvOutputMask("$1", "00:00", "-$4", "$3", "$5", FORMULA_BALANCE2, "", "", "$2")
+            prepareCsvOutputMask("$1", "00:00", "-$4", "$3", "$5", "", "", "$2")
         )
         .replace("-+", "")
         .replace("--", "-")
