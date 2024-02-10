@@ -81,8 +81,8 @@ class SmsProcessor(private val config: ConfigData) {
         "${sms.trans.amount}\t" +
         "\t" +
         "\t" +
-        "\t" +
         "${sms.trans.message}\t" +
+        "\t" +
         "${sms.trans.balance ?: FORMULA_BALANCE1}\t" +
         "$FORMULA_BALANCE2\t" +
         "${sms.trans.discount}\t" +

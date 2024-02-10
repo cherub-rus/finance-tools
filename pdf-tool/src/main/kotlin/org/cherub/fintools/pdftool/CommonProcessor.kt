@@ -54,7 +54,7 @@ abstract class CommonProcessor(val config: ConfigData, val reorderCsvRows: Boole
         date: String, time: String, amount: String, message: String,
         balance1: String, balance2: String, var1: String, var2: String, operation: String,
     ): String {
-        return "$date\t$time\t\t$amount\t\t\t\t$message\t$balance1\t$balance2\t$var1\t$var2\t$operation\t$message"
+        return "$date\t$time\t\t$amount\t\t\t$message\t\t$balance1\t$balance2\t$var1\t$var2\t$operation\t$message"
     }
 
     open fun cleanUpHtml(text: String) =

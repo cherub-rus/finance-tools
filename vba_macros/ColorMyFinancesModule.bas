@@ -16,7 +16,7 @@ Sub ColorSheet(sheetName As String)
     ws.Cells.FormatConditions.Delete
 
     Set fc_date = ws.Columns(c_date).FormatConditions
-    With fc_date.Add(Type:=xlExpression, Formula1:="=х(ме(еосярн(RC));ме(RC=""#"");ме(RC=""Account"");ме(кебяхлб(RC7;1)=""x""))")
+    With fc_date.Add(Type:=xlExpression, Formula1:="=х(ме(еосярн(RC));ме(RC=""#"");ме(RC=""Account"");ме(кебяхлб(RC8;1)=""x""))")
         .Interior.Color = RGB(255, 255, 0)
         .StopIfTrue = False
     End With

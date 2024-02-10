@@ -16,6 +16,9 @@ Sub ReorderColumns()
 
     Columns("C:C").Insert Shift:=xlToRight
 
+    Columns(7).Cut
+    Columns(9).Insert Shift:=xlToRight
+
     Application.CutCopyMode = False
 
     Call ColorSheet(ActiveSheet.Name)
