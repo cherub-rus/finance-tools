@@ -6,8 +6,8 @@ Private Sub AddPayeeShortkeys()
     'Application.OnKey "+^{ü}", "CopyPayee"
 End Sub
 
-Sub FilterPayee()
-Attribute FilterPayee.VB_ProcData.VB_Invoke_Func = "Ê\n14"
+Sub zFilterPayee()
+Attribute zFilterPayee.VB_ProcData.VB_Invoke_Func = "Ê\n14"
     'Ctrl Shift + R [Ê]
     Dim pattern, searchString As String
 
@@ -25,8 +25,8 @@ Attribute FilterPayee.VB_ProcData.VB_Invoke_Func = "Ê\n14"
     ActiveSheet.Cells(3, 2).Select
 End Sub
 
-Sub FilterPayeeByCategory()
-Attribute FilterPayeeByCategory.VB_ProcData.VB_Invoke_Func = "Ö\n14"
+Sub zFilterPayeeByCategory()
+Attribute zFilterPayeeByCategory.VB_ProcData.VB_Invoke_Func = "Ö\n14"
     'Ctrl Shift + W [Ö]
     Dim pattern, searchString As String
 
@@ -44,8 +44,8 @@ Attribute FilterPayeeByCategory.VB_ProcData.VB_Invoke_Func = "Ö\n14"
     ActiveSheet.Cells(3, 2).Select
 End Sub
 
-Sub CopyPayee()
-Attribute CopyPayee.VB_ProcData.VB_Invoke_Func = "Ü\n14"
+Sub zCopyPayee()
+Attribute zCopyPayee.VB_ProcData.VB_Invoke_Func = "Ü\n14"
     'Ctrl Shift + M [Ü]
     If ActiveSheet.Name <> WS_PAYEE Then Exit Sub
 

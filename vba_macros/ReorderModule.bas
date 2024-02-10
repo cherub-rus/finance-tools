@@ -1,6 +1,6 @@
 Attribute VB_Name = "ReorderModule"
 
-Sub ReorderColumns()
+Private Sub ReorderColumns()
 
     Columns("B:B").Cut
     Columns("G:G").Insert Shift:=xlToRight
@@ -25,7 +25,6 @@ Sub ReorderColumns()
 
     Call FixTexts
     Call FixColors
-    Call FixSizes
 End Sub
 
 Private Sub FixTexts()
@@ -51,24 +50,5 @@ Private Sub FixColors()
     Range("E2:M2").Interior.pattern = xlNone
     Range("J4:M4").Interior.pattern = xlNone
     Range("J6:M6").Interior.pattern = xlNone
-
-End Sub
-
-Private Sub FixSizes()
-
-    Columns(c_date).ColumnWidth = 11
-    Columns(c_time).ColumnWidth = 10
-    Columns(c_account).ColumnWidth = 11
-    Columns(c_amount).ColumnWidth = 11
-    Columns(c_payee).ColumnWidth = 25
-    Columns(c_category).ColumnWidth = 25
-    Columns(c_mark).ColumnWidth = 2.2
-    Columns(c_comment).ColumnWidth = 51
-    Columns(c_balance).ColumnWidth = 11
-    Columns(c_balance_formula).ColumnWidth = 11
-    Columns(c_amount_fee).ColumnWidth = 10
-    Columns(c_amount_abs).ColumnWidth = 10
-    Columns(c_operation).ColumnWidth = 25
-    Columns(c_message).ColumnWidth = 37
 
 End Sub

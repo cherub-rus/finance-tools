@@ -4,7 +4,7 @@ Sub FillHistoryFromActiveSheet()
     FillHistoryFromSheet (ActiveSheet.Name)
 End Sub
 
-Sub FillHistory()
+Sub AllFillHistory()
 
     Dim accountsData As Variant
     accountsData = LoadAccountsData()

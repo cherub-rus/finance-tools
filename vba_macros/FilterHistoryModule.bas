@@ -1,7 +1,7 @@
 Attribute VB_Name = "FilterHistoryModule"
 
-Sub ClearFilter()
-Attribute ClearFilter.VB_ProcData.VB_Invoke_Func = "É\n14"
+Sub zClearFilter()
+Attribute zClearFilter.VB_ProcData.VB_Invoke_Func = "É\n14"
     'Ctrl Shift + Q [É]
 
     Call ClearWsFilter(ActiveSheet)
@@ -15,16 +15,16 @@ Sub ClearWsFilter(ws As Worksheet)
 
 End Sub
 
-Sub ClearFilterForHistoryComment()
-Attribute ClearFilterForHistoryComment.VB_ProcData.VB_Invoke_Func = "Û\n14"
+Sub zClearFilterForHistoryComment()
+Attribute zClearFilterForHistoryComment.VB_ProcData.VB_Invoke_Func = "Û\n14"
     'Ctrl Shift + S [Û]
     Windows(BOOK_DRAFT).Activate
     ActiveSheet.Range(TRANS_RANGE).AutoFilter Field:=c_message
     ActiveSheet.Cells(4, c_comment).Select
 End Sub
 
-Sub FilterHistoryByComment()
-Attribute FilterHistoryByComment.VB_ProcData.VB_Invoke_Func = "Â\n14"
+Sub zFilterHistoryByComment()
+Attribute zFilterHistoryByComment.VB_ProcData.VB_Invoke_Func = "Â\n14"
     'Ctrl Shift + D [Â]
     Dim pattern, searchString As String
 
@@ -47,8 +47,8 @@ Attribute FilterHistoryByComment.VB_ProcData.VB_Invoke_Func = "Â\n14"
     ActiveSheet.Cells(3, hc_payee).Select
 End Sub
 
-Sub FilterHistoryByPayee()
-Attribute FilterHistoryByPayee.VB_ProcData.VB_Invoke_Func = "Ó\n14"
+Sub zFilterHistoryByPayee()
+Attribute zFilterHistoryByPayee.VB_ProcData.VB_Invoke_Func = "Ó\n14"
     'Ctrl Shift + E [Ó]
     Dim pattern, searchString As String
 
@@ -66,8 +66,8 @@ Attribute FilterHistoryByPayee.VB_ProcData.VB_Invoke_Func = "Ó\n14"
     ActiveSheet.Cells(3, hc_payee).Select
 End Sub
 
-Sub FilterByAmount()
-Attribute FilterByAmount.VB_ProcData.VB_Invoke_Func = "Å\n14"
+Sub zFilterByAmount()
+Attribute zFilterByAmount.VB_ProcData.VB_Invoke_Func = "Å\n14"
     'Ctrl Shift + T [Å]
     Dim pattern1, pattern2, searchString As String
     Dim value As Double

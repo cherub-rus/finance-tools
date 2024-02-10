@@ -1,6 +1,6 @@
 Attribute VB_Name = "ImportModule"
 
-Sub Import()
+Sub AllImport()
 
     Dim accountsData As Variant
     accountsData = LoadAccountsData()

@@ -1,6 +1,6 @@
 Attribute VB_Name = "AccountsModule"
 
-Sub Export()
+Sub AllExport()
 
     Dim accountsData As Variant
     accountsData = LoadAccountsData()
@@ -139,7 +139,7 @@ Sub SetAccountBalance(accountName As String, balance As Currency)
 
 End Sub
 
-Sub CleanUpActiveSheet()
+Private Sub CleanUpActiveSheet()
     Call CleanUpSheet(ActiveSheet.Name)
 End Sub
 
