@@ -1,6 +1,6 @@
 Attribute VB_Name = "ReorderModule"
+
 Sub ReorderColumns()
-Attribute ReorderColumns.VB_ProcData.VB_Invoke_Func = " \n14"
 
     Columns("B:B").Cut
     Columns("G:G").Insert Shift:=xlToRight
@@ -25,7 +25,7 @@ Attribute ReorderColumns.VB_ProcData.VB_Invoke_Func = " \n14"
     Call FixSizes
 End Sub
 
-Sub FixTexts()
+Private Sub FixTexts()
 
     Range("B2").value = Range("H2").value
     Range("H2").value = ""
@@ -38,7 +38,8 @@ Sub FixTexts()
 
 End Sub
 
-Sub FixColors()
+Private Sub FixColors()
+
     With Range("B2:C2").Interior
         .pattern = xlSolid
         .Color = 49407
@@ -47,10 +48,11 @@ Sub FixColors()
     Range("E2:M2").Interior.pattern = xlNone
     Range("J4:M4").Interior.pattern = xlNone
     Range("J6:M6").Interior.pattern = xlNone
+
 End Sub
 
-Sub FixSizes()
-Attribute FixSizes.VB_ProcData.VB_Invoke_Func = " \n14"
+Private Sub FixSizes()
+
     Columns(1).ColumnWidth = 11
     Columns(2).ColumnWidth = 10
     Columns(3).ColumnWidth = 11
@@ -65,4 +67,5 @@ Attribute FixSizes.VB_ProcData.VB_Invoke_Func = " \n14"
     Columns(12).ColumnWidth = 10
     Columns(13).ColumnWidth = 25
     Columns(14).ColumnWidth = 37
+
 End Sub
