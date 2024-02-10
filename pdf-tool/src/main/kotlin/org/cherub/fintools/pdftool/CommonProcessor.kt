@@ -9,12 +9,19 @@ import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-const val formula_c11 = "=ОКРУГЛ(R[-1]C+RC4;2)"
-const val formula_c12 = "=ОКРУГЛ(R[-1]C[-1]+RC4;2)"
+const val FORMULA_BALANCE1 = "=ОКРУГЛ(R[-1]C+RC4;2)"
+const val FORMULA_BALANCE2 = "=ОКРУГЛ(R[-1]C[-1]+RC4;2)"
 
 private const val DATE_ISO_PATTERN = "yyyy-MM-dd"
 private const val DATE_RUSSIAN_PATTERN = "dd.MM.yyyy"
 internal const val TIMESTAMP_ISO_PATTERN = "$DATE_ISO_PATTERN HH:mm:ss"
+
+internal const val C_DATE = 0
+internal const val C_TIME = 1
+internal const val C_AMOUNT = 3
+internal const val C_VAR1 = 10
+internal const val C_VAR2 = 11
+internal const val C_OPERATION = 12
 
 abstract class CommonProcessor(val config: ConfigData, val reorderCsvRows: Boolean =  false) {
 
@@ -45,9 +52,9 @@ abstract class CommonProcessor(val config: ConfigData, val reorderCsvRows: Boole
 
     internal fun prepareCsvOutputMask(
         date: String, time: String, amount: String, message: String,
-        balance1: String, balance2: String, amount1: String, amount2: String, operation: String,
+        balance1: String, balance2: String, var1: String, var2: String, operation: String,
     ): String {
-        return "$date\t$time\t\t$amount\t\t\t\t$message\t$balance1\t$balance2\t$amount1\t$amount2\t$operation\t$message"
+        return "$date\t$time\t\t$amount\t\t\t\t$message\t$balance1\t$balance2\t$var1\t$var2\t$operation\t$message"
     }
 
     open fun cleanUpHtml(text: String) =
@@ -73,7 +80,7 @@ abstract class CommonProcessor(val config: ConfigData, val reorderCsvRows: Boole
         .sortedBy {
             try {
                 val fields = it.split("\t")
-                LocalDateTime.parse("${fields[0]} ${fields[1]}", DateTimeFormatter.ofPattern(TIMESTAMP_ISO_PATTERN))
+                LocalDateTime.parse("${fields[C_DATE]} ${fields[C_TIME]}", DateTimeFormatter.ofPattern(TIMESTAMP_ISO_PATTERN))
             } catch (e: Exception) {
                 log(e, it)
                 LocalDateTime.MIN
@@ -85,7 +92,7 @@ abstract class CommonProcessor(val config: ConfigData, val reorderCsvRows: Boole
         val fields = csvRow.split("\t").toMutableList()
 
         try {
-            fields[0] = fields[0].fixRussianDate()
+            fields[C_DATE] = fields[C_DATE].fixRussianDate()
         } catch (e: Exception) {
             log(e, csvRow)
         }

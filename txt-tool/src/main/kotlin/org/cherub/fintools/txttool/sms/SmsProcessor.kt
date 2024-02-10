@@ -83,10 +83,10 @@ class SmsProcessor(private val config: ConfigData) {
         "\t" +
         "\t" +
         "${sms.trans.message}\t" +
-        "${sms.trans.balance ?: formula_c11}\t" +
-        "$formula_c12\t" +
+        "${sms.trans.balance ?: FORMULA_BALANCE1}\t" +
+        "$FORMULA_BALANCE2\t" +
         "${sms.trans.discount}\t" +
-        "${if (sms.trans.discount.isNotEmpty()) formula_c10 else ""}\t" +
+        "${if (sms.trans.discount.isNotEmpty()) FORMULA_AMOUNT2 else ""}\t" +
         "${sms.trans.operation}\t" +
         "${sms.trans.message}"
 }

@@ -3,8 +3,7 @@ package org.cherub.fintools.pdftool.sber
 import org.cherub.fintools.config.ConfigData
 import org.cherub.fintools.pdftool.AccountInfo
 import org.cherub.fintools.pdftool.findByAccountNumber
-import org.cherub.fintools.pdftool.formula_c12
-import org.cherub.fintools.pdftool.gv
+import org.cherub.fintools.pdftool.*
 
 private val SB_ACCOUNT_REGEX_D = ".+<p>Номер счёта<b>(?<account>40817 810 \\d \\d{4} \\d{7})</b></p>.+".toRegex()
 private val SB_REPORT_INFO_REGEX = "<p><b>Остаток средств</b>на (?<startDate>\\d{2}\\.\\d{2}\\.\\d{4})</p><p><b>(?<startBalance>(\\d{1,3} )?\\d{1,3},\\d{2}) Остаток средств</b>на (?<endDate>\\d{2}\\.\\d{2}\\.\\d{4})</p><p><b>(?<endBalance>(\\d{1,3} )?\\d{1,3},\\d{2})</b></p>".toRegex()
@@ -23,7 +22,7 @@ class SberProcessDeposit(config: ConfigData) : SberProcessor(config) {
     override fun transformToCsv(row: String) = row
         .replace(
             "<p><b>([0-9.]{10}) (.+?)</b></p><p>(.+?)<b>-?[0-9] ([+-]?[0-9 ]+,[0-9]{2}) ([0-9 ]+,[0-9]{2})</b></p>".toRegex(),
-            prepareCsvOutputMask("$1", "00:00", "-$4", "$3", "$5", formula_c12, "", "", "$2")
+            prepareCsvOutputMask("$1", "00:00", "-$4", "$3", "$5", FORMULA_BALANCE2, "", "", "$2")
         )
         .replace("-+", "")
         .replace("--", "-")

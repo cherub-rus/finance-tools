@@ -77,7 +77,7 @@ class SberPushProcessor (private val config: ConfigData) {
             add("")
             add(push.message)
             add(push.balance)
-            add(formula_c12)
+            add(FORMULA_BALANCE2)
             add("")
             add("")
             add(push.operation)

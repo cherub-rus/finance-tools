@@ -23,7 +23,7 @@ class GpbDepositProcessor(config: ConfigData) : CommonProcessor(config) {
     override fun transformToCsv(row: String) = row
         .replace(
             "([0-9]{2}[.][0-9]{2}[.][0-9]{4}) (.+) ([+-])(([1-9]?[0-9]{0,2} )?[0-9]{1,3},[0-9]{2}) (([1-9]?[0-9]{0,2} )?[0-9]{1,3},[0-9]{2})".toRegex(),
-            prepareCsvOutputMask("$1", "", "$3$4", "$2", "$6", formula_c12, "", "", "$2")
+            prepareCsvOutputMask("$1", "", "$3$4", "$2", "$6", FORMULA_BALANCE2, "", "", "$2")
         )
 
     override fun discoverAccountInfo(text: String): AccountInfo {

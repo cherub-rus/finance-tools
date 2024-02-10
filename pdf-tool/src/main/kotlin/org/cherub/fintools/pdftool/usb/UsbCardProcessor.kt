@@ -19,26 +19,26 @@ class UsbCardProcessor(config: ConfigData) : CommonProcessor(config) {
     override fun transformToCsv(row: String) = row
         .replace(
             "<p>(.+)( |</p><p>)(Перевод на счет) ([0-9]{2}[.][0-9]{2}[.][0-9]{4}) ([0-9]{2}:[0-9]{2}) <b>([0-9]+[.][0-9]{2}) </b>RUB</p>".toRegex(),
-            prepareCsvOutputMask("$4", "$5", "$6", "$1", formula_c11, formula_c12, "", "", "$3")
+            prepareCsvOutputMask("$4", "$5", "$6", "$1", FORMULA_BALANCE1, FORMULA_BALANCE2, "", "", "$3")
         )
         .replace(
             "<p>(.+) (По номеру телефона через СБП)</p><p>([0-9]{2}[.][0-9]{2}[.][0-9]{4}) ([0-9]{2}:[0-9]{2}) <b>(-?[0-9]+[.][0-9]{2}) </b>RUB</p>".toRegex(),
-            prepareCsvOutputMask("$3", "$4", "$5", "$1", formula_c11, formula_c12, "", "", "$2")
+            prepareCsvOutputMask("$3", "$4", "$5", "$1", FORMULA_BALANCE1, FORMULA_BALANCE2, "", "", "$2")
         )
         .replace(
             "<p>(.+) (Комиссия) ([0-9]{2}[.][0-9]{2}[.][0-9]{4}) ([0-9]{2}:[0-9]{2}) <b>(-?[0-9]+[.][0-9]{2}) </b>RUB</p>".toRegex(),
-            prepareCsvOutputMask("$3", "$4", "$5", "$1", formula_c11, formula_c12, "", "", "$2")
+            prepareCsvOutputMask("$3", "$4", "$5", "$1", FORMULA_BALANCE1, FORMULA_BALANCE2, "", "", "$2")
         )
         .replace(
             "<p>(.+) (Между своими счетами) ([0-9]{2}[.][0-9]{2}[.][0-9]{4}) ([0-9]{2}:[0-9]{2}) <b>(-?[0-9]+[.][0-9]{2}) </b>RUB</p>".toRegex(),
-            prepareCsvOutputMask("$3", "$4", "$5", "$1", formula_c11, formula_c12, "", "", "$2")
+            prepareCsvOutputMask("$3", "$4", "$5", "$1", FORMULA_BALANCE1, FORMULA_BALANCE2, "", "", "$2")
         )
 
     override fun fixCsv(csvRow: String): String {
         val fields = csvRow.split("\t").toMutableList()
 
         try {
-            fields[3] = fields[3].replace('.', ',') // Changed currency separator
+            fields[C_AMOUNT] = fields[C_AMOUNT].replace('.', ',') // Changed currency separator
         } catch (e: Exception) {
             log(e, csvRow)
         }
