@@ -29,14 +29,14 @@ End Sub
 
 Private Sub FixTexts()
 
-    Range("B2").value = Range("H2").value
-    Range("H2").value = ""
+    Range("B2").value = Range("G2").value
+    Range("G2").value = ""
     Range("C2").value = Range("D2").value
     Range("D2").value = Range("E2").value
     Range("E2").value = ""
 
-    Range("B4").value = Range("H4").value
-    Range("H4").value = ""
+    Range("B4").value = Range("G4").value
+    Range("G4").value = ""
 
 End Sub
 
