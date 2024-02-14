@@ -41,5 +41,5 @@ Public Const PAYEE_RANGE = "B3:C500"
 
 Public Const WS_PERCENTS = "Percents"
 Public Const WS_PAYEE = "получатели"
-Public Const WS_HISTORY = "TransHistory"
-Public Const WS_AUTOFILL = "AutoFill"
+Public Const WS_HISTORY = OWNER + "_history"
+Public Const WS_AUTOFILL = OWNER + "_auto_fill"
