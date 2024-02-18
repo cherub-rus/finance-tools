@@ -38,8 +38,8 @@ class MtsbProcessCard(config: ConfigData) : CommonProcessor(config, true) {
             fields[C_VAR2] = ""
 
             if (fields[C_VAR1].isNotEmpty()) {
-                if (fields[C_DATE].endsWith("00:00:00")) { // If transaction time exists, replace log time with it
-                    fields[C_DATE] = fields[C_VAR1]
+                if (fields[C_TIME].endsWith("00:00:00")) { // If transaction time exists, replace log time with it
+                    fields[C_TIME] = fields[C_VAR1]
                 }
                 fields[C_VAR1] = ""
             }
