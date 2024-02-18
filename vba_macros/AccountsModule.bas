@@ -25,10 +25,10 @@ Sub AllExport()
 
         If aAccount <> "" Then
             If aSheet = "" Then
+                Call ExportAccount(outputPrefix, aAccount, aAccount, aType, aCard)
                 balance@ = UpdateBalances(aAccount)
                 Call SetAccountBalance(aAccount, balance)
                 Call FileAppend(balanceFileName, aAccount & vbTab & FormatCurrency(balance, 2, vbTrue, vbFalse, vbFalse))
-                Call ExportAccount(outputPrefix, aAccount, aAccount, aType, aCard)
             End If
 
             If aSheet = WS_PERCENTS Then
@@ -161,7 +161,7 @@ Private Sub CleanUpSheet(sheetName As String)
         ws.Range(ws.Cells(5, 1), ws.Cells(lastRow - 1, 1)).EntireRow.Delete
     End If
 
-    Application.Goto ws.Cells(1, 1), True
+    Application.GoTo ws.Cells(1, 1), True
 
 End Sub
 

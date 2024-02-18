@@ -23,7 +23,7 @@ Sub AllFillHistory()
 
 End Sub
 
-Private Sub SortHistory()
+Sub SortHistory()
 
     Set ws = Workbooks(BOOK_HISTORY).Worksheets(WS_HISTORY)
     ws.AutoFilter.Sort.SortFields.Clear
