@@ -26,7 +26,7 @@ class MtsbProcessCard(config: ConfigData) : CommonProcessor(config, true) {
     override fun transformToCsv(row: String) = row
         .replace(
             "<p>[0-9]{1,3} ([0-9.]{10}) ([0-9:]{8}) ([0-9]+\\.[0-9]{1,2}) RUR (((.+?)(, ))?(.+?))( дата транзакции ([0-9/]{10}) ([0-9:]{8}))? ###$BIN.+</p>".toRegex(),
-            prepareCsvOutputMask("$1", "$2", "", "$8", "", "$11", "$3", "$6")
+            prepareCsvOutputMask("$1", "$2", "", "$8", "", "$10 $11", "$3", "$6")
         )
 
     override fun fixCsv(csvRow: String): String {
@@ -39,7 +39,9 @@ class MtsbProcessCard(config: ConfigData) : CommonProcessor(config, true) {
 
             if (fields[C_VAR1].isNotEmpty()) {
                 if (fields[C_TIME].endsWith("00:00:00")) { // If transaction time exists, replace log time with it
-                    fields[C_TIME] = fields[C_VAR1]
+                    val tranDate = fields[C_VAR1].split(" ")
+                    fields[C_DATE] = tranDate[0].replace('/', '.')
+                    fields[C_TIME] = tranDate[1]
                 }
                 fields[C_VAR1] = ""
             }
