@@ -4,11 +4,11 @@ private const val qif_cleaned = "*"
 
 enum class Fields(val idx: Int) {
     DATE(0),
-    AMOUNT(2),
-    PAYEE(3),
-    CATEGORY(4),
-    MARK(5),
-    COMMENT(1),
+    AMOUNT(3),
+    PAYEE(4),
+    CATEGORY(5),
+    COMMENT(6),
+    MARK(7),
 }
 
 class CsvProcessor {

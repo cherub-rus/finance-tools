@@ -16,6 +16,8 @@ Sub ExportAccount(flName As String, sheetName As String, accountName As String, 
 
     For Each trans In sheetRows
         trDate = trans.Cells(1, c_date).value
+        trTime = trans.Cells(1, c_time).Text
+        trAccount = trans.Cells(1, c_account).Text
         trAmount = trans.Cells(1, c_amount).Text
         trPayee = trans.Cells(1, c_payee).value
         trCategory = trans.Cells(1, c_category).value
@@ -32,17 +34,19 @@ Sub ExportAccount(flName As String, sheetName As String, accountName As String, 
         If trans.Cells(1, 1).value = "#" Then
             If trans.Cells(1, 2).value <> "" Then
                 csvContent = csvContent & vbCrLf & _
-                    "#" & vbTab & trans.Cells(1, 2).value & vbTab & vbTab & vbTab & vbTab
+                    "#" & vbTab & trans.Cells(1, 2).value & vbTab & vbTab & vbTab & vbTab & vbTab & vbTab
             End If
             GoTo nextTrans
         End If
 
         csvContent = csvContent & vbCrLf & _
             trDate & vbTab & _
-            trComment & vbTab & _
+            trTime & vbTab & _
+            trAccount & vbTab & _
             trAmount & vbTab & _
             trPayee & vbTab & _
             trCategory & vbTab & _
+            trComment & vbTab & _
             trMark
 
         If trDate = "#" Then GoTo nextTrans
@@ -100,8 +104,8 @@ End Function
 
 Function MakeCsvAccountHeader(accountName As String, accountType As String, accountCard As String) As String
     MakeCsvAccountHeader = _
-        "" & vbTab & vbTab & vbTab & vbTab & vbTab & vbCrLf & _
-        "" & vbTab & vbTab & vbTab & vbTab & vbTab & vbCrLf & _
-        "Account" & vbTab & accountCard & vbTab & accountType & vbTab & accountName & vbTab & vbTab & vbCrLf & _
-        "" & vbTab & vbTab & vbTab & vbTab & vbTab '& vbCrLf
+        "" & vbTab & vbTab & vbTab & vbTab & vbTab & vbTab & vbTab & vbCrLf & _
+        "" & vbTab & vbTab & vbTab & vbTab & vbTab & vbTab & vbTab & vbCrLf & _
+        "Account" & vbTab & accountCard & vbTab & accountType & vbTab & accountName & vbTab & vbTab & vbTab & vbTab & vbCrLf & _
+        "" & vbTab & vbTab & vbTab & vbTab & vbTab & vbTab & vbTab '& vbCrLf
 End Function
