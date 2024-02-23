@@ -15,6 +15,7 @@ Sub AllImport()
         aAccount$ = accountsData(iNum, ac_account)
         aSheet$ = accountsData(iNum, ac_sheet)
         aSource$ = accountsData(iNum, ac_source)
+        aDiscount$ = accountsData(iNum, ac_discount)
 
         content$ = ""
         If aAccount <> "" And aSheet = "" Then
@@ -22,6 +23,7 @@ Sub AllImport()
             If content <> "" Then
                 Call LoadSheet(aAccount, content)
                 Call FillSheet(aAccount)
+                If aDiscount = "true" Then Call FixDiscount(aAccount)
             End If
         End If
     Next iNum
