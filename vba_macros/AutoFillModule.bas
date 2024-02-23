@@ -13,33 +13,20 @@ Sub FillSheet(sheetName As String)
     Set ws = Workbooks(BOOK_DRAFT).Worksheets(sheetName)
     Call ClearWsFilter(ws)
 
+    accountName$ = GetAccount(ws)
+
     Set lastCell = ws.Cells.SpecialCells(xlCellTypeLastCell)
-    Set sheetRange = ws.Range(Cells(2, 1).Address, lastCell.Address)
+    Set sheetRange = ws.Range(Cells(4, 1).Address, lastCell.Address)
 
     With sheetRange
-        .AutoFilter Field:=1, Criteria1:="<>"
-        .AutoFilter Field:=5, Criteria1:="="
+        .AutoFilter Field:=c_date, Criteria1:="<>"
+        .AutoFilter Field:=c_date, Criteria1:="<>#"
+        .AutoFilter Field:=c_category, Criteria1:="="
 
         Set filterRange = .SpecialCells(xlCellTypeVisible).EntireRow
-        'TODO Function GetRangeToFill
 
         For Each rowRange In filterRange
-            Dim trDate As String
-            Dim accountName As String
-
-            trDate = rowRange.Cells(1, c_date).value
-
-            Select Case trDate
-            Case "#", ""
-                'Skip
-            Case "Account"
-                accountName = rowRange.Cells(1, 4).value
-                'Debug.Print accountName
-            Case Else
-                If IsEmpty(rowRange.Cells(1, c_category)) Then
-                   Call FillPayeeAndCategory(fillData, rowRange, accountName)
-                End If
-            End Select
+            Call FillPayeeAndCategory(fillData, rowRange, accountName)
         Next
     End With
 
