@@ -1,9 +1,5 @@
 Attribute VB_Name = "FillHistoryModule"
 
-Sub FillHistoryFromActiveSheet()
-    FillHistoryFromSheet (ActiveSheet.Name)
-End Sub
-
 Sub AllFillHistory()
 
     Dim accountsData As Variant
@@ -47,6 +43,10 @@ Sub SortHistory()
 
 End Sub
 
+Sub FillHistoryFromActiveSheet()
+    FillHistoryFromSheet (ActiveSheet.Name)
+End Sub
+
 Private Sub FillHistoryFromSheet(sheetName As String)
 
     Dim ws As Worksheet, lastCell As Range, sheetRange As Range, filterRange As Range, rowRange As Range, fillData As Variant, historyData As Variant
@@ -59,32 +59,24 @@ Private Sub FillHistoryFromSheet(sheetName As String)
 
     Call ClearWsFilter(ws)
 
+    accountName$ = GetAccount(ws)
+
     Set lastCell = ws.Cells.SpecialCells(xlCellTypeLastCell)
-    Set sheetRange = ws.Range(Cells(2, 1).Address, lastCell.Address)
+    Set sheetRange = ws.Range(Cells(4, 1).Address, lastCell.Address)
 
     With sheetRange
-        .AutoFilter Field:=1, Criteria1:="<>"
+        .AutoFilter Field:=c_date, Criteria1:="<>"
+        .AutoFilter Field:=c_category, Criteria1:="<>"
+        .AutoFilter Field:=c_message, Criteria1:="<>"
+        .AutoFilter Field:=c_mark, Criteria1:="<>*"
 
         Set filterRange = .SpecialCells(xlCellTypeVisible).EntireRow
 
         For Each rowRange In filterRange
-            Dim trDate As String
-
-            trDate = rowRange.Cells(1, c_date).value
-
-            Select Case trDate
-            Case "#", ""
-                'Skip
-            Case "Account"
-                'Skip
-            Case Else
-                If Not IsEmpty(rowRange.Cells(1, c_message)) And Not rowRange.Cells(1, c_mark) = "*" Then
-                   added = FindOrAddHistoryRow(historyData, fillData, rowRange, sheetName)
-                   If added Then
-                       historyData = LoadHistoryData()
-                   End If
-                End If
-            End Select
+            added = FindOrAddHistoryRow(historyData, fillData, rowRange, accountName)
+            If added Then
+                historyData = LoadHistoryData()
+            End If
         Next
     End With
 
