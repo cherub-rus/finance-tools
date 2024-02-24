@@ -187,6 +187,6 @@ Private Sub CleanUpPercents()
 End Sub
 
 Function GetAccount(ws As Worksheet) As String
-    GetAccount = ws.Cells(2, 4)
+    GetAccount = ws.Cells(2, 3)
 End Function
 

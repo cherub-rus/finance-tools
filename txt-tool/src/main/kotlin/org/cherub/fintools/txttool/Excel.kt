@@ -12,7 +12,7 @@ const val KEY_SEPARATOR = "#"
 fun makeAccountHeader(accountId: String, accounts: List<BankAccount>, sourceName: String) =
     StringBuilder().also {
         it.appendLine("".addTabs())
-        it.appendLine("Account\t$accountId\t${accounts.findType(accountId)}\t${accounts.findCode(accountId)}".addTabs())
+        it.appendLine("Account\t${accounts.findType(accountId)}\t${accounts.findCode(accountId)}\t$accountId".addTabs())
         it.appendLine("".addTabs())
         it.appendLine("#\t${File(sourceName).name}".addTabs())
     }.toString()

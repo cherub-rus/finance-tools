@@ -106,6 +106,6 @@ Function MakeCsvAccountHeader(accountName As String, accountType As String, acco
     MakeCsvAccountHeader = _
         "" & vbTab & vbTab & vbTab & vbTab & vbTab & vbTab & vbTab & vbCrLf & _
         "" & vbTab & vbTab & vbTab & vbTab & vbTab & vbTab & vbTab & vbCrLf & _
-        "Account" & vbTab & accountCard & vbTab & accountType & vbTab & accountName & vbTab & vbTab & vbTab & vbTab & vbCrLf & _
+        "Account" & vbTab & accountType & vbTab & accountName & vbTab & accountCard & vbTab & vbTab & vbTab & vbTab & vbCrLf & _
         "" & vbTab & vbTab & vbTab & vbTab & vbTab & vbTab & vbTab '& vbCrLf
 End Function

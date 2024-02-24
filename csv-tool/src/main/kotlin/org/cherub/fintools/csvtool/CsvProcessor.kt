@@ -26,9 +26,8 @@ class CsvProcessor {
             if (tokens[0] == "Account") {
                 accountList.add(
                     Account(
-                        cardId = tokens[1].trim(),
-                        type = tokens[2].trim(),
-                        code = tokens[3].trim(),
+                        type = tokens[1].trim(),
+                        code = tokens[2].trim(),
                         transactions = mutableListOf()
                 ))
                 continue

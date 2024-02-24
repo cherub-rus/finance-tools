@@ -1,4 +1,39 @@
 Attribute VB_Name = "ReorderModule"
+Private Sub ReorderHead()
+
+    Dim accountsData As Variant
+    accountsData = LoadAccountsData()
+
+    Workbooks(BOOK_DRAFT).Activate
+
+    For iNum& = 1 To UBound(accountsData, 1)
+
+        aAccount$ = accountsData(iNum, ac_account)
+        aSheet$ = accountsData(iNum, ac_sheet)
+
+        If aAccount <> "" And aSheet <> WS_PERCENTS Then
+
+            Set ws = ActiveWorkbook.Worksheets(aAccount)
+
+            ws.Range("E2").value = ws.Range("B2").value
+            ws.Range("B2").value = ws.Range("C2").value
+            ws.Range("C2").value = ws.Range("D2").value
+            ws.Range("D2").value = ws.Range("E2").value
+            ws.Range("E2").value = ""
+
+            With ws.Range("B2:C2").Interior
+                .pattern = xlSolid
+                .Color = 49407
+            End With
+
+            ws.Range("E2").Interior.pattern = xlNone
+        End If
+    Next iNum
+
+    ActiveWorkbook.Worksheets("Accounts").Activate
+    Cells(3, 1).Select
+
+End Sub
 
 Private Sub ReorderColumns()
 
