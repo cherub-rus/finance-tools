@@ -71,7 +71,7 @@ Private Sub FixSizes()
 
     Columns(c_date).ColumnWidth = 11
     Columns(c_time).ColumnWidth = 10
-    Columns(c_account).ColumnWidth = 11
+    Columns(c_account).ColumnWidth = 14
     Columns(c_amount).ColumnWidth = 11
     Columns(c_payee).ColumnWidth = 25
     Columns(c_category).ColumnWidth = 25
