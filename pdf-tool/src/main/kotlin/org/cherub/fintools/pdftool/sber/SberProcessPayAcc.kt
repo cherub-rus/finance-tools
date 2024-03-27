@@ -17,8 +17,8 @@ class SberProcessPayAcc(config: ConfigData) : SberProcessor(config) {
 
     override fun transformToCsv(row: String) = row
         .replace(
-            "<p><b>([0-9.]{10}) ([0-9:]{5})</b>.{12,17}</p><p><b>(.+)</b>(.+)</p><p><b>(-?[0-9, ]+)</b></p>".toRegex(),
-            prepareCsvOutputMask("$1", "$2:00", "$5", "$3", "", "", "", "$4")
+            "<p><b>([0-9.]{10}) ([0-9:]{5})</b>.{12,17}</p><p><b>(.+)[.] Операция по (карте|счету) [*]{4}[0-9]{4}</b>(.+)</p><p><b>(-?[0-9, ]+)</b></p>".toRegex(),
+            prepareCsvOutputMask("$1", "$2:00", "$6", "$3", "", "", "", "$5")
         )
 
     override fun discoverAccountInfo(text: String): AccountInfo {
