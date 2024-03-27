@@ -25,7 +25,7 @@ class MtsbProcessCard(config: ConfigData) : CommonProcessor(config, true) {
 
     override fun transformToCsv(row: String) = row
         .replace(
-            "<p>[0-9]{1,3} ([0-9.]{10}) ([0-9:]{8}) ([0-9]+\\.[0-9]{1,2}) RUR (((.+?)(, ))?(.+?))( дата транзакции ([0-9/]{10}) ([0-9:]{8}))? ###$BIN.+</p>".toRegex(),
+            "<p>[0-9]{1,3} ([0-9.]{10}) ([0-9:]{8}) ([0-9]+\\.[0-9]{1,2}) RUR (((.+?)(, ))?(.+?))( ?дата транзакции ([0-9/]{10}) ([0-9:]{8}))? ###$BIN.+</p>".toRegex(),
             prepareCsvOutputMask("$1", "$2", "", "$8", "", "$10 $11", "$3", "$6")
         )
 

@@ -10,6 +10,7 @@ val sberParsers = Pair(
     listOf(
         SberParserMain(),
         SberParserTransferFromPerson(),
+        SberParserTransferFromOtherBank(),
         SberParserTransferToCard(),
         SberParserTransferToAccount(),
         SberParserDeposit(),
@@ -56,6 +57,26 @@ class SberParserTransferFromPerson : IContentParser {
             m.gv("balance").fixAmountString(),
             null,
             m.gv("time")
+        )
+    }
+}
+
+class SberParserTransferFromOtherBank : IContentParser {
+    override fun parse(content: String, config: ConfigData): Transaction? {
+        val regex = ("^" +
+                "Перевод из (?<bank>.+) [+](?<amount>[0-9 ]{1,10}(.[0-9]{2})?)р от (?<payer>.+) " +
+                "(?<cardId>[a-zA-Zа-яА-ЯёЁ-]{4}[0-9]{4}) — Баланс: (?<balance>[0-9 ]{1,10}(.[0-9]{2})?)р" +
+                "$").toRegex()
+        val m = regex.matchEntire(content) ?: return null
+
+        return Transaction(
+            m.gv("cardId"),
+            "Перевод от",
+            "${m.gv("payer")} из ${m.gv("bank")} ",
+            getAmount(m.gv("amount"), "Перевод от", config),
+            m.gv("balance").fixAmountString(),
+            null,
+            null
         )
     }
 }
