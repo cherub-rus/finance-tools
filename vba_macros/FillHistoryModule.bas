@@ -27,7 +27,10 @@ Sub SortHistory()
     Set firstCell = Cells(4, 1)
     Set lastCell = ws.Cells.SpecialCells(xlCellTypeLastCell)
 
+    ws.Sort.SortFields.Clear
+
     With ws.Sort
+         .SortFields.Add Key:=Columns(1), Order:=xlDescending
          .SortFields.Add Key:=Columns(hc_category), Order:=xlAscending
          .SortFields.Add Key:=Columns(hc_payee), Order:=xlAscending
          .SortFields.Add Key:=Columns(hc_message), Order:=xlAscending
