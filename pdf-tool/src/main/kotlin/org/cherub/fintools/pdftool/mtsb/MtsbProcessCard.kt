@@ -37,7 +37,7 @@ class MtsbProcessCard(config: ConfigData) : CommonProcessor(config, true) {
             fields[C_AMOUNT] = sign + fields[C_VAR2].replace('.', ',') // Added minus sign to expense amount and change currency separator
             fields[C_VAR2] = ""
 
-            if (fields[C_VAR1].isNotEmpty()) {
+            if (fields[C_VAR1].isNotBlank()) {
                 if (fields[C_TIME].endsWith("00:00:00")) { // If transaction time exists, replace log time with it
                     val tranDate = fields[C_VAR1].split(" ")
                     fields[C_DATE] = tranDate[0].replace('/', '.')
