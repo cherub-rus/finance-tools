@@ -5,23 +5,26 @@ import org.cherub.fintools.pdftool.AccountInfo
 import org.cherub.fintools.pdftool.findByAccountNumber
 import org.cherub.fintools.pdftool.*
 
-private val SB_ACCOUNT_REGEX_D = ".+<p>Номер счёта<b>(?<account>40817 810 \\d \\d{4} \\d{7})</b></p>.+".toRegex()
-private val SB_REPORT_INFO_REGEX = "<p><b>Остаток средств</b>на (?<startDate>\\d{2}\\.\\d{2}\\.\\d{4})</p><p><b>(?<startBalance>(\\d{1,3} )?\\d{1,3},\\d{2}) Остаток средств</b>на (?<endDate>\\d{2}\\.\\d{2}\\.\\d{4})</p><p><b>(?<endBalance>(\\d{1,3} )?\\d{1,3},\\d{2})</b></p>".toRegex()
+private val SB_ACCOUNT_REGEX_PA = ".+<p>Номер счёта</p><p><b>(?<account>40817 810 \\d \\d{4} \\d{7})</b></p>.+".toRegex()
+private val SB_REPORT_INFO_REGEX_PA = (
+        "<p><b>Остаток средств (?<startBalance>(\\d{1,3} )?\\d{1,3},\\d{2})</b>на (?<startDate>\\d{2}\\.\\d{2}\\.\\d{4})</p>" +
+        "<p><b>Пополнение .+</b>.+</p><p>.+</p><p>" +
+        "<b>Остаток средств (?<endBalance>(\\d{1,3} )?\\d{1,3},\\d{2})</b>на (?<endDate>\\d{2}\\.\\d{2}\\.\\d{4})</p><p><b>Списание .+</b></p>"
+    ).toRegex()
 
-class SberProcessDeposit(config: ConfigData) : SberProcessor(config) {
+class SberProcessPersonalAccount(config: ConfigData) : SberProcessor(config) {
 
     override fun cleanUpHtmlSpecific(text: String) = text
         .replace("(</b></p>)(<p><b>)".toRegex(), "$1\n$2")
-        .replace("(<p>ШИФР СУММА ОПЕРАЦИИ ОСТАТОК НА СЧЁТЕ3</p>)".toRegex(), "$1\n")
         .replace("(<p>Продолжение на следующей странице</p>)".toRegex(), "\n$1")
-        .replace("(<p>Дата формирования:</p>)".toRegex(), "\n$1")
+        .replace("(<p>Дата формирования <b>)".toRegex(), "\n$1")
 
     override fun rowFilter(row: String) =
         row.contains("к/с ")
 
     override fun transformToCsv(row: String) = row
         .replace(
-            "<p><b>([0-9.]{10}) (.+?)</b></p><p>(.+?)<b>-?[0-9] ([+-]?[0-9 ]+,[0-9]{2}) ([0-9 ]+,[0-9]{2})</b></p>".toRegex(),
+            "<p><b>([0-9.]{10}) (.+?)</b>(.+?)</p><p><b>-?[0-9]{2}, № [0-9-]+ ([+-]?[0-9 ]+,[0-9]{2}) ([0-9 ]+,[0-9]{2})</b></p>".toRegex(),
             prepareCsvOutputMask("$1", "00:00", "-$4", "$3", "$5", "", "", "$2")
         )
         .replace("-+", "")
@@ -29,8 +32,8 @@ class SberProcessDeposit(config: ConfigData) : SberProcessor(config) {
 
     override fun discoverAccountInfo(text: String): AccountInfo {
 
-        val mAcc = SB_ACCOUNT_REGEX_D.matchAt(text.lines()[2], 0)
-        val mRInfo = SB_REPORT_INFO_REGEX.matchEntire(text.lines()[3])
+        val mAcc = SB_ACCOUNT_REGEX_PA.matchAt(text.lines()[2], 0)
+        val mRInfo = SB_REPORT_INFO_REGEX_PA.matchEntire(text.lines()[3])
 
         val number = mAcc?.gv("account")
         val code =  number?.let {
