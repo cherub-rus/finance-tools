@@ -44,7 +44,7 @@ class SberParserMain : IContentParser {
 class SberParserTransferFromPerson : IContentParser {
     override fun parse(content: String, config: ConfigData): Transaction? {
         val regex = ("^" +
-                "(?<cardId>[a-zA-Zа-яА-ЯёЁ-]{4}[0-9]{4})( (?<time>[0-9:]{5}))? Перевод (?<amount>[0-9 ]{1,10}(.[0-9]{2})?)р" +
+                "(?<cardId>[a-zA-Zа-яА-ЯёЁ-]{4}[0-9]{4})( (?<time>[0-9:]{5}))? Перевод (из (?<bank>.+) )?(?<amount>[+]?[0-9 ]{1,10}(.[0-9]{2})?)р" +
                 " от ((?<payer>.+) )?Баланс: (?<balance>[0-9 ]{1,10}(.[0-9]{2})?)р(( Сообщение\\:)? \\\"(?<payerMessage>.+)\\\")?" +
                 "$").toRegex()
         val m = regex.matchEntire(content) ?: return null
