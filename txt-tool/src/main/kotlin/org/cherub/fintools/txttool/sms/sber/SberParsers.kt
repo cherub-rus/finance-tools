@@ -20,7 +20,8 @@ val sberParsers = Pair(
 
 class SberParserMain : IContentParser {
     override fun parse(content: String, config: ConfigData): Transaction? {
-        if ( (".+ Перевод (?<amount>[0-9 ]{1,10}(.[0-9]{2})?)р от .+").toRegex().matches(content)) {
+        if ( (".+ Перевод (?<amount>[0-9 ]{1,10}(.[0-9]{2})?)р от .+").toRegex().matches(content) ||
+             (".+ Зачисление средств (?<amount>[0-9 ]{1,10}(.[0-9]{2})?)р на счёт .+").toRegex().matches(content) ) {
             return null
         }
         val regex = ("^" +
@@ -108,7 +109,7 @@ class SberParserTransferToAccount : IContentParser {
     override fun parse(content: String, config: ConfigData): Transaction? {
         val regex = ("^" +
                 "(?<cardId>[a-zA-Zа-яА-ЯёЁ-]{4}[0-9]{4}) Зачисление средств (?<amount>[0-9 ]{1,10}(.[0-9]{2})?)р на счёт (?<depositName>.+) (?<depositId>\\*[0-9]{4})." +
-                " (Баланс карты: (?<balance>.+)р, )?[Бб]аланс (вклада|счёта): (?<depositBalance>.+)р" +
+                " (Баланс карты: (?<balance>.+)р)?(, )?([Бб]аланс (вклада|счёта): (?<depositBalance>.+)р)?" +
                 "$").toRegex()
         val m = regex.matchEntire(content) ?: return null
 
