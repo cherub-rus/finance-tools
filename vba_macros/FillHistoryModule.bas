@@ -73,14 +73,16 @@ Private Sub FillHistoryFromSheet(sheetName As String)
         .AutoFilter Field:=c_message, Criteria1:="<>"
         .AutoFilter Field:=c_mark, Criteria1:="<>*"
 
-        Set filterRange = .SpecialCells(xlCellTypeVisible).EntireRow
+        If (.Rows.Count - 3) > 0 Then
+            Set filterRange = .SpecialCells(xlCellTypeVisible).EntireRow
 
-        For Each rowRange In filterRange
-            added = FindOrAddHistoryRow(historyData, fillData, rowRange, accountName)
-            If added Then
-                historyData = LoadHistoryData()
-            End If
-        Next
+            For Each rowRange In filterRange
+                added = FindOrAddHistoryRow(historyData, fillData, rowRange, accountName)
+                If added Then
+                    historyData = LoadHistoryData()
+                End If
+            Next
+        End If
     End With
 
     Call ClearWsFilter(ws)
