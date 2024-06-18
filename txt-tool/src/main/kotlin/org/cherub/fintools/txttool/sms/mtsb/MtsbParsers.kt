@@ -30,7 +30,7 @@ class MtsbParserMain : IContentParser {
             m.gv("operation"),
             m.gv("message"),
             getAmount(m.gv("amount"), m.gv("operation"), config),
-            m.gv("balance").replace(" ", ""),
+            m.gv("balance").fixAmountString(),
             null,
             null,
             m.gv("discount")
@@ -50,7 +50,7 @@ class MtsbParserAccountTransfer : IContentParser {
             m.gv("operation"),
             "",
             getAmount(m.gv("amount"), m.gv("operation"), config),
-            m.gv("balance").replace(" ", "")
+            m.gv("balance").fixAmountString()
         )
     }
 }
@@ -68,7 +68,7 @@ class MtsbParserCardIncome : IContentParser {
             m.gv("operation"),
             m.gv("message"),
             getAmount(m.gv("amount"), m.gv("operation"), config),
-            m.gv("balance").replace(" ", "")
+            m.gv("balance").fixAmountString()
         )
     }
 }
@@ -85,7 +85,7 @@ class MtsbParserCardTransfer : IContentParser {
             m.gv("operation"),
             m.gv("message"),
             getAmount(m.gv("amount"), m.gv("operation"), config),
-            m.gv("balance").replace(" ", ""),
+            m.gv("balance").fixAmountString(),
             m.gv("date"),
             m.gv("time")
         )
