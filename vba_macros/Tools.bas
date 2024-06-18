@@ -18,7 +18,7 @@ Sub BackupModules()
             Set fso = Nothing
     End Select
 
-    count = 0
+    Count = 0
     'On security error set trust: https://support.microsoft.com/en-us/office/enable-or-disable-macros-in-microsoft-365-files-12b036fd-d140-4e74-b45e-16fed1a7e5c6
     For Each VBComponent In Workbooks("PERSONAL.XLSB").VBProject.VBComponents
         If VBComponent.Type = 1 And Not VBComponent.Name = "MailTools" Then
@@ -27,7 +27,7 @@ Sub BackupModules()
             Call VBComponent.Export(path)
 
             If Err.Number = 0 Then
-                count = count + 1
+                Count = Count + 1
             Else
                 Call MsgBox("Failed to export " & VBComponent.Name & " to " & path, vbCritical)
             End If
