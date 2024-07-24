@@ -5,20 +5,24 @@ import org.cherub.fintools.pdftool.*
 
 private val SB_ACCOUNT_REGEX = "<p>Счёт Валюта Доступно на (?<currentDate>\\d{2}\\.\\d{2}\\.\\d{4})<b>(?<account>40817 810 \\d \\d{4} \\d{7}) РУБЛЬ РФ (?<currentBalance>(\\d{1,3} )?\\d{1,3},\\d{2})</b></p>".toRegex()
 internal val SB_REPORT_DATES_REGEX = "<p><b>ОСТАТОК НА (?<startDate>\\d{2}\\.\\d{2}\\.\\d{4}) ОСТАТОК НА (?<endDate>\\d{2}\\.\\d{2}\\.\\d{4}) ВСЕГО СПИСАНИЙ ВСЕГО ПОПОЛНЕНИЙ</b></p>".toRegex()
-internal val SB_REPORT_BALANCES_REGEX = "<p><b>(?<startBalance>(\\d{1,3} )?\\d{1,3},\\d{2}) (?<endBalance>(\\d{1,3} )?\\d{1,3},\\d{2}) ((\\d{1,3} )?\\d{1,3},\\d{2}) ((\\d{1,3} )?\\d{1,3},\\d{2})</b></p>".toRegex()
+internal val SB_REPORT_BALANCES_REGEX = "<p><b>(?<startBalance>(\\d{1,3} )?\\d{1,3},\\d{2}) ((\\d{1,3} )?\\d{1,3},\\d{2}) ((\\d{1,3} )?\\d{1,3},\\d{2}) (?<endBalance>(\\d{1,3} )?\\d{1,3},\\d{2})</b></p>".toRegex()
 
 class SberProcessPayAcc(config: ConfigData) : SberProcessor(config) {
 
     override fun cleanUpHtmlSpecific(text: String) = text
         .replace("(</b></p>)".toRegex(), "$1\n")
+        .replace("(<p>Продолжение на следующей странице</p>)".toRegex(), "\n$1")
+        .replace("(</p>)(<p><b>)".toRegex(), "$1\n$2")
+        .replace("(</p><p>)".toRegex(), " ")
+
 
     override fun rowFilter(row: String) =
-        row.contains(".202") && row.contains("</p><p><b>")
+        row.contains(".202\\d \\d".toRegex())
 
     override fun transformToCsv(row: String) = row
         .replace(
-            "<p><b>([0-9.]{10}) ([0-9:]{5})</b>.{12,17}</p><p><b>(.+)[.] Операция по (карте|счету) [*]{4}[0-9]{4}</b>(.+)</p><p><b>(-?[0-9, ]+)</b></p>".toRegex(),
-            prepareCsvOutputMask("$1", "$2:00", "$6", "$3", "", "", "", "$5")
+            "<p><b>([0-9.]{10}) ([0-9:]{5}) </b>[0-9]{6} <b>(.+) </b>([+-]?[0-9 ]+,[0-9]{2}) ([+-]?[0-9 ]+,[0-9]{2}) ([0-9.]{10}) (.+)[.] Операция по (карте|счету) [*]{4}[0-9]{4}</p>".toRegex(),
+            prepareCsvOutputMask("$1", "$2:00", "$4", "$7", "$5", "", "", "$3")
         )
 
     override fun discoverAccountInfo(text: String): AccountInfo {
