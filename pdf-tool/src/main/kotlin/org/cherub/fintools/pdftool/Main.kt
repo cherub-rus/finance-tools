@@ -39,10 +39,11 @@ fun main(args: Array<String>) {
                 SberProcessCard(config).process(fileText, sourceName)
             } else if (fileText.contains("Выписка по счёту кредитной карты")) {
                 SberProcessCreditCard(config).process(fileText, sourceName)
+            } else if (fileText.contains("Выписка по лицевому счёту") ||
+                       fileText.contains("Выписка из лицевого счёта по вкладу «Накопительный счёт»"))  {
+                SberProcessPersonalAccount(config).process(fileText, sourceName)
             } else if (fileText.contains("Выписка из лицевого счёта по вкладу")) {
                 SberProcessDeposit(config).process(fileText, sourceName)
-            } else if (fileText.contains("Выписка по лицевому счёту")) {
-                SberProcessPersonalAccount(config).process(fileText, sourceName)
             } else if (fileText.contains("www.mtsbank.ru")) {
                 MtsbProcessCard(config).process(fileText, sourceName)
             } else if (fileText.contains("www.gazprombank.ru") && fileText.contains("ВЫПИСКА ПО КАРТЕ")) {
