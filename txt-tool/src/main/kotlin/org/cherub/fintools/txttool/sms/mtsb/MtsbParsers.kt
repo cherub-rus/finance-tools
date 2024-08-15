@@ -5,6 +5,8 @@ import org.cherub.fintools.config.ConfigData.Companion.MTS_BANK_ID
 import org.cherub.fintools.txttool.*
 import org.cherub.fintools.txttool.sms.IContentParser
 
+private const val DefaultCardForSBP = "*5837"
+
 val mtsbParsers = Pair(
     MTS_BANK_ID,
     listOf(
@@ -13,7 +15,8 @@ val mtsbParsers = Pair(
         MtsbParserCardIncome(),
         MtsbParserCardTransfer(),
         MtsbParserCashback(),
-        MtsbParserSBP()
+        MtsbParserSBP(),
+        MtsbParserIncomeSBP()
     )
 )
 
@@ -22,7 +25,7 @@ class MtsbParserMain : IContentParser {
         @Suppress("SpellCheckingInspection")
         val regex =
             ("(?<operation>[^0-9]+) (?<amount>[0-9][0-9 ]*,[0-9]{2}) RUB( s uchetom skidki (?<discount>[0-9][0-9 ]*,[0-9]{2}) RUB)?" +
-             " (?<message>.+) {2}Ostatok: (?<balance>[0-9][0-9 ]*,[0-9]{2}) RUB; (?<account>[*][0-9]{4}) ").toRegex()
+             " (?<message>.+) {2}(Ostatok|Остаток): (?<balance>[0-9][0-9 ]*,[0-9]{2}) RUB; (?<account>[*][0-9]{4}) ").toRegex()
         val m = regex.matchEntire(content) ?: return null
 
         return Transaction(
@@ -77,7 +80,7 @@ class MtsbParserCardTransfer : IContentParser {
     override fun parse(content: String, config: ConfigData): Transaction? {
         @Suppress("SpellCheckingInspection")
         val regex =
-            "(?<operation>[^0-9]+) (?<account>[*][0-9]{4}) (?<date>[0-9.]{5}) (?<time>[0-9:]{5}) (?<message>.+?);? (?<amount>[0-9][0-9 ]*,[0-9]{2}) RUB Ostatok: (?<balance>[0-9][0-9 ]*,[0-9]{2}) RUB;? ".toRegex()
+            "(?<operation>[^0-9]+) (?<account>[*][0-9]{4}) (?<date>[0-9.]{5}) (?<time>[0-9:]{5}) (?<message>.+?);? (?<amount>[0-9][0-9 ]*,[0-9]{2}) RUB (Ostatok|Остаток): (?<balance>[0-9][0-9 ]*,[0-9]{2}) RUB;? ".toRegex()
         val m = regex.matchEntire(content) ?: return null
 
         return Transaction(
@@ -130,6 +133,28 @@ class MtsbParserSBP : IContentParser {
         )
     }
 }
+
+
+class MtsbParserIncomeSBP : IContentParser {
+    override fun parse(content: String, config: ConfigData): Transaction? {
+
+        val regex = ("^" +
+                "Поступление (?<amount>[0-9][0-9 ]*(.[0-9]{2})?)р[.] (?<message>.+) через СБП[.]" +
+                "$").toRegex()
+        val m = regex.matchEntire(content) ?: return null
+
+        @Suppress("SpellCheckingInspection")
+        val operation = "Поступление СБП"
+        return Transaction(
+            DefaultCardForSBP,
+            operation,
+            "СБП ${m.gv("message")}",
+            getAmount(m.gv("amount"), operation, config),
+            ""
+        )
+    }
+}
+
 
 private fun getAmount(value: String, operation: String, config: ConfigData) =
     (config.findMtsOperationType(operation)?.sign ?: "") + value.fixAmountString()
