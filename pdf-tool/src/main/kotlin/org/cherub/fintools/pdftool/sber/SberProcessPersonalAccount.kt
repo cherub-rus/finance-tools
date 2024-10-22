@@ -7,9 +7,9 @@ import org.cherub.fintools.pdftool.*
 
 private val SB_ACCOUNT_REGEX_PA = ".+<p>Номер счёта</p><p><b>(?<account>40817 810 \\d \\d{4} \\d{7})</b></p>.+".toRegex()
 private val SB_REPORT_INFO_REGEX_PA = (
-        "<p><b>Остаток средств (?<startBalance>(\\d{1,3} )?\\d{1,3},\\d{2})</b>на (?<startDate>\\d{2}\\.\\d{2}\\.\\d{4})</p>" +
-        "<p><b>Пополнение .+</b>.+</p><p>.+</p><p>" +
-        "<b>Остаток средств (?<endBalance>(\\d{1,3} )?\\d{1,3},\\d{2})</b>на (?<endDate>\\d{2}\\.\\d{2}\\.\\d{4})</p><p><b>Списание .+</b></p>"
+        "<p><b>Остаток средств (?<startBalance>(\\d{1,3} )*\\d{1,3},\\d{2})</b>на (?<startDate>\\d{2}\\.\\d{2}\\.\\d{4})</p>" +
+        "<p><b>Пополнение .+</b>.+</p><p>.+</p>" +
+        "<p><b>Остаток средств (?<endBalance>(\\d{1,3} )*\\d{1,3},\\d{2})</b>на (?<endDate>\\d{2}\\.\\d{2}\\.\\d{4})</p><p><b>Списание .+</b></p>"
     ).toRegex()
 
 class SberProcessPersonalAccount(config: ConfigData) : SberProcessor(config) {
