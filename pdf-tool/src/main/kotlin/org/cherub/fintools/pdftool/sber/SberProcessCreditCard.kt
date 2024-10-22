@@ -14,7 +14,7 @@ class SberProcessCreditCard(config: ConfigData) : CommonProcessor(config, true) 
     override fun cleanUpHtmlSpecific(text: String) = text
         .replace("(<p><b>)".toRegex(), "\n$1")
         .replace("(</b></p>)<".toRegex(), "$1\n<")
-        .replace("(<p>Продолжение на)".toRegex(), "\n$1<")
+        .replace("(<p>Продолжение на)".toRegex(), "\n$1")
 
     override fun cleanUpRow(row: String) = row
         .cleanUpByRules(config.replaceInRow)
