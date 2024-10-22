@@ -29,7 +29,8 @@ fun main(args: Array<String>) {
     val config = configName.loadConfigFromFile()
 
     try {
-        val fileText = StringEscapeUtils.unescapeHtml4(getHtmlContent(sourceName)).replaceNonBreakingSpace()
+        val fileText = if (sourceName.contains(".manual-html")) File(sourceName).readText()
+                       else StringEscapeUtils.unescapeHtml4(getHtmlContent(sourceName)).replaceNonBreakingSpace()
         if (WRITE_HTML) File("$sourceName.1.html").writeText(fileText)
 
         val result =
