@@ -37,8 +37,8 @@ abstract class CommonProcessor(val config: ConfigData, val reorderCsvRows: Boole
         val result = StringBuilder()
         hfPair.first?.let {result.appendLine(hfPair.first)}
         val builder = StringBuilder()
-        splitToTransactionRows(html).forEach {
-            builder.appendLine(fixCsv(transformToCsv(cleanUpRow(it))))
+        splitToTransactionRows(html).forEach { row ->
+            builder.appendLine(fixCsv(transformToCsv(cleanUpRow(row)/*.also { println(it) }*/)))
         }
         result.append(cleanUpResult(builder.toString()))
         hfPair.second?.let {result.appendLine(hfPair.second)}
