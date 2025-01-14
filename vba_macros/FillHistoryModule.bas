@@ -100,11 +100,6 @@ Function FindOrAddHistoryRow(historyData As Variant, fillData As Variant, rowRan
 
     'Debug.Print "PROCESSING:" + trMessageSource
 
-    If LCase(hdMessageSource) Like "*cashback*" Then
-        FindOrAddHistoryRow = False
-        GoTo ReturnFun
-    End If
-
     If rowRange.Cells(1, c_mark).value = "*" Or trComment Like "*:*" Or trComment Like "*;*" Then 'Or trComment Like "#*" Then
         trComment = ""
     End If
@@ -115,19 +110,26 @@ Function FindOrAddHistoryRow(historyData As Variant, fillData As Variant, rowRan
         hdCategory = historyData(iNum, hc_category)
         hdMessageSource = historyData(iNum, hc_message)
 
-        If ((LCase(trComment) = LCase(hdComment)) And _
-            (LCase(trPayee) = LCase(hdPayee)) And _
-            (LCase(trCategory) = LCase(hdCategory)) And _
-            (LCase(trMessageSource) = LCase(hdMessageSource))) Then
-            FindOrAddHistoryRow = False
-            GoTo ReturnFun
+        If hdCategory <> "*" Then
+            If ((LCase(trComment) = LCase(hdComment)) And _
+                (LCase(trPayee) = LCase(hdPayee)) And _
+                (LCase(trCategory) = LCase(hdCategory)) And _
+                (LCase(trMessageSource) Like LCase(hdMessageSource))) Then
+                FindOrAddHistoryRow = False
+                GoTo ReturnFun
+            End If
+        Else
+            If (LCase(trMessageSource) Like LCase(hdMessageSource)) Then
+                FindOrAddHistoryRow = False
+                GoTo ReturnFun
+            End If
         End If
     Next iNum
 
     For iNum = 1 To UBound(fillData, 1)
         ' TODO account and operation
         fdAccount$ = fillData(iNum, fdc_account)
-        If Len(fdAccount) > 0 And fdAccount <> "[" & account & "]" Then
+        If Len(fdAccount) > 0 And fdAccount <> account Then
             GoTo Continue
         End If
 
@@ -135,7 +137,7 @@ Function FindOrAddHistoryRow(historyData As Variant, fillData As Variant, rowRan
         If Len(fdOperationMask) > 0 And Not LCase(trOperation) Like LCase(fdOperationMask) Then
             GoTo Continue
         End If
-        
+
         fdMask = fillData(iNum, fdc_mask)
         fdPayee = fillData(iNum, fdc_payee)
         fdCategory = fillData(iNum, fdc_category)
