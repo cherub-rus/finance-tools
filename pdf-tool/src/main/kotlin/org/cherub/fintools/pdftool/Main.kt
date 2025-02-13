@@ -41,7 +41,8 @@ fun main(args: Array<String>) {
             } else if (fileText.contains("Выписка по счёту кредитной карты")) {
                 SberProcessCreditCard(config).process(fileText, sourceName)
             } else if (fileText.contains("Выписка по лицевому счёту") ||
-                       fileText.contains("Выписка из лицевого счёта по вкладу «Накопительный счёт»"))  {
+                       fileText.contains("Выписка из лицевого счёта по вкладу «Накопительный счёт»") ||
+                       fileText.contains("Выписка по счёту «Накопительный счёт»"))  {
                 SberProcessPersonalAccount(config).process(fileText, sourceName)
             } else if (fileText.contains("Выписка из лицевого счёта по вкладу")) {
                 SberProcessDeposit(config).process(fileText, sourceName)
