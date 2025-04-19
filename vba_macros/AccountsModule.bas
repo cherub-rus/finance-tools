@@ -7,7 +7,7 @@ Sub AllExport()
 
     Workbooks(BOOK_DRAFT).Activate
 
-    nameBase$ = ActiveWorkbook.path & "\" & OWNER & "\export\" & Format(Now(), "yyyymmdd-hhmmss") & "_"
+    nameBase$ = ActiveWorkbook.path & "\" & OWNER & "\_export\" & Format(Now(), "yyyymmdd-hhmmss") & "_"
     balanceFileName$ = nameBase & "остатки.txt"
     outputPrefix$ = nameBase & OWNER
 

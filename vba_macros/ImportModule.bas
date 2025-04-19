@@ -8,7 +8,7 @@ Sub AllImport()
     Workbooks(BOOK_DRAFT).Worksheets("Accounts").Activate
     Cells(3, 1).Select
 
-    srcPath$ = ActiveWorkbook.path & "\" & OWNER & "\"
+    srcPath$ = ActiveWorkbook.path & "\" & OWNER & "\_csv\"
 
     For iNum& = 1 To UBound(accountsData, 1)
 

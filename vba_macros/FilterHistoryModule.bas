@@ -39,7 +39,9 @@ Attribute zFilterHistoryByComment.VB_ProcData.VB_Invoke_Func = "Â\n14"
     ActiveSheet.Cells(3, c_payee).Select
 
     Windows(BOOK_HISTORY).Activate
-    If ActiveSheet.Name = WS_PAYEE Then Exit Sub
+    If ActiveSheet.Name = WS_PAYEE Then
+        Worksheets(WS_HISTORY).Activate
+    End If
 
     ActiveSheet.Range(TRANS_RANGE).AutoFilter Field:=hc_payee
     ActiveSheet.Range(TRANS_RANGE).AutoFilter Field:=hc_message, Criteria1:=pattern
@@ -58,7 +60,9 @@ Attribute zFilterHistoryByPayee.VB_ProcData.VB_Invoke_Func = "Ó\n14"
     pattern = "*" + searchString + "*"
 
     Windows(BOOK_HISTORY).Activate
-    If ActiveSheet.Name = WS_PAYEE Then Exit Sub
+    If ActiveSheet.Name = WS_PAYEE Then
+        Worksheets(WS_HISTORY).Activate
+    End If
 
     ActiveSheet.Range(TRANS_RANGE).AutoFilter Field:=hc_message
     ActiveSheet.Range(TRANS_RANGE).AutoFilter Field:=hc_payee, Criteria1:=pattern
