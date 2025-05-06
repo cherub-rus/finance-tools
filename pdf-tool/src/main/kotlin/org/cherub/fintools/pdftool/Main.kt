@@ -34,27 +34,39 @@ fun main(args: Array<String>) {
         if (WRITE_HTML) File("$sourceName.1.html").writeText(fileText)
 
         val result =
-            if (fileText.contains("Выписка по платёжному счёту")) {
-                SberProcessPayAcc(config).process(fileText, sourceName)
-            } else if (fileText.contains("Выписка по счёту дебетовой карты")) {
-                SberProcessCard(config).process(fileText, sourceName)
-            } else if (fileText.contains("Выписка по счёту кредитной карты")) {
-                SberProcessCreditCard(config).process(fileText, sourceName)
-            } else if (fileText.contains("Выписка по лицевому счёту") ||
-                       fileText.contains("Выписка из лицевого счёта по вкладу «Накопительный счёт»") ||
-                       fileText.contains("Выписка по счёту «Накопительный счёт»"))  {
-                SberProcessPersonalAccount(config).process(fileText, sourceName)
-            } else if (fileText.contains("Выписка из лицевого счёта по вкладу")) {
-                SberProcessDeposit(config).process(fileText, sourceName)
+            if (fileText.contains("www.sberbank.ru")) {
+                if (fileText.contains("Выписка по платёжному счёту")) {
+                    SberProcessPayAcc(config).process(fileText, sourceName)
+                } else if (fileText.contains("Выписка по счёту дебетовой карты")) {
+                    SberProcessCard(config).process(fileText, sourceName)
+                } else if (fileText.contains("Выписка по счёту кредитной карты")) {
+                    SberProcessCreditCard(config).process(fileText, sourceName)
+                } else if (fileText.contains("Выписка по лицевому счёту") ||
+                    fileText.contains("Выписка из лицевого счёта по вкладу «Накопительный счёт»") ||
+                    fileText.contains("Выписка по счёту «Накопительный счёт»")) {
+                    SberProcessPersonalAccount(config).process(fileText, sourceName)
+                } else if (fileText.contains("Выписка из лицевого счёта по вкладу")) {
+                    SberProcessDeposit(config).process(fileText, sourceName)
+                } else
+                    ProcessResult("Невозможно определить тип выписки СБЕРБАНКа!")
             } else if (fileText.contains("www.mtsbank.ru")) {
-                MtsbProcessCard(config).process(fileText, sourceName)
-            } else if (fileText.contains("www.gazprombank.ru") && fileText.contains("ВЫПИСКА ПО КАРТЕ")) {
-                GpbCardProcessor(config).process(fileText, sourceName)
-            } else if (fileText.contains("www.gazprombank.ru") && fileText.contains("ВЫПИСКА ПО СЧЕТУ")) {
-                GpbDepositProcessor(config).process(fileText, sourceName)
+                if (fileText.contains("Счет-выписка от ")) {
+                    if (fileText.contains("Всего поступлений: + 0 RUR Всего списаний: - 0 RUR"))
+                        ProcessResult("Операции отсутствуют")
+                    else
+                        MtsbProcessCard(config).process(fileText, sourceName)
+                } else
+                    ProcessResult("Невозможно определить тип выписки МТС БАНКа!")
+            } else if (fileText.contains("www.gazprombank.ru")) {
+                if (fileText.contains("ВЫПИСКА ПО КАРТЕ")) {
+                    GpbCardProcessor(config).process(fileText, sourceName)
+                } else if (fileText.contains("ВЫПИСКА ПО СЧЕТУ")) {
+                    GpbDepositProcessor(config).process(fileText, sourceName)
+                } else
+                    ProcessResult("Невозможно определить тип выписки ГАЗПРОМБАНКа!")
             } else if (fileText.contains("Сведения об операции Категории Дата и время MSK Сумма Валюта")) {
                 UsbCardProcessor(config).process(fileText, sourceName)
-            } else ProcessResult("Невозможно определить тип выписки!")
+            } else ProcessResult("Невозможно определить БАНК и тип выписки!")
 
         val targetName =
             result.accountCode?.let {
