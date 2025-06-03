@@ -33,8 +33,8 @@ class SberProcessPersonalAccount(config: ConfigData) : SberProcessor(config) {
 
     override fun discoverAccountInfo(text: String): AccountInfo {
 
-        val mAcc = SB_ACCOUNT_REGEX_PA.matchAt(text.lines()[2], 0)
-        val mRInfo = SB_REPORT_INFO_REGEX_PA.matchEntire(text.lines()[3])
+        val mAcc = SB_ACCOUNT_REGEX_PA.matchAt(text.lines()[3], 0)
+        val mRInfo = SB_REPORT_INFO_REGEX_PA.matchEntire(text.lines()[4])
 
         val number = mAcc?.gv("account")
         val code =  number?.let {

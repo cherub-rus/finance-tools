@@ -29,9 +29,9 @@ class SberProcessPayAcc(config: ConfigData) : SberProcessor(config) {
 
     override fun discoverAccountInfo(text: String): AccountInfo {
 
-        val mAcc = SB_ACCOUNT_REGEX.matchEntire(text.lines()[3])
-        val mDates = SB_REPORT_DATES_REGEX.matchEntire(text.lines()[5])
-        val mBal = SB_REPORT_BALANCES_REGEX.matchEntire(text.lines()[6])
+        val mAcc = SB_ACCOUNT_REGEX.matchEntire(text.lines()[4])
+        val mDates = SB_REPORT_DATES_REGEX.matchEntire(text.lines()[6])
+        val mBal = SB_REPORT_BALANCES_REGEX.matchEntire(text.lines()[7])
         val mCur = SB_ACCOUNT_CURRENT_DATE_REGEX.matchEntire(text.lines()[text.lines().size - 2])
 
         val number = mAcc?.gv("account")
