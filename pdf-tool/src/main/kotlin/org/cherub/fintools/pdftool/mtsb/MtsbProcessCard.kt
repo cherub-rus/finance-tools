@@ -33,7 +33,7 @@ class MtsbProcessCard(config: ConfigData) : CommonProcessor(config, true) {
         val fields = csvRow.split("\t").toMutableList()
 
         try {
-            val sign = if (fields[C_OPERATION].replace("~", "").startsWith("Зачисление")) "" else "-"
+            val sign = if (fields[C_OPERATION].replace("~", "").startsWith("Зачисление") || fields[C_OPERATION].startsWith("Перевод СБП от ")) "" else "-"
             fields[C_AMOUNT] = sign + fields[C_VAR2].replace('.', ',') // Added minus sign to expense amount and change currency separator
             fields[C_VAR2] = ""
 

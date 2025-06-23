@@ -87,7 +87,6 @@
     { "bank-id": "MTS-Bank", "sign": "+", "name": "Perevod na kartu" },
     { "bank-id": "MTS-Bank", "sign": "+", "name": "Prihod po schetu karty" },
     { "bank-id": "MTS-Bank", "sign": "+", "name": "Cashback" },
-    { "bank-id": "MTS-Bank", "sign": "+", "name": "Перевод СБП от" },
     { "bank-id": "MTS-Bank", "sign": "-", "name": "Oplata" },
     { "bank-id": "MTS-Bank", "sign": "-", "name": "Perevod s karty" },
     { "bank-id": "MTS-Bank", "sign": "-", "name": "Nalichnye" },
