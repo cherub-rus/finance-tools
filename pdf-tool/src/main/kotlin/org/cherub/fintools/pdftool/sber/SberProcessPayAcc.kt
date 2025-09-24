@@ -13,12 +13,13 @@ class SberProcessPayAcc(config: ConfigData) : SberProcessor(config) {
     override fun cleanUpHtmlSpecific(text: String) = text
         .replace("(</b></p>)".toRegex(), "$1\n")
         .replace("(<p>Продолжение на следующей странице</p>)".toRegex(), "\n$1")
+        .replace("(<p>Дата формирования <b>)".toRegex(), "\n$1")
         .replace("(</p>)(<p><b>)".toRegex(), "$1\n$2")
         .replace("(</p><p>)".toRegex(), " ")
 
 
     override fun rowFilter(row: String) =
-        row.contains(".202\\d \\d".toRegex())
+        row.contains("^<p><b>\\d\\d[.]\\d\\d".toRegex())
 
     override fun transformToCsv(row: String) = row
         .replace(
