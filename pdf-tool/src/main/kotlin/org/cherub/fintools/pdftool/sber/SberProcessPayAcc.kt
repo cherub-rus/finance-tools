@@ -14,6 +14,7 @@ class SberProcessPayAcc(config: ConfigData) : SberProcessor(config) {
         .replace("(</b></p>)".toRegex(), "$1\n")
         .replace("(<p>Продолжение на следующей странице</p>)".toRegex(), "\n$1")
         .replace("(<p>Дата формирования <b>)".toRegex(), "\n$1")
+        .replace("(<p>Дата формирования документа <b>)".toRegex(), "\n$1")
         .replace("(</p>)(<p><b>)".toRegex(), "$1\n$2")
         .replace("(</p><p>)".toRegex(), " ")
 
