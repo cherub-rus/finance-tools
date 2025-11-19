@@ -39,7 +39,7 @@ Attribute zFilterHistoryByComment.VB_ProcData.VB_Invoke_Func = "Â\n14"
     ActiveSheet.Cells(3, c_payee).Select
 
     Windows(BOOK_HISTORY).Activate
-    If ActiveSheet.Name = WS_PAYEE Then
+    If ActiveSheet.Name <> WS_HISTORY Then
         Worksheets(WS_HISTORY).Activate
     End If
 
@@ -60,7 +60,7 @@ Attribute zFilterHistoryByPayee.VB_ProcData.VB_Invoke_Func = "Ó\n14"
     pattern = "*" + searchString + "*"
 
     Windows(BOOK_HISTORY).Activate
-    If ActiveSheet.Name = WS_PAYEE Then
+    If ActiveSheet.Name <> WS_HISTORY Then
         Worksheets(WS_HISTORY).Activate
     End If
 
