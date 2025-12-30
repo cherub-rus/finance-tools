@@ -22,6 +22,7 @@ Sub FillSheet(sheetName As String)
         .AutoFilter Field:=c_date, Criteria1:="<>"
         .AutoFilter Field:=c_date, Criteria1:="<>#"
         .AutoFilter Field:=c_category, Criteria1:="="
+        .AutoFilter Field:=c_mark, Criteria1:="="
 
         Set filterRange = .SpecialCells(xlCellTypeVisible).EntireRow
 
