@@ -10,6 +10,7 @@
     { "s": "Visa Сберкарта", "r": "VISA"},
     { "s": "MasterCard Сберкарта", "r": "ECMC"},
     { "s": "Visa Classic", "r": "VISA" },
+    { "s": "Счёт карты VISA", "r": "VISA" },
 
     { "s": "Плат. счёт ••", "r": "СЧЁТ ••" },
     { "s": "MasterCard ••", "r": "ECMC ••" },
