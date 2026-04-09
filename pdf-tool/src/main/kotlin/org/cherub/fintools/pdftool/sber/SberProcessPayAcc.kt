@@ -8,13 +8,10 @@ private val SB_ACCOUNT_REGEX = "<p>Номер счёта <b>(?<account>40817 810
 class SberProcessPayAcc(config: ConfigData) : SberProcessor(config) {
 
     override fun cleanUpHtmlSpecific(text: String) = text
-        .replace("(</b></p>)".toRegex(), "$1\n")
-        .replace("(<p>Продолжение на следующей странице</p>)".toRegex(), "\n$1")
-        .replace("(<p>Дата формирования документа <b>)".toRegex(), "\n$1")
-        .replace("(</p>)(<p>Пополнение .+</p><p>Списание)".toRegex(), "$1\n$2")
-        .replace("(</p>)(<p><b>)".toRegex(), "$1\n$2")
-        .replace("(</p><p>)".toRegex(), " ")
-
+        .replace("(<p><b>)".toRegex(), "\n$1")
+        .replace("([.] Операция по[а-я ]{0,6})</p><p>([а-я ]{0,6}[*]{4}[0-9]{4}</p>)".toRegex(), "$1 $2")
+        .replace("(</p>)\n".toRegex(), "$1")
+        .replace("(</p>)".toRegex(), "$1\n")
 
     override fun rowFilter(row: String) =
         row.contains("^<p><b>\\d\\d[.]\\d\\d".toRegex())
@@ -28,10 +25,10 @@ class SberProcessPayAcc(config: ConfigData) : SberProcessor(config) {
 
     override fun discoverAccountInfo(text: String): AccountInfo {
 
-        val mAcc = SB_ACCOUNT_REGEX.matchEntire(text.lines()[5])
-        val mStart = SB_REPORT_START_REGEX.matchEntire(text.lines()[7])
-        val mEnd = SB_REPORT_END_REGEX.matchEntire(text.lines()[9])
-        val mCur = SB_REPORT_CURRENT_DATE_REGEX.matchEntire(text.lines()[text.lines().size - 5])
+        val mAcc = SB_ACCOUNT_REGEX.matchEntire(text.lines()[9])
+        val mStart = SB_REPORT_START_REGEX.matchEntire(text.lines()[14])
+        val mEnd = SB_REPORT_END_REGEX.matchEntire(text.lines()[17])
+        val mCur = SB_REPORT_CURRENT_DATE_REGEX.matchEntire(text.lines()[text.lines().size - 8])
 
         val number = mAcc?.gv("account")
         val code =  number?.let {
