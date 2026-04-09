@@ -10,15 +10,8 @@ private val SB_ACCOUNT_REGEX_PA = "<p>Номер счёта <b>(?<account>40817 
 class SberProcessPersonalAccount(config: ConfigData) : SberProcessor(config) {
 
     override fun cleanUpHtmlSpecific(text: String) = text
-        .replace("(</b></p>)(<p><b>)".toRegex(), "$1\n$2")
-        .replace("(<p>Продолжение на следующей странице</p>)".toRegex(), "\n$1")
-        .replace("(<p>Дата формирования документа <b>)".toRegex(), "\n$1")
-        .replace("(<p>Номер счёта <b>)".toRegex(), "\n$1")
-        .replace("(<p>Тип счёта Накопительный счёт</p>)".toRegex(), "\n$1")
-        .replace("(<p><b>Остаток на )".toRegex(), "\n$1")
-        .replace("(</p>)(<p>Пополнение .+</p><p>Списание)".toRegex(), "$1\n$2")
-        .replace("(<p><b>Расшифровка операций</b></p>)".toRegex(), "\n$1")
-        .replace("(<p>[*]</p>)".toRegex(), "\n$1")
+        .replace("([0-9]{7})</p><p>(<b>)".toRegex(), "$1$2")
+        .replace("(</p>)".toRegex(), "$1\n")
 
     override fun rowFilter(row: String) =
         row.contains("к/с ")
@@ -26,7 +19,7 @@ class SberProcessPersonalAccount(config: ConfigData) : SberProcessor(config) {
     override fun transformToCsv(row: String) = row
         .replace(
             //     ($1        ) ($2 )    ($3 )                     ($4        )  ($5                   ) ($6              )        #
-            "<p><b>([0-9.]{10}) (.+?)</b>(.+?)</p><p><b>-?[0-9]{2},( № [0-9-]+)? ([+-]?[0-9 ]+,[0-9]{2}) ([0-9 ]+,[0-9]{2})</b></p>".toRegex(),
+            "<p><b>([0-9.]{10}) (.+?)</b>(.+?)<b>-?[0-9]{2},( № [0-9-]+)? ([+-]?[0-9 ]+,[0-9]{2}) ([0-9 ]+,[0-9]{2})</b></p>".toRegex(),
             prepareCsvOutputMask("$1", "00:00", "-$5", "$3", "$6", "", "", "$2")
         )
         .replace("-+", "")
@@ -34,10 +27,10 @@ class SberProcessPersonalAccount(config: ConfigData) : SberProcessor(config) {
 
     override fun discoverAccountInfo(text: String): AccountInfo {
 
-        val mAcc = SB_ACCOUNT_REGEX_PA.matchEntire(text.lines()[3])
-        val mStart = SB_REPORT_START_REGEX.matchEntire(text.lines()[5])
-        val mEnd = SB_REPORT_END_REGEX.matchEntire(text.lines()[7])
-        val mCur = SB_REPORT_CURRENT_DATE_REGEX.matchEntire(text.lines()[text.lines().size - 4])
+        val mAcc = SB_ACCOUNT_REGEX_PA.matchEntire(text.lines()[10])
+        val mStart = SB_REPORT_START_REGEX.matchEntire(text.lines()[19])
+        val mEnd = SB_REPORT_END_REGEX.matchEntire(text.lines()[23])
+        val mCur = SB_REPORT_CURRENT_DATE_REGEX.matchEntire(text.lines()[text.lines().size - 12])
 
         val number = mAcc?.gv("account")
         val code = number?.let {
