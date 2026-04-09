@@ -5,11 +5,13 @@ import org.cherub.fintools.pdftool.AccountInfo
 import org.cherub.fintools.pdftool.findByAccountNumber
 import org.cherub.fintools.pdftool.*
 
-private val SB_ACCOUNT_REGEX_PA = ".+<p>Номер счёта</p><p><b>(?<account>40817 810 \\d \\d{4} \\d{7})</b></p>.+".toRegex()
-private val SB_REPORT_INFO_REGEX_PA = (
-        "<p><b>Остаток средств (?<startBalance>(\\d{1,3} )*\\d{1,3},\\d{2})</b>на (?<startDate>\\d{2}\\.\\d{2}\\.\\d{4})</p>" +
-        "<p><b>Пополнение .+</b>.+</p><p>.+</p>" +
-        "<p><b>Остаток средств (?<endBalance>(\\d{1,3} )*\\d{1,3},\\d{2})</b>на (?<endDate>\\d{2}\\.\\d{2}\\.\\d{4})</p><p><b>Списание .+</b></p>"
+private val SB_ACCOUNT_REGEX_PA = ".+<p>Номер счёта ?(</p><p>)?<b>(?<account>40817 810 \\d \\d{4} \\d{7})</b></p>.+".toRegex()
+private val SB_REPORT_INFO_REGEX_PA = (".+" +
+        "<p><b>Остаток на (?<startDate>\\d{2}\\.\\d{2}\\.\\d{4}) </b>(?<startBalance>(\\d{1,3} )*\\d{1,3},\\d{2})</p>" +
+        "<p>Пополнение .+</p><p>.+</p>" +
+        "<p>Списание .+</p>"+
+        "<p><b>Остаток на (?<endDate>\\d{2}\\.\\d{2}\\.\\d{4}) </b>(?<endBalance>(\\d{1,3} )*\\d{1,3},\\d{2})</p>" +
+        ".+"
     ).toRegex()
 
 class SberProcessPersonalAccount(config: ConfigData) : SberProcessor(config) {
@@ -33,11 +35,11 @@ class SberProcessPersonalAccount(config: ConfigData) : SberProcessor(config) {
 
     override fun discoverAccountInfo(text: String): AccountInfo {
 
-        val mAcc = SB_ACCOUNT_REGEX_PA.matchAt(text.lines()[3], 0)
-        val mRInfo = SB_REPORT_INFO_REGEX_PA.matchEntire(text.lines()[4])
+        val mAcc = SB_ACCOUNT_REGEX_PA.matchAt(text.lines()[2], 0)
+        val mRInfo = SB_REPORT_INFO_REGEX_PA.matchEntire(text.lines()[2])
 
         val number = mAcc?.gv("account")
-        val code =  number?.let {
+        val code = number?.let {
             val s = it.replace(" ", "").takeLast(4)
             config.accounts.findByAccountNumber("*$s")?.code
         }
