@@ -3,32 +3,35 @@ package org.cherub.fintools.pdftool.sber
 import org.cherub.fintools.config.ConfigData
 import org.cherub.fintools.pdftool.*
 
-private val SB_CARD_REGEX = "<p>Карта Номер счёта Дата открытия счёта<b>(?<card>[a-zA-Zа-яА-я ]+ •••• \\d{4}) (40817 810 \\d \\d{4} \\d{7}) ([0-9.]{10})</b></p>".toRegex()
+private val SB_CARD_REGEX = "<p>Карта (?<card>[a-zA-Zа-яА-я ]+ •••• \\d{4})</p>".toRegex()
 
 class SberProcessCard(config: ConfigData) : SberProcessor(config) {
 
     override fun cleanUpHtmlSpecific(text: String) = text
         .replace("(<p><b>)".toRegex(), "\n$1")
         .replace("(</b></p>)<".toRegex(), "$1\n<")
-        .replace("(<p>Продолжение на)".toRegex(), "\n$1")
+        .replace("(<p>Продолжение на следующей странице</p>)".toRegex(), "\n$1")
+        .replace("(<p>Дата формирования документа <b>)".toRegex(), "\n$1")
+        .replace("(<p>Валюта Российский рубль)".toRegex(), "\n$1")
+        .replace("(</p>)(<p>Пополнение .+</p><p>Списание)".toRegex(), "$1\n$2")
         .replace("</p><p>", " ")
 
     override fun rowFilter(row: String) =
-        row.contains(".202") && !row.contains("</b></p>") && !row.contains("<!DOCTYPE") && !row.contains("по счёту не производилось.")
+        row.contains("^<p><b>\\d\\d[.]\\d\\d".toRegex())
 
     override fun transformToCsv(row: String) = row
         .replace(
-            "<p><b>([0-9.]{10}) ([0-9:]{5}) </b>\\d{6} <b>(.+?) </b>([+]?(\\d{1,3} )*\\d{1,3},\\d{2}) ((\\d{1,3} )*\\d{1,3},\\d{2}) [0-9.]{10} (.+)\\. Операция по карте (.+)</p>".toRegex(),
+            "<p><b>([0-9.]{10}) ([0-9:]{5}) (.+?) </b>([+]?(\\d{1,3} )*\\d{1,3},\\d{2}) ((\\d{1,3} )*\\d{1,3},\\d{2}) [0-9.]{10} \\d{6} (.+)\\. Операция по карте (.+)</p>".toRegex(),
             prepareCsvOutputMask("$1", "$2:00", "-$4", "$8", "$6", "", "", "$3")
         )
         .replace("-+", "")
 
     override fun discoverAccountInfo(text: String): AccountInfo {
 
-        val mCard = SB_CARD_REGEX.matchEntire(text.lines()[3])
-        val mDates = SB_REPORT_DATES_REGEX.matchEntire(text.lines()[6])
-        val mBal = SB_REPORT_BALANCES_REGEX.matchEntire(text.lines()[7])
-        val mCur = SB_ACCOUNT_CURRENT_DATE_REGEX.matchEntire(text.lines()[text.lines().size - 2])
+        val mCard = SB_CARD_REGEX.matchEntire(text.lines()[6])
+        val mStart = SB_REPORT_START_REGEX.matchEntire(text.lines()[8])
+        val mEnd = SB_REPORT_END_REGEX.matchEntire(text.lines()[10])
+        val mCur = SB_REPORT_CURRENT_DATE_REGEX.matchEntire(text.lines()[text.lines().size - 5])
 
         val card = mCard?.gv("card")?.let { getAccountCard(it) }
         val code = card?.let { config.accounts.findByCard(it)?.code }
@@ -36,10 +39,10 @@ class SberProcessCard(config: ConfigData) : SberProcessor(config) {
         return AccountInfo(
             accountCode = code,
             cardNumber = card,
-            startDate = mDates?.gv("startDate"),
-            endDate = mDates?.gv("endDate"),
-            startBalance = mBal?.gv("startBalance"),
-            endBalance = mBal?.gv("endBalance"),
+            startDate = mStart?.gv("startDate"),
+            startBalance = mStart?.gv("startBalance"),
+            endDate = mEnd?.gv("endDate"),
+            endBalance = mEnd?.gv("endBalance"),
             currentDate = mCur?.gv("currentDate"),
         )
     }

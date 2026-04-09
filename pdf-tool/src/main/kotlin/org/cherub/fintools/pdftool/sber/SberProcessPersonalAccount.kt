@@ -5,21 +5,20 @@ import org.cherub.fintools.pdftool.AccountInfo
 import org.cherub.fintools.pdftool.findByAccountNumber
 import org.cherub.fintools.pdftool.*
 
-private val SB_ACCOUNT_REGEX_PA = ".+<p>Номер счёта ?(</p><p>)?<b>(?<account>40817 810 \\d \\d{4} \\d{7})</b></p>.+".toRegex()
-private val SB_REPORT_INFO_REGEX_PA = (".+" +
-        "<p><b>Остаток на (?<startDate>\\d{2}\\.\\d{2}\\.\\d{4}) </b>(?<startBalance>(\\d{1,3} )*\\d{1,3},\\d{2})</p>" +
-        "<p>Пополнение .+</p><p>.+</p>" +
-        "<p>Списание .+</p>"+
-        "<p><b>Остаток на (?<endDate>\\d{2}\\.\\d{2}\\.\\d{4}) </b>(?<endBalance>(\\d{1,3} )*\\d{1,3},\\d{2})</p>" +
-        ".+"
-    ).toRegex()
+private val SB_ACCOUNT_REGEX_PA = "<p>Номер счёта <b>(?<account>40817 810 \\d \\d{4} \\d{7})</b></p>".toRegex()
 
 class SberProcessPersonalAccount(config: ConfigData) : SberProcessor(config) {
 
     override fun cleanUpHtmlSpecific(text: String) = text
         .replace("(</b></p>)(<p><b>)".toRegex(), "$1\n$2")
         .replace("(<p>Продолжение на следующей странице</p>)".toRegex(), "\n$1")
-        .replace("(<p>Дата формирования <b>)".toRegex(), "\n$1")
+        .replace("(<p>Дата формирования документа <b>)".toRegex(), "\n$1")
+        .replace("(<p>Номер счёта <b>)".toRegex(), "\n$1")
+        .replace("(<p>Тип счёта Накопительный счёт</p>)".toRegex(), "\n$1")
+        .replace("(<p><b>Остаток на )".toRegex(), "\n$1")
+        .replace("(</p>)(<p>Пополнение .+</p><p>Списание)".toRegex(), "$1\n$2")
+        .replace("(<p><b>Расшифровка операций</b></p>)".toRegex(), "\n$1")
+        .replace("(<p>[*]</p>)".toRegex(), "\n$1")
 
     override fun rowFilter(row: String) =
         row.contains("к/с ")
@@ -35,8 +34,10 @@ class SberProcessPersonalAccount(config: ConfigData) : SberProcessor(config) {
 
     override fun discoverAccountInfo(text: String): AccountInfo {
 
-        val mAcc = SB_ACCOUNT_REGEX_PA.matchAt(text.lines()[2], 0)
-        val mRInfo = SB_REPORT_INFO_REGEX_PA.matchEntire(text.lines()[2])
+        val mAcc = SB_ACCOUNT_REGEX_PA.matchEntire(text.lines()[3])
+        val mStart = SB_REPORT_START_REGEX.matchEntire(text.lines()[5])
+        val mEnd = SB_REPORT_END_REGEX.matchEntire(text.lines()[7])
+        val mCur = SB_REPORT_CURRENT_DATE_REGEX.matchEntire(text.lines()[text.lines().size - 4])
 
         val number = mAcc?.gv("account")
         val code = number?.let {
@@ -47,10 +48,11 @@ class SberProcessPersonalAccount(config: ConfigData) : SberProcessor(config) {
         return AccountInfo(
             accountCode = code,
             accountNumber = number,
-            startDate = mRInfo?.gv("startDate"),
-            endDate = mRInfo?.gv("endDate"),
-            startBalance = mRInfo?.gv("startBalance"),
-            endBalance = mRInfo?.gv("endBalance"),
+            startDate = mStart?.gv("startDate"),
+            startBalance = mStart?.gv("startBalance"),
+            endDate = mEnd?.gv("endDate"),
+            endBalance = mEnd?.gv("endBalance"),
+            currentDate = mCur?.gv("currentDate"),
         )
     }
 }
