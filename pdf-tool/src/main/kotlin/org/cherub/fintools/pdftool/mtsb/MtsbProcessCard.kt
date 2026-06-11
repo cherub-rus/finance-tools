@@ -6,6 +6,7 @@ import org.cherub.fintools.log.log
 import org.cherub.fintools.pdftool.*
 import java.time.Duration
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import kotlin.math.abs
 
@@ -41,21 +42,18 @@ class MtsbProcessCard(config: ConfigData) : CommonProcessor(config, true) {
             fields[C_AMOUNT] = sign + fields[C_VAR2].replace('.', ',') // Added minus sign to expense amount and change currency separator
             fields[C_VAR2] = ""
 
+            val operationDate = parseDate("${fields[C_DATE]} ${fields[C_TIME]}")
             if (fields[C_VAR1].isNotBlank()) {
-                val columnDate = parseDate("${fields[C_DATE]} ${fields[C_TIME]}")
                 val messageDate = parseDate(fields[C_VAR1].replace('/', '.'))
 
-                if (listOf(columnDate, messageDate).all { it != null } &&
-                    abs(Duration.between(columnDate, messageDate).seconds) <= 10){
-                    val parts = columnDate!!.plusHours(4).format(DateTimeFormatter.ofPattern(TIMESTAMP_RUSSIAN_PATTERN)).split(" ")
-                    fields[C_DATE] = parts[0]
-                    fields[C_TIME] = parts[1]
-                } else if (fields[C_TIME].endsWith("00:00:00")) { // If transaction time exists, replace log time with it
-                    val tranDate = fields[C_VAR1].split(" ")
-                    fields[C_DATE] = tranDate[0].replace('/', '.')
-                    fields[C_TIME] = tranDate[1]
+                if (abs(Duration.between(operationDate, messageDate).seconds) <= 10){
+                    overrideOperationDate(fields, operationDate!!, TIME_OFFSET_HOURS)
+                } else if (operationDate!!.toLocalTime().equals(LocalTime.MIDNIGHT)) { // If transaction time exists, replace log time with it
+                    overrideOperationDate(fields, messageDate!!)
                 }
                 fields[C_VAR1] = ""
+            } else {
+                overrideOperationDate(fields, operationDate!!, TIME_OFFSET_HOURS)
             }
         } catch (e: Exception) {
             log(e, csvRow)
@@ -64,10 +62,17 @@ class MtsbProcessCard(config: ConfigData) : CommonProcessor(config, true) {
         return super.fixCsv(fields.joinToString("\t"))
     }
 
+    private fun overrideOperationDate(fields: MutableList<String>, date: LocalDateTime, offset: Long = 0) {
+        val parts =
+            date.plusHours(offset).format(DateTimeFormatter.ofPattern(TIMESTAMP_RUSSIAN_PATTERN))
+                .split(" ")
+        fields[C_DATE] = parts[0]
+        fields[C_TIME] = parts[1]
+    }
+
     private fun parseDate(text: String): LocalDateTime? = try {
         LocalDateTime.parse(text, DateTimeFormatter.ofPattern(TIMESTAMP_RUSSIAN_PATTERN))
-    } catch (e: Exception) {
-        log(e, text)
+    } catch (_: Exception) {
         null
     }
 
