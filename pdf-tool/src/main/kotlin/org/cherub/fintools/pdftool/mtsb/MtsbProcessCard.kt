@@ -46,14 +46,16 @@ class MtsbProcessCard(config: ConfigData) : CommonProcessor(config, true) {
             if (fields[C_VAR1].isNotBlank()) {
                 val messageDate = parseDate(fields[C_VAR1].replace('/', '.'))
 
-                if (abs(Duration.between(operationDate, messageDate).seconds) <= 10){
-                    overrideOperationDate(fields, operationDate!!, TIME_OFFSET_HOURS)
-                } else if (operationDate!!.toLocalTime().equals(LocalTime.MIDNIGHT)) { // If transaction time exists, replace log time with it
-                    overrideOperationDate(fields, messageDate!!)
+                if (abs(Duration.between(operationDate, messageDate).seconds) <= DURATION_AS_EQUAL){
+                    overrideOperationDate(fields, operationDate, TIME_OFFSET_LOCAL_TO_BASE_HOURS)
+                } else if (abs(Duration.between(operationDate.plusHours(TIME_OFFSET_BASE_TO_UTC_HOURS), messageDate).seconds) <= DURATION_AS_EQUAL){
+                    overrideOperationDate(fields, operationDate, TIME_OFFSET_LOCAL_TO_UTC_HOURS)
+                } else if (operationDate.toLocalTime().equals(LocalTime.MIDNIGHT)) { // If operation time is "empty", with time from message
+                    overrideOperationDate(fields, messageDate)
                 }
                 fields[C_VAR1] = ""
             } else {
-                overrideOperationDate(fields, operationDate!!, TIME_OFFSET_HOURS)
+                overrideOperationDate(fields, operationDate, TIME_OFFSET_LOCAL_TO_BASE_HOURS)
             }
         } catch (e: Exception) {
             log(e, csvRow)
@@ -70,11 +72,8 @@ class MtsbProcessCard(config: ConfigData) : CommonProcessor(config, true) {
         fields[C_TIME] = parts[1]
     }
 
-    private fun parseDate(text: String): LocalDateTime? = try {
+    private fun parseDate(text: String): LocalDateTime =
         LocalDateTime.parse(text, DateTimeFormatter.ofPattern(TIMESTAMP_RUSSIAN_PATTERN))
-    } catch (_: Exception) {
-        null
-    }
 
     override fun cleanUpRow(row: String) = row
         .cleanUpByRules(config.replaceInRow)
