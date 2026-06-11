@@ -4,6 +4,10 @@ import org.cherub.fintools.cleanUpByRules
 import org.cherub.fintools.config.ConfigData
 import org.cherub.fintools.log.log
 import org.cherub.fintools.pdftool.*
+import java.time.Duration
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import kotlin.math.abs
 
 private const val BIN = 220028 // Bank Identification Number for PAYMENT SYSTEM: NSPK MIR; BANK: PJSC MTS BANK
 
@@ -38,7 +42,15 @@ class MtsbProcessCard(config: ConfigData) : CommonProcessor(config, true) {
             fields[C_VAR2] = ""
 
             if (fields[C_VAR1].isNotBlank()) {
-                if (fields[C_TIME].endsWith("00:00:00")) { // If transaction time exists, replace log time with it
+                val columnDate = parseDate("${fields[C_DATE]} ${fields[C_TIME]}")
+                val messageDate = parseDate(fields[C_VAR1].replace('/', '.'))
+
+                if (listOf(columnDate, messageDate).all { it != null } &&
+                    abs(Duration.between(columnDate, messageDate).seconds) <= 10){
+                    val parts = columnDate!!.plusHours(4).format(DateTimeFormatter.ofPattern(TIMESTAMP_RUSSIAN_PATTERN)).split(" ")
+                    fields[C_DATE] = parts[0]
+                    fields[C_TIME] = parts[1]
+                } else if (fields[C_TIME].endsWith("00:00:00")) { // If transaction time exists, replace log time with it
                     val tranDate = fields[C_VAR1].split(" ")
                     fields[C_DATE] = tranDate[0].replace('/', '.')
                     fields[C_TIME] = tranDate[1]
@@ -50,6 +62,13 @@ class MtsbProcessCard(config: ConfigData) : CommonProcessor(config, true) {
         }
 
         return super.fixCsv(fields.joinToString("\t"))
+    }
+
+    private fun parseDate(text: String): LocalDateTime? = try {
+        LocalDateTime.parse(text, DateTimeFormatter.ofPattern(TIMESTAMP_RUSSIAN_PATTERN))
+    } catch (e: Exception) {
+        log(e, text)
+        null
     }
 
     override fun cleanUpRow(row: String) = row

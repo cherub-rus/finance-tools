@@ -15,6 +15,7 @@ const val FORMULA_BALANCE2 = "=ОКРУГЛ(R[-1]C[-1]+RC4;2)"
 private const val DATE_ISO_PATTERN = "yyyy-MM-dd"
 private const val DATE_RUSSIAN_PATTERN = "dd.MM.yyyy"
 internal const val TIMESTAMP_ISO_PATTERN = "$DATE_ISO_PATTERN HH:mm:ss"
+internal const val TIMESTAMP_RUSSIAN_PATTERN = "$DATE_RUSSIAN_PATTERN HH:mm:ss"
 
 internal const val C_DATE = 0
 internal const val C_TIME = 1
