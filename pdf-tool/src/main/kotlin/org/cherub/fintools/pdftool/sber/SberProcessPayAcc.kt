@@ -10,6 +10,7 @@ class SberProcessPayAcc(config: ConfigData) : SberProcessor(config) {
     override fun cleanUpHtmlSpecific(text: String) = text
         .replace("(<p><b>)".toRegex(), "\n$1")
         .replace("([.] Операция по[а-я ]{0,6})</p><p>([а-я ]{0,6}[*]{4}[0-9]{4}</p>)".toRegex(), "$1 $2")
+        .replace("(SBOL перевод на карту [0-9]{4}[*]{4}[0-9]{4}.+)</p><p>(.+[.] Операция по счету [*]{4}[0-9]{4}</p>)".toRegex(), "$1 $2")
         .replace("(</p>)\n".toRegex(), "$1")
         .replace("(</p>)".toRegex(), "$1\n")
 
