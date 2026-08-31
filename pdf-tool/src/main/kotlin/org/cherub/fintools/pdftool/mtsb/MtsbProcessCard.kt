@@ -5,9 +5,7 @@ import org.cherub.fintools.config.ConfigData
 import org.cherub.fintools.log.log
 import org.cherub.fintools.pdftool.*
 import java.time.Duration
-import java.time.LocalDateTime
 import java.time.LocalTime
-import java.time.format.DateTimeFormatter
 import kotlin.math.abs
 
 private const val BIN = 220028 // Bank Identification Number for PAYMENT SYSTEM: NSPK MIR; BANK: PJSC MTS BANK
@@ -50,12 +48,14 @@ class MtsbProcessCard(config: ConfigData) : CommonProcessor(config, true) {
                     overrideOperationDate(fields, operationDate, TIME_OFFSET_LOCAL_TO_BASE_HOURS)
                 } else if (abs(Duration.between(operationDate.plusHours(TIME_OFFSET_BASE_TO_UTC_HOURS), messageDate).seconds) <= DURATION_AS_EQUAL){
                     overrideOperationDate(fields, operationDate, TIME_OFFSET_LOCAL_TO_UTC_HOURS)
+                } else if (abs(Duration.between(operationDate.plusHours(TIME_OFFSET_LOCAL_TO_UTC_HOURS), messageDate).seconds) <= DURATION_AS_EQUAL){
+                    overrideOperationDate(fields, operationDate, TIME_OFFSET_LOCAL_TO_UTC_HOURS)
                 } else if (operationDate.toLocalTime().equals(LocalTime.MIDNIGHT)) { // If operation time is "empty", with time from message
                     overrideOperationDate(fields, messageDate)
                 }
                 fields[C_VAR1] = ""
             } else {
-                overrideOperationDate(fields, operationDate, TIME_OFFSET_LOCAL_TO_BASE_HOURS)
+                overrideOperationDate(fields, operationDate, TIME_OFFSET_LOCAL_TO_UTC_HOURS)
             }
         } catch (e: Exception) {
             log(e, csvRow)
@@ -63,17 +63,6 @@ class MtsbProcessCard(config: ConfigData) : CommonProcessor(config, true) {
 
         return super.fixCsv(fields.joinToString("\t"))
     }
-
-    private fun overrideOperationDate(fields: MutableList<String>, date: LocalDateTime, offset: Long = 0) {
-        val parts =
-            date.plusHours(offset).format(DateTimeFormatter.ofPattern(TIMESTAMP_RUSSIAN_PATTERN))
-                .split(" ")
-        fields[C_DATE] = parts[0]
-        fields[C_TIME] = parts[1]
-    }
-
-    private fun parseDate(text: String): LocalDateTime =
-        LocalDateTime.parse(text, DateTimeFormatter.ofPattern(TIMESTAMP_RUSSIAN_PATTERN))
 
     override fun cleanUpRow(row: String) = row
         .cleanUpByRules(config.replaceInRow)

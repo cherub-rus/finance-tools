@@ -20,7 +20,7 @@ internal const val TIME_OFFSET_LOCAL_TO_BASE_HOURS = 4L
 internal const val TIME_OFFSET_BASE_TO_UTC_HOURS = 3L
 internal const val TIME_OFFSET_LOCAL_TO_UTC_HOURS =
     TIME_OFFSET_LOCAL_TO_BASE_HOURS + TIME_OFFSET_BASE_TO_UTC_HOURS
-internal const val DURATION_AS_EQUAL = 5
+internal const val DURATION_AS_EQUAL = 10
 
 internal const val C_DATE = 0
 internal const val C_TIME = 1
@@ -126,6 +126,17 @@ abstract class CommonProcessor(val config: ConfigData, val reorderCsvRows: Boole
             SimpleDateFormat(DATE_ISO_PATTERN).format(SimpleDateFormat(DATE_RUSSIAN_PATTERN).parse(this))
         else
             this
+
+    protected fun overrideOperationDate(fields: MutableList<String>, date: LocalDateTime, offset: Long = 0) {
+        val parts =
+            date.plusHours(offset).format(DateTimeFormatter.ofPattern(TIMESTAMP_RUSSIAN_PATTERN))
+                .split(" ")
+        fields[C_DATE] = parts[0]
+        fields[C_TIME] = parts[1]
+    }
+
+    protected fun parseDate(text: String): LocalDateTime =
+        LocalDateTime.parse(text, DateTimeFormatter.ofPattern(TIMESTAMP_RUSSIAN_PATTERN))
 
     open fun discoverAccountInfo(text: String): AccountInfo =
         AccountInfo(null)
