@@ -22,7 +22,7 @@ internal const val TIME_OFFSET_LOCAL_TO_BASE_HOURS = 4L
 internal const val TIME_OFFSET_BASE_TO_UTC_HOURS = 3L
 internal const val TIME_OFFSET_LOCAL_TO_UTC_HOURS =
     TIME_OFFSET_LOCAL_TO_BASE_HOURS + TIME_OFFSET_BASE_TO_UTC_HOURS
-internal const val DURATION_AS_EQUAL = 10
+internal const val DURATION_AS_EQUAL = 120
 
 internal const val C_DATE = 0
 internal const val C_TIME = 1
