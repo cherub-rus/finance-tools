@@ -15,7 +15,9 @@ const val FORMULA_BALANCE2 = "=ОКРУГЛ(R[-1]C[-1]+RC4;2)"
 private const val DATE_ISO_PATTERN = "yyyy-MM-dd"
 private const val DATE_RUSSIAN_PATTERN = "dd.MM.yyyy"
 internal const val TIMESTAMP_ISO_PATTERN = "$DATE_ISO_PATTERN HH:mm:ss"
+internal const val TIMESTAMP_ISO_PATTERN_SHORT = "$DATE_ISO_PATTERN HH:mm"
 internal const val TIMESTAMP_RUSSIAN_PATTERN = "$DATE_RUSSIAN_PATTERN HH:mm:ss"
+internal const val TIMESTAMP_RUSSIAN_PATTERN_SHORT = "$DATE_RUSSIAN_PATTERN HH:mm"
 internal const val TIME_OFFSET_LOCAL_TO_BASE_HOURS = 4L
 internal const val TIME_OFFSET_BASE_TO_UTC_HOURS = 3L
 internal const val TIME_OFFSET_LOCAL_TO_UTC_HOURS =
@@ -100,8 +102,11 @@ abstract class CommonProcessor(val config: ConfigData, val reorderCsvRows: Boole
         .filter { it.isNotEmpty() }
         .sortedBy {
             try {
-                val fields = it.split("\t")
-                LocalDateTime.parse("${fields[C_DATE]} ${fields[C_TIME]}", DateTimeFormatter.ofPattern(TIMESTAMP_ISO_PATTERN))
+                val fields: List<String> = it.split("\t")
+                if (fields[C_TIME].length == 8)
+                    LocalDateTime.parse("${fields[C_DATE]} ${fields[C_TIME]}", DateTimeFormatter.ofPattern(TIMESTAMP_ISO_PATTERN))
+                else
+                    LocalDateTime.parse("${fields[C_DATE]} ${fields[C_TIME]}", DateTimeFormatter.ofPattern(TIMESTAMP_ISO_PATTERN_SHORT))
             } catch (e: Exception) {
                 log(e, it)
                 LocalDateTime.MIN
@@ -136,7 +141,10 @@ abstract class CommonProcessor(val config: ConfigData, val reorderCsvRows: Boole
     }
 
     protected fun parseDate(text: String): LocalDateTime =
-        LocalDateTime.parse(text, DateTimeFormatter.ofPattern(TIMESTAMP_RUSSIAN_PATTERN))
+        if (text.length == 19)
+            LocalDateTime.parse(text, DateTimeFormatter.ofPattern(TIMESTAMP_RUSSIAN_PATTERN))
+        else
+            LocalDateTime.parse(text, DateTimeFormatter.ofPattern(TIMESTAMP_RUSSIAN_PATTERN_SHORT))
 
     open fun discoverAccountInfo(text: String): AccountInfo =
         AccountInfo(null)
