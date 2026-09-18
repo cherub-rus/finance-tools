@@ -28,8 +28,8 @@ class SberProcessPersonalAccount(config: ConfigData) : SberProcessor(config) {
     override fun discoverAccountInfo(text: String): AccountInfo {
 
         val mAcc = SB_ACCOUNT_REGEX_PA.matchEntire(text.lines()[10])
-        val mStart = SB_REPORT_START_REGEX.matchEntire(text.lines()[19])
-        val mEnd = SB_REPORT_END_REGEX.matchEntire(text.lines()[23])
+        val mStart = SB_REPORT_START_REGEX.matchEntire(text.lines()[18])
+        val mEnd = SB_REPORT_END_REGEX.matchEntire(text.lines()[22])
         val mCur = SB_REPORT_CURRENT_DATE_REGEX.matchEntire(text.lines()[text.lines().size - 12])
 
         val number = mAcc?.gv("account")
