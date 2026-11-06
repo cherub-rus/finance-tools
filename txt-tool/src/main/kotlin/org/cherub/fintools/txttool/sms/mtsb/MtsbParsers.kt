@@ -23,9 +23,14 @@ val mtsbParsers = Pair(
 class MtsbParserMain : IContentParser {
     override fun parse(content: String, config: ConfigData): Transaction? {
         @Suppress("SpellCheckingInspection")
-        val regex =
-            ("(?<operation>[^0-9]+) (?<amount>[0-9][0-9 ]*,[0-9]{2}) RUB( s uchetom skidki (?<discount>[0-9][0-9 ]*,[0-9]{2}) RUB)?" +
-             "( (?<message>.+))? {1,2}(Ostatok|Остаток): (?<balance>[0-9][0-9 ]*,[0-9]{2}) RUB; (?<account>[*][0-9]{4}) ").toRegex()
+        val regex = (
+            if (content.contains('₽'))
+                "(?<operation>[^0-9]+) (?<amount>[0-9][0-9 ]*(.[0-9]{2})?)₽,( s uchetom skidki (?<discount>[0-9][0-9 ]*.[0-9]{2})₽)?" +
+                "( (?<message>.+)[.])? {1,2}(Ostatok|Остаток): (?<balance>[0-9][0-9 ]*(.[0-9]{2})?)₽, (?<account>[*][0-9]{4}) "
+            else
+                "(?<operation>[^0-9]+) (?<amount>[0-9][0-9 ]*,[0-9]{2}) RUB( s uchetom skidki (?<discount>[0-9][0-9 ]*,[0-9]{2}) RUB)?" +
+                "( (?<message>.+))? {1,2}(Ostatok|Остаток): (?<balance>[0-9][0-9 ]*,[0-9]{2}) RUB; (?<account>[*][0-9]{4}) "
+        ).toRegex()
         val m = regex.matchEntire(content) ?: return null
 
         return Transaction(
