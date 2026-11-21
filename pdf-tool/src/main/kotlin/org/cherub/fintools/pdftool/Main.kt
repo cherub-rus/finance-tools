@@ -56,6 +56,8 @@ fun main(args: Array<String>) {
                         ProcessResult("Операции отсутствуют")
                     else
                         MtsbProcessCard(config).process(fileText, sourceName)
+                } else if (fileText.contains("направляем Вам выписку по счету")) {
+                    MtsbProcessSavingsAccount(config).process(fileText, sourceName)
                 } else
                     ProcessResult("Невозможно определить тип выписки МТС БАНКа!")
             } else if (fileText.contains("www.gazprombank.ru")) {
