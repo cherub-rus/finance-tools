@@ -83,6 +83,8 @@ fun main(args: Array<String>) {
 private fun getHtmlContent(sourceFileName: String): String {
     var document: PDDocument? = null
     try {
+//  TODO pdfbox 3
+//        Loader.loadPDF(...)
         document = PDDocument.load(File(sourceFileName))
 
         val ap = document!!.currentAccessPermission

@@ -1,8 +1,6 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
-    kotlin("jvm") version "1.8.0"
-    kotlin("plugin.serialization") version "1.8.0"
+    kotlin("jvm") version "2.4.21"
+    kotlin("plugin.serialization") version "2.4.21"
     application
 }
 
@@ -13,8 +11,8 @@ repositories {
     mavenCentral()
 }
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
+kotlin {
+    jvmToolchain(21)
 }
 
 application {
@@ -22,7 +20,9 @@ application {
 }
 
 dependencies {
-    implementation("org.apache.commons:commons-text:1.10.0")
-    implementation("org.apache.pdfbox:pdfbox-tools:2.0.27")
+    implementation("org.apache.commons:commons-text:1.15.0")
+    implementation("org.apache.pdfbox:pdfbox-tools:2.0.37")
+// TODO pdfbox 3
+//    implementation("org.apache.pdfbox:pdfbox-tools:3.0.8")
     implementation(project(":common"))
 }

@@ -1,8 +1,6 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
-    kotlin("jvm") version "1.8.0"
-    kotlin("plugin.serialization") version "1.8.0"
+    kotlin("jvm") version "2.4.21"
+    kotlin("plugin.serialization") version "2.4.21"
     application
 }
 
@@ -13,8 +11,8 @@ repositories {
     mavenCentral()
 }
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
+kotlin {
+    jvmToolchain(21)
 }
 
 application {
@@ -22,6 +20,6 @@ application {
 }
 
 dependencies {
-    implementation("org.apache.commons:commons-text:1.10.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1")
+    implementation("org.apache.commons:commons-text:1.15.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.13.0")
 }
